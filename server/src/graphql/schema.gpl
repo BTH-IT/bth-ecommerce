@@ -1,0 +1,152 @@
+# ------------------------------------------------------
+# THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
+# ------------------------------------------------------
+
+input CreateNewProductInput {
+  accessoriesIncluded: String!
+  bluetooth: String!
+  brand: String!
+  chip: String!
+  color: String!
+  cpu: String!
+  description: String!
+  generateCpu: String!
+  imageUrlList: [String!]!
+  keyboard: String!
+  led: Boolean!
+  operationSystem: String!
+  originPrice: Float!
+  partNumber: String!
+  pin: Float!
+  productName: String!
+  ramName: String!
+  ramSize: Float!
+  salePercent: Float!
+  screen: String!
+  screenOutputPortName: String!
+  screenOutputPortNum: Float!
+  seriesCpu: String!
+  seriesLaptop: String!
+  size: String!
+  soldNum: Float!
+  storageName: String!
+  storagePortMaximum: Float!
+  storagePortName: String!
+  storagePortNum: Float!
+  storageSize: Float!
+  supportM2slotType: String!
+  touchScreen: Boolean!
+  warranteeYear: Float!
+  weight: Float!
+}
+
+input CreateNewRoleInput {
+  description: String
+  name: String!
+}
+
+"""
+A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
+"""
+scalar DateTime
+
+type Mutation {
+  createNewProduct(createNewProduct: CreateNewProductInput!): ProductModel!
+  createNewRole(access_token: String!, createNewRole: CreateNewRoleInput!): RoleModel!
+  updateNewProduct(updateNewProduct: UpdateNewProductInput!): ProductModel!
+}
+
+type ProductModel {
+  _id: ID
+  accessoriesIncluded: String!
+  bluetooth: String!
+  brand: String!
+  chip: String!
+  color: String!
+  cpu: String!
+  createdAt: DateTime
+  description: String!
+  generateCpu: String!
+  imageUrlList: [String!]!
+  keyboard: String!
+  led: Boolean!
+  operationSystem: String!
+  originPrice: Float!
+  partNumber: String!
+  pin: Float!
+  productName: String!
+  ramName: String!
+  ramSize: Float!
+  salePercent: Float!
+  screen: String!
+  screenOutputPortName: String!
+  screenOutputPortNum: Float!
+  seriesCpu: String!
+  seriesLaptop: String!
+  size: String!
+  soldNum: Float!
+  storageName: String!
+  storagePortMaximum: Float!
+  storagePortName: String!
+  storagePortNum: Float!
+  storageSize: Float!
+  supportM2slotType: String!
+  touchScreen: Boolean!
+  updatedAt: DateTime
+  warranteeYear: Float!
+  weight: Float!
+}
+
+type Query {
+  getAllProducts: [ProductModel!]!
+  getAllRoles(access_token: String!): [RoleModel!]!
+}
+
+type RoleModel {
+  _id: ID
+  actions: [String!]!
+  createdAt: DateTime
+  description: String!
+  isActive: Boolean!
+  name: String!
+  updatedAt: DateTime
+}
+
+input UpdateNewProductInput {
+  _id: String!
+  accessoriesIncluded: String!
+  bluetooth: String!
+  brand: String!
+  chip: String!
+  color: String!
+  cpu: String!
+  description: String!
+  generateCpu: String!
+  imageUrlList: [String!]!
+  keyboard: String!
+  led: Boolean!
+  operationSystem: String!
+  originPrice: Float!
+  partNumber: String!
+  pin: Float!
+  productName: String!
+  ramName: String!
+  ramSize: Float!
+  salePercent: Float!
+  screen: String!
+  screenOutputPortName: String!
+  screenOutputPortNum: Float!
+  seriesCpu: String!
+  seriesLaptop: String!
+  size: String!
+  soldNum: Float!
+  storageName: String!
+  storagePortMaximum: Float!
+  storagePortName: String!
+  storagePortNum: Float!
+  storageSize: Float!
+  supportM2slotType: String!
+  touchScreen: Boolean!
+  warranteeYear: Float!
+  weight: Float!
+}
