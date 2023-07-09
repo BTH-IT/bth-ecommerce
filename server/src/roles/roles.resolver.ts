@@ -1,4 +1,3 @@
-import { FeaturesService } from './../features/features.service';
 import {
   Args,
   Mutation,
