@@ -39,8 +39,6 @@ export class RoleAndFeatureService {
       return r;
     });
 
-    console.log(newRaf);
-
     return newRaf;
   }
 }

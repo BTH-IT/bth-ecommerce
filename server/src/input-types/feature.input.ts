@@ -1,7 +1,22 @@
-import { Field, InputType } from '@nestjs/graphql';
+import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
 export class CreateNewFeatureInput {
   @Field()
   name: string;
+}
+
+@InputType()
+export class UpdateFeatureInput {
+  @Field(() => ID)
+  _id: string;
+
+  @Field()
+  name?: string;
+}
+
+@InputType()
+export class DeleteFeatureInput {
+  @Field(() => ID)
+  _id: string;
 }

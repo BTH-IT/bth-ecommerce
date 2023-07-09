@@ -21,6 +21,10 @@ export class RoleAndFeature {
   @Prop({ default: ACTIONLIST })
   @Field(() => [String])
   actions: [string];
+
+  @Prop({ default: true })
+  @Field({ defaultValue: true })
+  isActive: boolean;
 }
 export type RoleAndFeatureDocument = RoleAndFeature & Document;
 export const RoleAndFeatureSchema =

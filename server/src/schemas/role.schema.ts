@@ -5,7 +5,7 @@ import { RoleAndFeature } from './role-and-feature.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema({
-  timestamps: false,
+  timestamps: true,
 })
 @ObjectType()
 export class Role extends BaseSchema {
@@ -13,8 +13,8 @@ export class Role extends BaseSchema {
   @Field()
   name: string;
 
-  @Prop()
-  @Field()
+  @Prop({ default: '' })
+  @Field({ defaultValue: '' })
   description: string;
 
   @Prop({ type: [MongooseSchema.Types.ObjectId], ref: RoleAndFeature.name })

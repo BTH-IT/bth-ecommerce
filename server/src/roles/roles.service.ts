@@ -1,10 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { RolesRepository } from './roles.repo';
-import { CreateNewRoleDto } from '@/dto/role.dto';
+import { CreateNewRoleDto, DeleteRoleDto, UpdateRoleDto } from '@/dto/role.dto';
 import { Role } from '@/schemas/role.schema';
 import { FeaturesRepository } from '@/features/features.repo';
 import { RoleAndFeatureRepository } from '@/features/role-and-feature.repo';
-import { RoleAndFeature } from '@/schemas/role-and-feature.schema';
 
 @Injectable()
 export class RolesService {
@@ -15,11 +14,14 @@ export class RolesService {
   ) {}
 
   async findAll(): Promise<Role[]> {
-    return this.rolesRepository.findAll();
+    return this.rolesRepository.getByCondition({ isActive: true });
   }
 
   async findOne(id: string): Promise<Role | null> {
-    return this.rolesRepository.findById(id);
+    return this.rolesRepository.findByCondition({
+      _id: id,
+      isActive: true,
+    });
   }
 
   async createNewRole(role: CreateNewRoleDto): Promise<Role> {
@@ -36,9 +38,23 @@ export class RolesService {
       await this.roleAndFeatureRepository.create({
         role: newRole._id,
         feature: f,
+        isActive: true,
       });
     });
 
     return newRole;
+  }
+
+  async updateRole(data: UpdateRoleDto) {
+    return this.rolesRepository.findByIdAndUpdate(data._id, {
+      name: data.name,
+      description: data.description,
+    });
+  }
+
+  async deleteRole(data: DeleteRoleDto) {
+    return this.rolesRepository.findByIdAndUpdate(data._id, {
+      isActive: false,
+    });
   }
 }

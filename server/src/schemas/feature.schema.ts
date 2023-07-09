@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from './base.schema';
 
 @Schema({
-  timestamps: false,
+  timestamps: true,
 })
 @ObjectType()
 export class Feature extends BaseSchema {

@@ -54,6 +54,14 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+input DeleteFeatureInput {
+  _id: ID!
+}
+
+input DeleteRoleInput {
+  _id: ID!
+}
+
 type Feature {
   _id: String!
   createdAt: DateTime!
@@ -66,7 +74,11 @@ type Mutation {
   createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
   createNewProduct(createNewProduct: CreateNewProductInput!): Product!
   createNewRole(createNewRole: CreateNewRoleInput!): Role!
+  deleteFeature(deleteFeature: DeleteFeatureInput!): Feature!
+  deleteRole(deleteRole: DeleteRoleInput!): Role!
+  updateFeature(updateFeature: UpdateFeatureInput!): Feature!
   updateNewProduct(updateNewProduct: UpdateNewProductInput!): Product!
+  updateRole(updateRole: UpdateRoleInput!): Role!
 }
 
 type Product {
@@ -114,6 +126,7 @@ type Query {
   getAllFeatures: [Feature!]!
   getAllProducts: [Product!]!
   getAllRoles: [Role!]!
+  getFeature(id: String!): Feature!
   getRole(id: String!): Role!
 }
 
@@ -130,7 +143,13 @@ type Role {
 type RoleAndFeature {
   actions: [String!]!
   feature: Feature!
+  isActive: Boolean!
   role: Role!
+}
+
+input UpdateFeatureInput {
+  _id: ID!
+  name: String!
 }
 
 input UpdateNewProductInput {
@@ -170,4 +189,10 @@ input UpdateNewProductInput {
   touchScreen: Boolean!
   warranteeYear: Float!
   weight: Float!
+}
+
+input UpdateRoleInput {
+  _id: ID!
+  description: String
+  name: String!
 }

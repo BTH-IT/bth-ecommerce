@@ -1,45 +1,51 @@
 import { Injectable } from '@nestjs/common';
 import { FeaturesRepository } from './features.repo';
 import { Feature } from '@/schemas/feature.schema';
-import { RoleAndFeature } from '@/schemas/role-and-feature.schema';
-import { CreateNewFeatureDto } from '@/dto/feature.dto';
+import {
+  CreateNewFeatureDto,
+  DeleteFeatureDto,
+  UpdateFeatureDto,
+} from '@/dto/feature.dto';
+import { RoleAndFeatureRepository } from './role-and-feature.repo';
 
 @Injectable()
 export class FeaturesService {
-  constructor(private readonly featuresRepository: FeaturesRepository) {}
+  constructor(
+    private readonly featuresRepository: FeaturesRepository,
+    private readonly roleAndFeatureRepository: RoleAndFeatureRepository,
+  ) {}
 
   async findAll(): Promise<Feature[]> {
-    return this.featuresRepository.findAll();
+    return this.featuresRepository.getByCondition({ isActive: true });
   }
 
   async findOne(id: string): Promise<Feature | null> {
-    return this.featuresRepository.findById(id as string);
+    return this.featuresRepository.findByCondition({ _id: id, isActive: true });
   }
 
-  async findManyByCondition(featureList: RoleAndFeature[]): Promise<Feature[]> {
-    const newFeatureList = featureList.map((f) => f.feature.toString());
-    console.log(newFeatureList);
-    console.log(
-      await this.featuresRepository.getByCondition({
-        _id: {
-          $in: newFeatureList,
-        },
-      }),
-    );
-    return await this.featuresRepository.getByCondition({
-      where: {
-        id: {
-          $in: ['64aa71fdf50200d13cd4585b'],
-        },
-      },
+  async updateFeature(feature: UpdateFeatureDto): Promise<Feature | null> {
+    return this.featuresRepository.findByIdAndUpdate(feature._id, {
+      name: feature.name,
     });
   }
 
   async createNewFeature(feature: CreateNewFeatureDto): Promise<Feature> {
-    const newFeature = await this.featuresRepository.create({
+    return this.featuresRepository.create({
       ...feature,
       isActive: true,
     });
-    return newFeature;
+  }
+
+  async deleteFeature(feature: DeleteFeatureDto): Promise<Feature | null> {
+    await this.roleAndFeatureRepository.findByConditionAndUpdate(
+      { feature: feature._id },
+      {
+        isActive: false,
+      },
+    );
+
+    return this.featuresRepository.findByIdAndUpdate(feature._id, {
+      isActive: false,
+    });
   }
 }
