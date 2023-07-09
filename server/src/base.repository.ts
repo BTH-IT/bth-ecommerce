@@ -1,28 +1,57 @@
-import { Model, FilterQuery, QueryOptions, Document, UnpackedIntersection, IfAny, Require_id } from 'mongoose';
+import {
+  Model,
+  FilterQuery,
+  QueryOptions,
+  Document,
+  UnpackedIntersection,
+  IfAny,
+  Require_id,
+} from 'mongoose';
 
-export class BaseRepository<T extends Document> {
+export class BaseRepository<T> {
   constructor(private readonly model: Model<T>) {}
 
-  async create(doc): Promise<any> {
+  async create(doc: any): Promise<any> {
     const createdEntity = new this.model(doc);
     return await createdEntity.save();
   }
 
-  async findById(id: string, option?: QueryOptions): Promise<T> {
+  async findById(id: string, option?: QueryOptions): Promise<T | null> {
     return this.model.findById(id, option);
   }
 
   async findByCondition(
-    filter,
+    filter: any,
     field?: any | null,
     option?: any | null,
     populate?: any | null,
-  ): Promise<UnpackedIntersection<IfAny<T, any, Document<unknown, {}, T> & Omit<Require_id<T>, never>>, T>> {
+  ): Promise<UnpackedIntersection<
+    IfAny<T, any, Document<unknown, object, T> & Omit<Require_id<T>, never>>,
+    T
+  > | null> {
     return this.model.findOne(filter, field, option).populate(populate);
   }
 
+  async findManyByCondition(
+    filter: any,
+    field?: any | null,
+    option?: any | null,
+    populate?: any | null,
+  ): Promise<
+    UnpackedIntersection<
+      IfAny<
+        T[],
+        any,
+        Document<unknown, object, T[]> & Omit<Require_id<T[]>, never>
+      >,
+      T[]
+    >
+  > {
+    return this.model.find(filter, field, option).populate(populate);
+  }
+
   async getByCondition(
-    filter,
+    filter: any,
     field?: any | null,
     option?: any | null,
     populate?: any | null,
@@ -50,19 +79,19 @@ export class BaseRepository<T extends Document> {
     return this.model.deleteMany({ _id: { $in: id } } as FilterQuery<T>);
   }
 
-  async deleteByCondition(filter) {
+  async deleteByCondition(filter: any) {
     return this.model.deleteMany(filter);
   }
 
-  async findByConditionAndUpdate(filter, update) {
+  async findByConditionAndUpdate(filter: any, update: any) {
     return this.model.findOneAndUpdate(filter as FilterQuery<T>, update);
   }
 
-  async updateMany(filter, update, option?: any | null) {
+  async updateMany(filter: any, update: any, option?: any | null) {
     return this.model.updateMany(filter, update, option);
   }
 
-  async findByIdAndUpdate(id, update) {
+  async findByIdAndUpdate(id: any, update: any) {
     return this.model.findByIdAndUpdate(id, update);
   }
 }

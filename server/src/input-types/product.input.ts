@@ -1,218 +1,220 @@
-import { IsNotEmpty, IsPositive } from 'class-validator';
+import { Field, InputType, ObjectType } from '@nestjs/graphql';
 
-export class CreateNewProductDto {
-  @IsNotEmpty()
+@InputType()
+export class CreateNewProductInput {
+  @Field()
   productName: string;
 
-  @IsNotEmpty()
+  @Field((type) => [String])
   imageUrlList: [string];
 
-  @IsNotEmpty()
+  @Field()
   warranteeYear: number;
 
-  @IsNotEmpty()
+  @Field()
   originPrice: number;
 
-  @IsNotEmpty()
+  @Field()
   salePercent: number;
 
-  @IsNotEmpty()
+  @Field()
   description: string;
 
-  @IsNotEmpty()
+  @Field()
   brand: string;
 
-  @IsNotEmpty()
+  @Field()
   generateCpu: string;
 
-  @IsNotEmpty()
+  @Field()
   cpu: string;
 
-  @IsNotEmpty()
+  @Field()
   seriesCpu: string;
 
-  @IsNotEmpty()
+  @Field()
   chip: string;
 
-  @IsNotEmpty()
+  @Field()
   ramName: string;
 
-  @IsNotEmpty()
+  @Field()
   ramSize: number;
 
-  @IsNotEmpty()
+  @Field()
   screen: string;
 
-  @IsNotEmpty()
+  @Field()
   storageName: string;
 
-  @IsNotEmpty()
+  @Field()
   storageSize: number;
 
-  @IsNotEmpty()
+  @Field()
   storagePortName: string;
 
-  @IsNotEmpty()
+  @Field()
   storagePortNum: number;
 
-  @IsNotEmpty()
+  @Field()
   storagePortMaximum: number;
 
-  @IsNotEmpty()
+  @Field()
   supportM2slotType: string;
 
-  @IsNotEmpty()
+  @Field()
   screenOutputPortName: string;
 
-  @IsNotEmpty()
+  @Field()
   screenOutputPortNum: number;
 
-  @IsNotEmpty()
+  @Field()
   bluetooth: string;
 
-  @IsNotEmpty()
+  @Field()
   keyboard: string;
 
-  @IsNotEmpty()
+  @Field()
   operationSystem: string;
 
-  @IsNotEmpty()
+  @Field()
   size: string;
 
-  @IsNotEmpty()
+  @Field()
   pin: number;
 
-  @IsNotEmpty()
+  @Field()
   weight: number;
 
-  @IsNotEmpty()
+  @Field()
   seriesLaptop: string;
 
-  @IsNotEmpty()
+  @Field()
   partNumber: string;
 
-  @IsNotEmpty()
+  @Field()
   color: string;
 
-  @IsNotEmpty()
+  @Field()
   accessoriesIncluded: string;
 
-  @IsNotEmpty()
+  @Field()
   led: boolean;
 
-  @IsNotEmpty()
+  @Field()
   touchScreen: boolean;
 
-  @IsNotEmpty()
+  @Field()
   soldNum: number;
 }
 
-export class UpdateNewProductDto {
-  @IsNotEmpty()
+@InputType()
+export class UpdateNewProductInput {
+  @Field()
   _id: string;
 
-  @IsNotEmpty()
+  @Field()
   productName?: string;
 
-  @IsNotEmpty()
+  @Field((type) => [String])
   imageUrlList?: [string];
 
-  @IsNotEmpty()
+  @Field()
   warranteeYear?: number;
 
-  @IsNotEmpty()
+  @Field()
   originPrice?: number;
 
-  @IsNotEmpty()
+  @Field()
   salePercent?: number;
 
-  @IsNotEmpty()
+  @Field()
   description?: string;
 
-  @IsNotEmpty()
+  @Field()
   brand?: string;
 
-  @IsNotEmpty()
+  @Field()
   generateCpu?: string;
 
-  @IsNotEmpty()
+  @Field()
   cpu?: string;
 
-  @IsNotEmpty()
+  @Field()
   seriesCpu?: string;
 
-  @IsNotEmpty()
+  @Field()
   chip?: string;
 
-  @IsNotEmpty()
+  @Field()
   ramName?: string;
 
-  @IsNotEmpty()
+  @Field()
   ramSize?: number;
 
-  @IsNotEmpty()
+  @Field()
   screen?: string;
 
-  @IsNotEmpty()
+  @Field()
   storageName?: string;
 
-  @IsNotEmpty()
+  @Field()
   storageSize?: number;
 
-  @IsNotEmpty()
+  @Field()
   storagePortName?: string;
 
-  @IsNotEmpty()
+  @Field()
   storagePortNum?: number;
 
-  @IsNotEmpty()
+  @Field()
   storagePortMaximum?: number;
 
-  @IsNotEmpty()
+  @Field()
   supportM2slotType?: string;
 
-  @IsNotEmpty()
+  @Field()
   screenOutputPortName?: string;
 
-  @IsNotEmpty()
+  @Field()
   screenOutputPortNum?: number;
 
-  @IsNotEmpty()
+  @Field()
   bluetooth?: string;
 
-  @IsNotEmpty()
+  @Field()
   keyboard?: string;
 
-  @IsNotEmpty()
+  @Field()
   operationSystem?: string;
 
-  @IsNotEmpty()
+  @Field()
   size?: string;
 
-  @IsNotEmpty()
+  @Field()
   pin?: number;
 
-  @IsNotEmpty()
+  @Field()
   weight?: number;
 
-  @IsNotEmpty()
+  @Field()
   seriesLaptop?: string;
 
-  @IsNotEmpty()
+  @Field()
   partNumber?: string;
 
-  @IsNotEmpty()
+  @Field()
   color?: string;
 
-  @IsNotEmpty()
+  @Field()
   accessoriesIncluded?: string;
 
-  @IsNotEmpty()
+  @Field()
   led?: boolean;
 
-  @IsNotEmpty()
+  @Field()
   touchScreen?: boolean;
 
-  @IsNotEmpty()
+  @Field()
   soldNum?: number;
 }

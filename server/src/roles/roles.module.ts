@@ -2,13 +2,37 @@ import { Module } from '@nestjs/common';
 import { RolesService } from './roles.service';
 import { RolesResolver } from './roles.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RoleSchema } from 'src/schemas/role.schema';
 import { RolesRepository } from './roles.repo';
-import { UsersModule } from 'src/users/users.module';
+import { Role, RoleSchema } from '@/schemas/role.schema';
+import { UsersModule } from '@/users/users.module';
+import { FeaturesModule } from '@/features/features.module';
+import { FeaturesRepository } from '@/features/features.repo';
+import { RoleAndFeatureRepository } from '@/features/role-and-feature.repo';
+import {
+  RoleAndFeature,
+  RoleAndFeatureSchema,
+} from '@/schemas/role-and-feature.schema';
+import { Feature, FeatureSchema } from '@/schemas/feature.schema';
+import { RoleAndFeatureService } from '@/features/role-and-feature.service';
 
 @Module({
-  imports: [MongooseModule.forFeature([{ name: "roles", schema: RoleSchema }]), UsersModule],
-  providers: [RolesService, RolesResolver, RolesRepository],
-  exports: [RolesService]
+  imports: [
+    MongooseModule.forFeature([
+      { name: Role.name, schema: RoleSchema },
+      { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
+      { name: Feature.name, schema: FeatureSchema },
+    ]),
+    UsersModule,
+    FeaturesModule,
+  ],
+  providers: [
+    RolesService,
+    RolesResolver,
+    RolesRepository,
+    FeaturesRepository,
+    RoleAndFeatureRepository,
+    RoleAndFeatureService,
+  ],
+  exports: [RolesService],
 })
 export class RolesModule {}

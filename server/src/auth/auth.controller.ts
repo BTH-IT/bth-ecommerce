@@ -1,13 +1,19 @@
 import { AuthGuard } from '@nestjs/passport';
-import { Controller, Post, Req, Res, Get, Body, UseGuards, HttpStatus } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Req,
+  Res,
+  Get,
+  Body,
+  UseGuards,
+} from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { LoginDto } from 'src/dto/auth.dto';
+import { LoginDto } from '@/dto/auth.dto';
 
 @Controller('auth')
 export class AuthController {
-  constructor(
-    private authService: AuthService,
-  ){}
+  constructor(private authService: AuthService) {}
 
   @Post('login')
   async login(@Body() data: LoginDto) {
@@ -37,17 +43,16 @@ export class AuthController {
     return this.authService.getProfile(req.user);
   }
 
-  @Get("google")
+  @Get('google')
   @UseGuards(AuthGuard('google'))
   async googleAuth(@Req() req: Request) {
+    console.log('object');
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
     const user = await this.authService.loginWithGoogle(req);
-    return res.redirect(
-      "https://www.facebook.com/BTH312003",
-    );
+    return res.redirect('https://www.facebook.com/BTH312003');
   }
 }

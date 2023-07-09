@@ -2,6 +2,10 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+input CreateNewFeatureInput {
+  name: String!
+}
+
 input CreateNewProductInput {
   accessoriesIncluded: String!
   bluetooth: String!
@@ -50,21 +54,30 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-type Mutation {
-  createNewProduct(createNewProduct: CreateNewProductInput!): ProductModel!
-  createNewRole(access_token: String!, createNewRole: CreateNewRoleInput!): RoleModel!
-  updateNewProduct(updateNewProduct: UpdateNewProductInput!): ProductModel!
+type Feature {
+  _id: String!
+  createdAt: DateTime!
+  isActive: Boolean!
+  name: String!
+  updatedAt: DateTime!
 }
 
-type ProductModel {
-  _id: ID
+type Mutation {
+  createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
+  createNewProduct(createNewProduct: CreateNewProductInput!): Product!
+  createNewRole(createNewRole: CreateNewRoleInput!): Role!
+  updateNewProduct(updateNewProduct: UpdateNewProductInput!): Product!
+}
+
+type Product {
+  _id: String!
   accessoriesIncluded: String!
   bluetooth: String!
   brand: String!
   chip: String!
   color: String!
   cpu: String!
-  createdAt: DateTime
+  createdAt: DateTime!
   description: String!
   generateCpu: String!
   imageUrlList: [String!]!
@@ -92,24 +105,32 @@ type ProductModel {
   storageSize: Float!
   supportM2slotType: String!
   touchScreen: Boolean!
-  updatedAt: DateTime
+  updatedAt: DateTime!
   warranteeYear: Float!
   weight: Float!
 }
 
 type Query {
-  getAllProducts: [ProductModel!]!
-  getAllRoles(access_token: String!): [RoleModel!]!
+  getAllFeatures: [Feature!]!
+  getAllProducts: [Product!]!
+  getAllRoles: [Role!]!
+  getRole(id: String!): Role!
 }
 
-type RoleModel {
-  _id: ID
-  actions: [String!]!
-  createdAt: DateTime
+type Role {
+  _id: String!
+  createdAt: DateTime!
   description: String!
+  features: [RoleAndFeature!]!
   isActive: Boolean!
   name: String!
-  updatedAt: DateTime
+  updatedAt: DateTime!
+}
+
+type RoleAndFeature {
+  actions: [String!]!
+  feature: Feature!
+  role: Role!
 }
 
 input UpdateNewProductInput {

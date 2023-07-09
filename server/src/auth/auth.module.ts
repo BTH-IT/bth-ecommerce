@@ -1,13 +1,12 @@
 import { Module } from '@nestjs/common';
 import { AuthService } from './auth.service';
-import { UsersModule } from 'src/users/users.module';
 import { PassportModule } from '@nestjs/passport';
 import { GoogleStrategy } from './google.strategy';
 import { AuthController } from './auth.controller';
 import { JwtModule, JwtService } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { RolesModule } from 'src/roles/roles.module';
+import { UsersModule } from '@/users/users.module';
 
 @Module({
   imports: [
@@ -25,6 +24,6 @@ import { RolesModule } from 'src/roles/roles.module';
     }),
   ],
   providers: [AuthService, GoogleStrategy, JwtService, JwtStrategy],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
 export class AuthModule {}

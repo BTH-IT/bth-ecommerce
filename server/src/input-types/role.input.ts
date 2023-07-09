@@ -3,8 +3,8 @@ import { Field, InputType, ObjectType } from '@nestjs/graphql';
 @InputType()
 export class CreateNewRoleInput {
   @Field()
-  name: String;
+  name: string;
 
-  @Field({nullable: true})
-  description: String;
+  @Field({ nullable: true })
+  description: string;
 }

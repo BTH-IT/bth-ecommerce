@@ -1,15 +1,15 @@
 import { BaseRepository } from '@/base.repository';
-import { Role } from '@/schemas/role.schema';
+import { Feature } from '@/schemas/feature.schema';
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
 @Injectable()
-export class RolesRepository extends BaseRepository<Role> {
+export class FeaturesRepository extends BaseRepository<Feature> {
   constructor(
-    @InjectModel(Role.name)
-    private readonly roleModel: Model<Role>,
+    @InjectModel(Feature.name)
+    private readonly featureModel: Model<Feature>,
   ) {
-    super(roleModel);
+    super(featureModel);
   }
 }

@@ -1,7 +1,10 @@
-import { CreateNewProductDto, UpdateNewProductDto } from '../../dto/product.dto';
-import { Product } from '../../interfaces/product.interface';
+import {
+  CreateNewProductDto,
+  UpdateNewProductDto,
+} from '../../dto/product.dto';
 import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from '../repositories/products.repo';
+import { Product } from '@/schemas/product.schema';
 
 @Injectable()
 export class ProductsService {
@@ -16,8 +19,13 @@ export class ProductsService {
     return newProduct;
   }
 
-  async updateNewProduct(product: UpdateNewProductDto): Promise<Product> {
-    const newProduct = await this.productsRepository.findByIdAndUpdate(product._id, product);
+  async updateNewProduct(
+    product: UpdateNewProductDto,
+  ): Promise<Product | null> {
+    const newProduct = await this.productsRepository.findByIdAndUpdate(
+      product._id,
+      product,
+    );
     return newProduct;
   }
 }
