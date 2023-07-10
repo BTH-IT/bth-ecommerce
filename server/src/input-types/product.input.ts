@@ -104,19 +104,19 @@ export class CreateNewProductInput {
   @Field()
   touchScreen: boolean;
 
-  @Field()
+  @Field({ defaultValue: 0 })
   soldNum: number;
 }
 
 @InputType()
-export class UpdateNewProductInput {
+export class UpdateProductInput {
   @Field()
   _id: string;
 
   @Field()
   productName?: string;
 
-  @Field((type) => [String])
+  @Field(() => [String])
   imageUrlList?: [string];
 
   @Field()
@@ -217,4 +217,10 @@ export class UpdateNewProductInput {
 
   @Field()
   soldNum?: number;
+}
+
+@InputType()
+export class DeleteProductInput {
+  @Field()
+  _id: string;
 }

@@ -14,7 +14,7 @@ export class RoleAndFeature {
   @Field(() => Role)
   role: Role;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: Feature.name })
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Feature' })
   @Field(() => Feature)
   feature: Feature;
 

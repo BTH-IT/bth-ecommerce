@@ -8,12 +8,15 @@ export class CreateNewProductDto {
   imageUrlList: [string];
 
   @IsNotEmpty()
+  @IsPositive()
   warranteeYear: number;
 
   @IsNotEmpty()
+  @IsPositive()
   originPrice: number;
 
   @IsNotEmpty()
+  @IsPositive()
   salePercent: number;
 
   @IsNotEmpty()
@@ -38,6 +41,7 @@ export class CreateNewProductDto {
   ramName: string;
 
   @IsNotEmpty()
+  @IsPositive()
   ramSize: number;
 
   @IsNotEmpty()
@@ -47,15 +51,18 @@ export class CreateNewProductDto {
   storageName: string;
 
   @IsNotEmpty()
+  @IsPositive()
   storageSize: number;
 
   @IsNotEmpty()
   storagePortName: string;
 
   @IsNotEmpty()
+  @IsPositive()
   storagePortNum: number;
 
   @IsNotEmpty()
+  @IsPositive()
   storagePortMaximum: number;
 
   @IsNotEmpty()
@@ -65,6 +72,7 @@ export class CreateNewProductDto {
   screenOutputPortName: string;
 
   @IsNotEmpty()
+  @IsPositive()
   screenOutputPortNum: number;
 
   @IsNotEmpty()
@@ -80,15 +88,18 @@ export class CreateNewProductDto {
   size: string;
 
   @IsNotEmpty()
+  @IsPositive()
   pin: number;
 
   @IsNotEmpty()
+  @IsPositive()
   weight: number;
 
   @IsNotEmpty()
   seriesLaptop: string;
 
   @IsNotEmpty()
+  @IsPositive()
   partNumber: string;
 
   @IsNotEmpty()
@@ -104,10 +115,11 @@ export class CreateNewProductDto {
   touchScreen: boolean;
 
   @IsNotEmpty()
+  @IsPositive()
   soldNum: number;
 }
 
-export class UpdateNewProductDto {
+export class UpdateProductDto {
   @IsNotEmpty()
   _id: string;
 
@@ -118,12 +130,15 @@ export class UpdateNewProductDto {
   imageUrlList?: [string];
 
   @IsNotEmpty()
+  @IsPositive()
   warranteeYear?: number;
 
   @IsNotEmpty()
+  @IsPositive()
   originPrice?: number;
 
   @IsNotEmpty()
+  @IsPositive()
   salePercent?: number;
 
   @IsNotEmpty()
@@ -148,6 +163,7 @@ export class UpdateNewProductDto {
   ramName?: string;
 
   @IsNotEmpty()
+  @IsPositive()
   ramSize?: number;
 
   @IsNotEmpty()
@@ -157,15 +173,18 @@ export class UpdateNewProductDto {
   storageName?: string;
 
   @IsNotEmpty()
+  @IsPositive()
   storageSize?: number;
 
   @IsNotEmpty()
   storagePortName?: string;
 
   @IsNotEmpty()
+  @IsPositive()
   storagePortNum?: number;
 
   @IsNotEmpty()
+  @IsPositive()
   storagePortMaximum?: number;
 
   @IsNotEmpty()
@@ -175,6 +194,7 @@ export class UpdateNewProductDto {
   screenOutputPortName?: string;
 
   @IsNotEmpty()
+  @IsPositive()
   screenOutputPortNum?: number;
 
   @IsNotEmpty()
@@ -190,9 +210,11 @@ export class UpdateNewProductDto {
   size?: string;
 
   @IsNotEmpty()
+  @IsPositive()
   pin?: number;
 
   @IsNotEmpty()
+  @IsPositive()
   weight?: number;
 
   @IsNotEmpty()
@@ -214,5 +236,11 @@ export class UpdateNewProductDto {
   touchScreen?: boolean;
 
   @IsNotEmpty()
+  @IsPositive()
   soldNum?: number;
+}
+
+export class DeleteProductDto {
+  @IsNotEmpty()
+  _id: string;
 }

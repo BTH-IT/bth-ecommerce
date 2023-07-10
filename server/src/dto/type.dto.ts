@@ -1,16 +1,14 @@
 import { IsNotEmpty } from 'class-validator';
 
-export class CreateNewRoleDto {
+export class CreateNewTypeDto {
   @IsNotEmpty() name: string;
-  description?: string;
 }
 
-export class UpdateRoleDto {
+export class UpdateTypeDto {
   @IsNotEmpty() _id: string;
   @IsNotEmpty() name?: string;
-  description?: string;
 }
 
-export class DeleteRoleDto {
+export class DeleteTypeDto {
   @IsNotEmpty() _id: string;
 }

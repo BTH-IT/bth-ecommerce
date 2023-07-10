@@ -2,6 +2,41 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
+type Account {
+  _id: String!
+  createdAt: DateTime!
+  email: String!
+  isActive: Boolean!
+  password: String!
+  picture: String!
+  role: Role!
+  type: String!
+  updatedAt: DateTime!
+}
+
+type Brand {
+  _id: String!
+  createdAt: DateTime!
+  iconUrl: String!
+  isActive: Boolean!
+  name: String!
+  thumbUrl: String!
+  updatedAt: DateTime!
+}
+
+input CreateNewAccountInput {
+  email: String!
+  password: String!
+  role: String!
+  type: String! = "default"
+}
+
+input CreateNewBrandInput {
+  iconUrl: String!
+  name: String!
+  thumbUrl: String!
+}
+
 input CreateNewFeatureInput {
   name: String!
 }
@@ -32,7 +67,7 @@ input CreateNewProductInput {
   seriesCpu: String!
   seriesLaptop: String!
   size: String!
-  soldNum: Float!
+  soldNum: Float! = 0
   storageName: String!
   storagePortMaximum: Float!
   storagePortName: String!
@@ -49,16 +84,68 @@ input CreateNewRoleInput {
   name: String!
 }
 
+input CreateNewSupplierInput {
+  address: String!
+  name: String!
+  phoneNum: String!
+}
+
+input CreateNewTypeInput {
+  name: String!
+}
+
+input CreateNewUserInput {
+  account: String
+  age: Float!
+  fullname: String!
+  gender: String!
+  type: String!
+}
+
+input CreateNewWarrantyInput {
+  product: String!
+  productDetail: String!
+  warrantyYear: Float!
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
 scalar DateTime
 
+input DeleteAccountInput {
+  _id: ID!
+}
+
+input DeleteBrandInput {
+  _id: ID!
+}
+
 input DeleteFeatureInput {
   _id: ID!
 }
 
+input DeleteProductInput {
+  _id: String!
+}
+
 input DeleteRoleInput {
+  _id: ID!
+}
+
+input DeleteSupplierInput {
+  _id: ID!
+}
+
+input DeleteTypeInput {
+  _id: ID!
+}
+
+input DeleteUserInput {
+  _id: ID!
+}
+
+input DeleteWarrantyInput {
   _id: ID!
 }
 
@@ -71,21 +158,40 @@ type Feature {
 }
 
 type Mutation {
+  createNewAccount(createNewAccount: CreateNewAccountInput!): Account!
+  createNewBrand(createNewBrand: CreateNewBrandInput!): Brand!
   createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
   createNewProduct(createNewProduct: CreateNewProductInput!): Product!
   createNewRole(createNewRole: CreateNewRoleInput!): Role!
+  createNewSupplier(createNewSupplier: CreateNewSupplierInput!): Supplier!
+  createNewType(createNewType: CreateNewTypeInput!): Type!
+  createNewUser(createNewUser: CreateNewUserInput!): User!
+  createNewWarranty(createNewWarranty: CreateNewWarrantyInput!): Warranty!
+  deleteAccount(deleteAccount: DeleteAccountInput!): Account!
+  deleteBrand(deleteBrand: DeleteBrandInput!): Brand!
   deleteFeature(deleteFeature: DeleteFeatureInput!): Feature!
+  deleteProduct(deleteProduct: DeleteProductInput!): Product!
   deleteRole(deleteRole: DeleteRoleInput!): Role!
+  deleteSupplier(deleteSupplier: DeleteSupplierInput!): Supplier!
+  deleteType(deleteType: DeleteTypeInput!): Type!
+  deleteUser(deleteUser: DeleteUserInput!): User!
+  deleteWarranty(deleteWarranty: DeleteWarrantyInput!): Warranty!
+  updateAccount(updateAccount: UpdateAccountInput!): Account!
+  updateBrand(updateBrand: UpdateBrandInput!): Brand!
   updateFeature(updateFeature: UpdateFeatureInput!): Feature!
-  updateNewProduct(updateNewProduct: UpdateNewProductInput!): Product!
+  updateProduct(updateProduct: UpdateProductInput!): Product!
   updateRole(updateRole: UpdateRoleInput!): Role!
+  updateSupplier(updateSupplier: UpdateSupplierInput!): Supplier!
+  updateType(updateType: UpdateTypeInput!): Type!
+  updateUser(updateUser: UpdateUserInput!): User!
+  updateWarranty(updateWarranty: UpdateWarrantyInput!): Warranty!
 }
 
 type Product {
   _id: String!
   accessoriesIncluded: String!
   bluetooth: String!
-  brand: String!
+  brand: Brand!
   chip: String!
   color: String!
   cpu: String!
@@ -93,6 +199,7 @@ type Product {
   description: String!
   generateCpu: String!
   imageUrlList: [String!]!
+  isHidden: Boolean!
   keyboard: String!
   led: Boolean!
   operationSystem: String!
@@ -102,6 +209,7 @@ type Product {
   productName: String!
   ramName: String!
   ramSize: Float!
+  remain: Float!
   salePercent: Float!
   screen: String!
   screenOutputPortName: String!
@@ -123,11 +231,24 @@ type Product {
 }
 
 type Query {
+  getAccount(id: String!): Account!
+  getAllAccounts: [Account!]!
+  getAllBrands: [Brand!]!
   getAllFeatures: [Feature!]!
   getAllProducts: [Product!]!
   getAllRoles: [Role!]!
+  getAllSuppliers: [Supplier!]!
+  getAllTypes: [Type!]!
+  getAllUsers: [User!]!
+  getAllWarranties: [Warranty!]!
+  getBrand(id: String!): Brand!
   getFeature(id: String!): Feature!
+  getProduct(id: String!): Product!
   getRole(id: String!): Role!
+  getSupplier(id: String!): Supplier!
+  getType(id: String!): Type!
+  getUser(id: String!): User!
+  getWarranty(id: String!): Warranty!
 }
 
 type Role {
@@ -147,12 +268,44 @@ type RoleAndFeature {
   role: Role!
 }
 
+type Supplier {
+  _id: String!
+  address: String!
+  createdAt: DateTime!
+  isActive: Boolean!
+  name: String!
+  phoneNum: String!
+  updatedAt: DateTime!
+}
+
+type Type {
+  _id: String!
+  createdAt: DateTime!
+  isActive: Boolean!
+  name: String!
+  updatedAt: DateTime!
+}
+
+input UpdateAccountInput {
+  _id: ID!
+  email: String!
+  password: String!
+  role: String!
+}
+
+input UpdateBrandInput {
+  _id: ID!
+  iconUrl: String!
+  name: String!
+  thumbUrl: String!
+}
+
 input UpdateFeatureInput {
   _id: ID!
   name: String!
 }
 
-input UpdateNewProductInput {
+input UpdateProductInput {
   _id: String!
   accessoriesIncluded: String!
   bluetooth: String!
@@ -195,4 +348,53 @@ input UpdateRoleInput {
   _id: ID!
   description: String
   name: String!
+}
+
+input UpdateSupplierInput {
+  _id: ID!
+  address: String!
+  name: String!
+  phoneNum: String!
+}
+
+input UpdateTypeInput {
+  _id: ID!
+  name: String!
+}
+
+input UpdateUserInput {
+  _id: ID!
+  account: String
+  age: Float!
+  fullname: String!
+  gender: String!
+  type: String!
+}
+
+input UpdateWarrantyInput {
+  _id: ID!
+  product: String!
+  productDetail: String!
+  warrantyYear: Float!
+}
+
+type User {
+  _id: String!
+  account: Account!
+  age: Float!
+  createdAt: DateTime!
+  fullname: String!
+  gender: String!
+  isActive: Boolean!
+  type: Type!
+  updatedAt: DateTime!
+}
+
+type Warranty {
+  _id: String!
+  createdAt: DateTime!
+  product: Product!
+  productDetail: String!
+  updatedAt: DateTime!
+  warrantyYear: Float!
 }

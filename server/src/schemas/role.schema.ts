@@ -17,7 +17,7 @@ export class Role extends BaseSchema {
   @Field({ defaultValue: '' })
   description: string;
 
-  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: RoleAndFeature.name })
+  @Prop({ type: [MongooseSchema.Types.ObjectId], ref: 'RoleAndFeature' })
   @Field(() => [RoleAndFeature])
   features: [RoleAndFeature];
 

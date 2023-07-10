@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repo';
 import { User } from '@/schemas/user.schema';
+import { CreateNewUserDto, DeleteUserDto, UpdateUserDto } from '@/dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -10,18 +11,22 @@ export class UsersService {
     return this.usersRepository.findByCondition({ email });
   }
 
-  async findOneWithCondition(
-    email: string,
-    type: string,
-  ): Promise<User | null> {
-    return this.usersRepository.findByCondition({ email, type });
+  async findAll(): Promise<User[]> {
+    return this.usersRepository.getByCondition({ isActive: true });
   }
 
-  async saveUser(user: any): Promise<User> {
+  async createNewUser(user: CreateNewUserDto): Promise<User> {
     return this.usersRepository.create(user);
   }
 
-  async update(filter: any, update: any): Promise<User | null> {
-    return this.usersRepository.findByConditionAndUpdate(filter, update);
+  async updateUser(data: UpdateUserDto): Promise<User | null> {
+    const { _id, ...user } = data;
+    return this.usersRepository.findByIdAndUpdate(_id, user);
+  }
+
+  async deleteUser(data: DeleteUserDto): Promise<User | null> {
+    return this.usersRepository.findByIdAndUpdate(data._id, {
+      isActive: false,
+    });
   }
 }

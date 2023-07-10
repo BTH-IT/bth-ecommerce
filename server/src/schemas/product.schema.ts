@@ -1,9 +1,11 @@
 import { Field, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from './base.schema';
+import { Brand } from './brand.schema';
+import { Schema as MongooseSchema } from 'mongoose';
 
 @Schema({
-  timestamps: false,
+  timestamps: true,
 })
 @ObjectType()
 export class Product extends BaseSchema {
@@ -23,17 +25,17 @@ export class Product extends BaseSchema {
   @Field()
   originPrice: number;
 
-  @Prop()
-  @Field()
+  @Prop({ default: 0 })
+  @Field({ defaultValue: 0 })
   salePercent: number;
 
-  @Prop()
-  @Field()
+  @Prop({ default: '' })
+  @Field({ defaultValue: '' })
   description: string;
 
-  @Prop()
-  @Field()
-  brand: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Brand' })
+  @Field(() => Brand)
+  brand: Brand;
 
   @Prop()
   @Field()
@@ -143,9 +145,16 @@ export class Product extends BaseSchema {
   @Field()
   touchScreen: boolean;
 
-  @Prop()
-  @Field()
+  @Prop({ default: 0 })
+  @Field({ defaultValue: 0 })
   soldNum: number;
+
+  @Prop({ default: true })
+  @Field({ defaultValue: true })
+  isHidden: boolean;
+
+  @Field({ defaultValue: 0 })
+  remain: number;
 }
 export type ProductDocument = Product & Document;
 export const ProductSchema = SchemaFactory.createForClass(Product);

@@ -7,7 +7,7 @@ import {
   UpdateFeatureInput,
 } from '@/input-types/feature.input';
 
-@Resolver()
+@Resolver(() => Feature)
 export class FeaturesResolver {
   constructor(private readonly featuresService: FeaturesService) {}
 

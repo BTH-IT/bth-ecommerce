@@ -2,32 +2,37 @@ import { Field, ObjectType } from '@nestjs/graphql';
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from './base.schema';
 import { Schema as MongooseSchema } from 'mongoose';
-import { Role } from './role.schema';
+import { Account } from './account.schema';
+import { Type } from './type.schema';
 
 @Schema({
-  timestamps: false,
+  timestamps: true,
 })
 @ObjectType()
 export class User extends BaseSchema {
   @Prop()
   @Field()
-  email: string;
+  fullname: string;
 
   @Prop()
   @Field()
-  password: string;
+  gender: string;
 
   @Prop()
   @Field()
-  picture: string;
+  age: number;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Role' })
-  @Field()
-  role: Role;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Account' })
+  @Field({ nullable: true })
+  account: Account;
 
-  @Prop()
-  @Field()
-  type: string;
+  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Type' })
+  @Field(() => Type)
+  type: Type;
+
+  @Prop({ default: true })
+  @Field({ defaultValue: true })
+  isActive: boolean;
 }
 export type UserDocument = User & Document;
 export const UserSchema = SchemaFactory.createForClass(User);

@@ -1,7 +1,6 @@
 import { MongooseModule } from '@nestjs/mongoose';
 import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
 import { ProductsModule } from './products/products.module';
 import { GraphQLModule } from '@nestjs/graphql';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
@@ -10,6 +9,11 @@ import { UsersModule } from './users/users.module';
 import { AuthModule } from './auth/auth.module';
 import { RolesModule } from './roles/roles.module';
 import { FeaturesModule } from './features/features.module';
+import { BrandsModule } from './brands/brands.module';
+import { SuppliersModule } from './suppliers/suppliers.module';
+import { TypesModule } from 'types.module';
+import { WarrantiesResolver } from './warranties/warranties.resolver';
+import { WarrantiesModule } from './warranties/warranties.module';
 
 @Module({
   imports: [
@@ -25,7 +29,10 @@ import { FeaturesModule } from './features/features.module';
     AuthModule,
     RolesModule,
     FeaturesModule,
+    BrandsModule,
+    SuppliersModule,
+    TypesModule,
+    WarrantiesModule,
   ],
-  controllers: [AppController],
 })
 export class AppModule {}

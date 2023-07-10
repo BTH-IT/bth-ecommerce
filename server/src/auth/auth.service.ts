@@ -1,46 +1,46 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
-import { UsersService } from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
 import { LoginDto } from '@/dto/auth.dto';
-import { User } from '@/schemas/user.schema';
+import { AccountsService } from '@/accounts/accounts.service';
+import { Account } from '@/schemas/account.schema';
 
 @Injectable()
 export class AuthService {
   constructor(
-    private usersService: UsersService,
+    private accountsService: AccountsService,
     private jwtService: JwtService,
   ) {}
 
-  async validateUser(email: string) {
-    const user = await this.usersService.findOne(email);
+  async validateAccount(email: string) {
+    const account = await this.accountsService.findOne(email);
 
-    if (!user) {
+    if (!account) {
       throw new HttpException('Invalid token', HttpStatus.UNAUTHORIZED);
     }
 
-    const { ...usr }: any = user;
-    const { password, ...newUser } = usr._doc;
+    const { ...acc }: any = account;
+    const { password, ...newAccount } = acc._doc;
 
-    return newUser;
+    return newAccount;
   }
 
   async login(loginInput: LoginDto) {
-    const user = await this.usersService.findOneWithCondition(
+    const Account = await this.accountsService.findOneWithCondition(
       loginInput.email,
       'default',
     );
 
-    if (!user) {
+    if (!Account) {
       throw new HttpException('Email not found', HttpStatus.UNAUTHORIZED);
     }
 
-    const { ...usr }: any = user;
-    const { password, ...newUser } = usr._doc;
+    const { ...acc }: any = Account;
+    const { password, ...newAccount } = acc._doc;
 
     const isVerified = bcrypt.compareSync(
       loginInput.password as string,
-      user.password as string,
+      Account.password as string,
     );
 
     if (!isVerified) {
@@ -50,43 +50,45 @@ export class AuthService {
       );
     }
 
-    const refreshToken = this.jwtService.sign(newUser, {
+    const refreshToken = this.jwtService.sign(newAccount, {
       secret: process.env.SECRETKEY,
       expiresIn: process.env.EXPIRESIN_REFRESHTOKEN,
     });
 
-    const accessToken = this.jwtService.sign(newUser, {
+    const accessToken = this.jwtService.sign(newAccount, {
       secret: process.env.SECRETKEY,
       expiresIn: process.env.EXPIRESIN,
     });
 
     return {
-      newUser,
+      newAccount,
       accessToken,
       refreshToken,
     };
   }
 
   async loginWithGoogle(req: any) {
-    if (!req.user) {
-      return new HttpException('No user login', HttpStatus.UNAUTHORIZED);
+    if (!req.account) {
+      return new HttpException('No Account login', HttpStatus.UNAUTHORIZED);
     }
-    let user = await this.usersService.findOneWithCondition(
-      req.user.email,
+    let account = await this.accountsService.findOneWithCondition(
+      req.account.email,
       'google',
     );
 
-    if (!user) {
-      req.user.password = req.user.email;
-      req.user.role = '64a97d2c55cfadfc9822f74a';
-      req.user.type = 'google';
-      user = await this.usersService.saveUser(req.user);
+    if (!account) {
+      req.account.password = bcrypt.hashSync(
+        req.account.email.reverse() + req.account.email,
+        10,
+      );
+      req.account.type = 'google';
+      account = await this.accountsService.createNewAccount(req.account);
     }
 
-    const { ...usr }: any = user;
-    const { password, ...newUser } = usr._doc;
+    const { ...acc }: any = account;
+    const { password, ...newAccount } = acc._doc;
 
-    return newUser;
+    return newAccount;
   }
 
   async register(data: LoginDto) {
@@ -94,7 +96,7 @@ export class AuthService {
 
     const { email, password } = data;
 
-    const isExisted = await this.usersService.findOneWithCondition(
+    const isExisted = await this.accountsService.findOneWithCondition(
       email,
       'default',
     );
@@ -107,32 +109,29 @@ export class AuthService {
 
     const passwordHash = bcrypt.hashSync(password, 10);
 
-    const user = await this.usersService.saveUser({
+    const Account = await this.accountsService.createNewAccount({
       email,
       password: passwordHash,
-      picture: process.env.PICTURE_DEFAULT,
-      type: 'default',
-      role: '64aa78bc13a3a014626f4234',
     });
 
-    const { ...usr }: any = user;
-    const { password: pwd, ...newUser } = usr._doc;
+    const { ...acc }: any = Account;
+    const { password: pwd, ...newAccount } = acc._doc;
 
-    return newUser;
+    return newAccount;
   }
 
-  async logout(data: User) {
+  async logout(data: Account) {
     if (!data) throw new HttpException('No data', HttpStatus.BAD_REQUEST);
 
     throw new HttpException('Logout successfully!', HttpStatus.OK);
   }
 
-  async refreshToken(data: User) {
+  async refreshToken(data: Account) {
     if (!data) throw new HttpException('No data', HttpStatus.BAD_REQUEST);
 
-    const user = await this.validateUser(data.email);
+    const account = await this.validateAccount(data.email);
 
-    const accessToken = this.jwtService.sign(user, {
+    const accessToken = this.jwtService.sign(account, {
       secret: process.env.SECRETKEY,
       expiresIn: process.env.EXPIRESIN,
     });
@@ -140,11 +139,11 @@ export class AuthService {
     return { accessToken };
   }
 
-  async getProfile(data: User) {
+  async getProfile(data: Account) {
     if (!data) throw new HttpException('No data', HttpStatus.BAD_REQUEST);
 
-    const user = await this.validateUser(data.email);
+    const Account = await this.validateAccount(data.email);
 
-    return user;
+    return Account;
   }
 }

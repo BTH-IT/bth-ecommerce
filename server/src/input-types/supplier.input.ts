@@ -1,28 +1,34 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class CreateNewRoleInput {
+export class CreateNewSupplierInput {
   @Field()
   name: string;
 
-  @Field({ nullable: true })
-  description?: string;
+  @Field()
+  phoneNum: string;
+
+  @Field()
+  address: string;
 }
 
 @InputType()
-export class UpdateRoleInput {
+export class UpdateSupplierInput {
   @Field(() => ID)
   _id: string;
 
   @Field()
   name?: string;
 
-  @Field({ nullable: true })
-  description?: string;
+  @Field()
+  phoneNum?: string;
+
+  @Field()
+  address?: string;
 }
 
 @InputType()
-export class DeleteRoleInput {
+export class DeleteSupplierInput {
   @Field(() => ID)
   _id: string;
 }
