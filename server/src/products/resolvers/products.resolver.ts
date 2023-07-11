@@ -13,7 +13,7 @@ import {
 } from '@/input-types/product.input';
 import { DeleteProductGuard } from '../guards/delete-product.guard';
 import { Brand } from '@/schemas/brand.schema';
-import { BrandsService } from '@/brands/brands.service';
+import { BrandsService } from '@/brands/services/brands.service';
 
 @Resolver(() => Product)
 export class ProductsResolver {

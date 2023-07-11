@@ -12,6 +12,17 @@ import { ProductDetailsRepository } from '@/products/repositories/product-detail
 import { ProductsService } from '@/products/services/products.service';
 import { Product, ProductSchema } from '@/schemas/product.schema';
 import { ProductsRepository } from '@/products/repositories/products.repo';
+import { Feature, FeatureSchema } from '@/schemas/feature.schema';
+import {
+  RoleAndFeature,
+  RoleAndFeatureSchema,
+} from '@/schemas/role-and-feature.schema';
+import { Role, RoleSchema } from '@/schemas/role.schema';
+import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
+import { FeaturesRepository } from '@/features/repositories/features.repo';
+import { RolesService } from '@/roles/roles.service';
+import { RolesRepository } from '@/roles/roles.repo';
+import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 
 @Module({
   imports: [
@@ -19,6 +30,9 @@ import { ProductsRepository } from '@/products/repositories/products.repo';
       { name: Warranty.name, schema: WarrantySchema },
       { name: ProductDetail.name, schema: ProductDetailSchema },
       { name: Product.name, schema: ProductSchema },
+      { name: Feature.name, schema: FeatureSchema },
+      { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
+      { name: Role.name, schema: RoleSchema },
     ]),
   ],
   providers: [
@@ -28,6 +42,11 @@ import { ProductsRepository } from '@/products/repositories/products.repo';
     ProductDetailsRepository,
     ProductsService,
     ProductsRepository,
+    RoleAndFeatureService,
+    RoleAndFeatureRepository,
+    FeaturesRepository,
+    RolesService,
+    RolesRepository,
   ],
 })
 export class WarrantiesModule {}

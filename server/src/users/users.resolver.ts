@@ -16,7 +16,12 @@ import {
 import { Account } from '@/schemas/account.schema';
 import { Type } from '@/schemas/type.schema';
 import { TypesService } from 'types.service';
-import { AccountsService } from '@/accounts/accounts.service';
+import { AccountsService } from '@/accounts/services/accounts.service';
+import { UseGuards } from '@nestjs/common';
+import { ReadUserGuard } from './guards/read-user.guard';
+import { CreateUserGuard } from './guards/create-user.guard';
+import { UpdateUserGuard } from './guards/update-user.guard';
+import { DeleteUserGuard } from './guards/delete-user.guard';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -27,26 +32,31 @@ export class UsersResolver {
   ) {}
 
   @Query(() => [User])
+  @UseGuards(ReadUserGuard)
   async getAllUsers() {
     return await this.usersService.findAll();
   }
 
   @Query(() => User)
+  @UseGuards(ReadUserGuard)
   async getUser(@Args('id') id: string) {
     return await this.usersService.findOne(id);
   }
 
   @Mutation(() => User)
+  @UseGuards(CreateUserGuard)
   async createNewUser(@Args('createNewUser') data: CreateNewUserInput) {
     return this.usersService.createNewUser(data);
   }
 
   @Mutation(() => User)
+  @UseGuards(UpdateUserGuard)
   async updateUser(@Args('updateUser') data: UpdateUserInput) {
     return this.usersService.updateUser(data);
   }
 
   @Mutation(() => User)
+  @UseGuards(DeleteUserGuard)
   async deleteUser(@Args('deleteUser') data: DeleteUserInput) {
     return this.usersService.deleteUser(data);
   }

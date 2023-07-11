@@ -11,9 +11,9 @@ import {
 } from '@/schemas/product-detail.schema';
 import { ProductDetailsRepository } from './repositories/product-details.repo';
 import { BrandsModule } from '@/brands/brands.module';
-import { RoleAndFeatureService } from '@/features/role-and-feature.service';
-import { RoleAndFeatureRepository } from '@/features/role-and-feature.repo';
-import { FeaturesRepository } from '@/features/features.repo';
+import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
+import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
+import { FeaturesRepository } from '@/features/repositories/features.repo';
 import {
   RoleAndFeature,
   RoleAndFeatureSchema,

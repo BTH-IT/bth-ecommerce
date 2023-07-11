@@ -1,14 +1,18 @@
 import { Module } from '@nestjs/common';
-import { FeaturesService } from './features.service';
-import { FeaturesResolver } from './features.resolver';
+import { FeaturesService } from './services/features.service';
+import { FeaturesResolver } from './resolvers/features.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
-import { FeaturesRepository } from './features.repo';
 import { Feature, FeatureSchema } from '@/schemas/feature.schema';
-import { RoleAndFeatureRepository } from './role-and-feature.repo';
 import {
   RoleAndFeature,
   RoleAndFeatureSchema,
 } from '@/schemas/role-and-feature.schema';
+import { FeaturesRepository } from './repositories/features.repo';
+import { RoleAndFeatureRepository } from './repositories/role-and-feature.repo';
+import { Role, RoleSchema } from '@/schemas/role.schema';
+import { RoleAndFeatureService } from './services/role-and-feature.service';
+import { RolesService } from '@/roles/roles.service';
+import { RolesRepository } from '@/roles/roles.repo';
 
 @Module({
   imports: [
@@ -21,6 +25,7 @@ import {
         name: RoleAndFeature.name,
         schema: RoleAndFeatureSchema,
       },
+      { name: Role.name, schema: RoleSchema },
     ]),
   ],
   providers: [
@@ -28,6 +33,9 @@ import {
     FeaturesResolver,
     FeaturesRepository,
     RoleAndFeatureRepository,
+    RoleAndFeatureService,
+    RolesService,
+    RolesRepository,
   ],
   exports: [FeaturesService],
 })

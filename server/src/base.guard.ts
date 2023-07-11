@@ -2,7 +2,7 @@ import { Injectable, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import * as jwt from 'jsonwebtoken';
 import { RolesService } from './roles/roles.service';
-import { RoleAndFeatureService } from './features/role-and-feature.service';
+import { RoleAndFeatureService } from './features/services/role-and-feature.service';
 
 @Injectable()
 export class BaseRolesGuard {
