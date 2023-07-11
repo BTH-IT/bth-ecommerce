@@ -41,6 +41,19 @@ input CreateNewFeatureInput {
   name: String!
 }
 
+input CreateNewImportOrderInput {
+  employee: String!
+  importedProducts: [String!]!
+  supplier: String!
+}
+
+input CreateNewOrderInput {
+  boughtProducts: [String!]!
+  employee: String!
+  purchaseForm: String!
+  user: String!
+}
+
 input CreateNewProductInput {
   accessoriesIncluded: String!
   bluetooth: String!
@@ -125,6 +138,14 @@ input DeleteFeatureInput {
   _id: ID!
 }
 
+input DeleteImportOrderInput {
+  _id: ID!
+}
+
+input DeleteOrderInput {
+  _id: ID!
+}
+
 input DeleteProductInput {
   _id: String!
 }
@@ -157,10 +178,30 @@ type Feature {
   updatedAt: DateTime!
 }
 
+type ImportOrder {
+  _id: String!
+  createdAt: DateTime!
+  employee: User!
+  importedProducts: [ImportOrderDetail!]!
+  supplier: Supplier!
+  updatedAt: DateTime!
+}
+
+type ImportOrderDetail {
+  _id: String!
+  amount: Float!
+  createdAt: DateTime!
+  importPrice: Float!
+  product: Product!
+  updatedAt: DateTime!
+}
+
 type Mutation {
   createNewAccount(createNewAccount: CreateNewAccountInput!): Account!
   createNewBrand(createNewBrand: CreateNewBrandInput!): Brand!
   createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
+  createNewImportOrder(createNewImportOrder: CreateNewImportOrderInput!): ImportOrder!
+  createNewOrder(createNewOrder: CreateNewOrderInput!): Order!
   createNewProduct(createNewProduct: CreateNewProductInput!): Product!
   createNewRole(createNewRole: CreateNewRoleInput!): Role!
   createNewSupplier(createNewSupplier: CreateNewSupplierInput!): Supplier!
@@ -170,6 +211,8 @@ type Mutation {
   deleteAccount(deleteAccount: DeleteAccountInput!): Account!
   deleteBrand(deleteBrand: DeleteBrandInput!): Brand!
   deleteFeature(deleteFeature: DeleteFeatureInput!): Feature!
+  deleteImportOrder(deleteImportOrder: DeleteImportOrderInput!): ImportOrder!
+  deleteOrder(deleteOrder: DeleteOrderInput!): Order!
   deleteProduct(deleteProduct: DeleteProductInput!): Product!
   deleteRole(deleteRole: DeleteRoleInput!): Role!
   deleteSupplier(deleteSupplier: DeleteSupplierInput!): Supplier!
@@ -179,12 +222,35 @@ type Mutation {
   updateAccount(updateAccount: UpdateAccountInput!): Account!
   updateBrand(updateBrand: UpdateBrandInput!): Brand!
   updateFeature(updateFeature: UpdateFeatureInput!): Feature!
+  updateImportOrder(updateImportOrder: UpdateImportOrderInput!): ImportOrder!
+  updateOrder(updateOrder: UpdateOrderInput!): Order!
   updateProduct(updateProduct: UpdateProductInput!): Product!
   updateRole(updateRole: UpdateRoleInput!): Role!
   updateSupplier(updateSupplier: UpdateSupplierInput!): Supplier!
   updateType(updateType: UpdateTypeInput!): Type!
   updateUser(updateUser: UpdateUserInput!): User!
   updateWarranty(updateWarranty: UpdateWarrantyInput!): Warranty!
+}
+
+type Order {
+  _id: String!
+  boughtProducts: [OrderDetail!]!
+  createdAt: DateTime!
+  edProducts: [OrderDetail!]!
+  employee: User!
+  isHidden: Boolean!
+  purchaseForm: String!
+  updatedAt: DateTime!
+  user: User!
+}
+
+type OrderDetail {
+  _id: String!
+  amount: Float!
+  createdAt: DateTime!
+  price: Float!
+  product: Product!
+  updatedAt: DateTime!
 }
 
 type Product {
@@ -235,6 +301,8 @@ type Query {
   getAllAccounts: [Account!]!
   getAllBrands: [Brand!]!
   getAllFeatures: [Feature!]!
+  getAllImportOrders: [ImportOrder!]!
+  getAllOrders: [Order!]!
   getAllProducts: [Product!]!
   getAllRoles: [Role!]!
   getAllSuppliers: [Supplier!]!
@@ -243,6 +311,8 @@ type Query {
   getAllWarranties: [Warranty!]!
   getBrand(id: String!): Brand!
   getFeature(id: String!): Feature!
+  getImportOrder(id: String!): ImportOrder!
+  getOrder(id: String!): Order!
   getProduct(id: String!): Product!
   getRole(id: String!): Role!
   getSupplier(id: String!): Supplier!
@@ -303,6 +373,21 @@ input UpdateBrandInput {
 input UpdateFeatureInput {
   _id: ID!
   name: String!
+}
+
+input UpdateImportOrderInput {
+  _id: ID!
+  employee: String!
+  importedProducts: [String!]!
+  supplier: String!
+}
+
+input UpdateOrderInput {
+  _id: ID!
+  boughtProducts: [String!]!
+  employee: String!
+  purchaseFrom: String!
+  user: String!
 }
 
 input UpdateProductInput {

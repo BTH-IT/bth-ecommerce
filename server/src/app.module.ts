@@ -12,8 +12,9 @@ import { FeaturesModule } from './features/features.module';
 import { BrandsModule } from './brands/brands.module';
 import { SuppliersModule } from './suppliers/suppliers.module';
 import { TypesModule } from 'types.module';
-import { WarrantiesResolver } from './warranties/warranties.resolver';
 import { WarrantiesModule } from './warranties/warranties.module';
+import { ImportOrdersModule } from './import-orders/import-orders.module';
+import { OrdersModule } from './orders/orders.module';
 
 @Module({
   imports: [
@@ -33,6 +34,8 @@ import { WarrantiesModule } from './warranties/warranties.module';
     SuppliersModule,
     TypesModule,
     WarrantiesModule,
+    ImportOrdersModule,
+    OrdersModule,
   ],
 })
 export class AppModule {}

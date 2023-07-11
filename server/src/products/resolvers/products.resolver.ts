@@ -23,19 +23,18 @@ export class ProductsResolver {
   ) {}
 
   @Query(() => [Product])
-  // @UseGuards(ReadProductGuard)
+  @UseGuards(ReadProductGuard)
   getAllProducts() {
     return this.productsService.findAll();
   }
 
   @Query(() => Product)
-  // @UseGuards(ReadProductGuard)
   getProduct(@Args('id') id: string) {
     return this.productsService.findOne(id);
   }
 
   @Mutation(() => Product)
-  // @UseGuards(CreateProductGuard)
+  @UseGuards(CreateProductGuard)
   async createNewProduct(
     @Args('createNewProduct') data: CreateNewProductInput,
   ) {
@@ -43,13 +42,13 @@ export class ProductsResolver {
   }
 
   @Mutation(() => Product)
-  // @UseGuards(UpdateProductGuard)
+  @UseGuards(UpdateProductGuard)
   async updateProduct(@Args('updateProduct') data: UpdateProductInput) {
     return this.productsService.updateProduct(data);
   }
 
   @Mutation(() => Product)
-  // @UseGuards(DeleteProductGuard)
+  @UseGuards(DeleteProductGuard)
   async deleteProduct(@Args('deleteProduct') data: DeleteProductInput) {
     return this.productsService.deleteProduct(data);
   }

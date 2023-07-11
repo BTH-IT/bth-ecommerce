@@ -11,13 +11,24 @@ import {
 } from '@/schemas/product-detail.schema';
 import { ProductDetailsRepository } from './repositories/product-details.repo';
 import { BrandsModule } from '@/brands/brands.module';
+import { RoleAndFeatureService } from '@/features/role-and-feature.service';
+import { RoleAndFeatureRepository } from '@/features/role-and-feature.repo';
+import { FeaturesRepository } from '@/features/features.repo';
+import {
+  RoleAndFeature,
+  RoleAndFeatureSchema,
+} from '@/schemas/role-and-feature.schema';
+import { Feature, FeatureSchema } from '@/schemas/feature.schema';
 
 @Module({
   imports: [
     BrandsModule,
+    RolesModule,
     MongooseModule.forFeature([
       { name: Product.name, schema: ProductSchema },
       { name: ProductDetail.name, schema: ProductDetailSchema },
+      { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
+      { name: Feature.name, schema: FeatureSchema },
     ]),
   ],
   providers: [
@@ -25,6 +36,9 @@ import { BrandsModule } from '@/brands/brands.module';
     ProductsRepository,
     ProductsResolver,
     ProductDetailsRepository,
+    RoleAndFeatureService,
+    RoleAndFeatureRepository,
+    FeaturesRepository,
   ],
   exports: [ProductsService],
 })

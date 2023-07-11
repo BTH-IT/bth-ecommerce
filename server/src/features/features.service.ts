@@ -7,6 +7,7 @@ import {
   UpdateFeatureDto,
 } from '@/dto/feature.dto';
 import { RoleAndFeatureRepository } from './role-and-feature.repo';
+import { ObjectId } from '@/utils/constains';
 
 @Injectable()
 export class FeaturesService {
@@ -20,7 +21,10 @@ export class FeaturesService {
   }
 
   async findOne(id: string): Promise<Feature | null> {
-    return this.featuresRepository.findByCondition({ _id: id, isActive: true });
+    return this.featuresRepository.findByCondition({
+      _id: new ObjectId(id),
+      isActive: true,
+    });
   }
 
   async updateFeature(feature: UpdateFeatureDto): Promise<Feature | null> {
@@ -38,7 +42,7 @@ export class FeaturesService {
 
   async deleteFeature(feature: DeleteFeatureDto): Promise<Feature | null> {
     await this.roleAndFeatureRepository.findByConditionAndUpdate(
-      { feature: feature._id },
+      { feature: new ObjectId(feature._id) },
       {
         isActive: false,
       },

@@ -1,11 +1,15 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { BaseRolesGuard } from '../../base.guard';
 import { RolesService } from '@/roles/roles.service';
-import { ACTION } from '@/utils/constains';
+import { ACTION, FEATURE } from '@/utils/constains';
+import { RoleAndFeatureService } from '@/features/role-and-feature.service';
 
 @Injectable()
 export class UpdateProductGuard extends BaseRolesGuard implements CanActivate {
-  constructor(private readonly rolesService: RolesService) {
+  constructor(
+    private readonly rolesService: RolesService,
+    private readonly roleAndFeatureService: RoleAndFeatureService,
+  ) {
     super();
   }
 
@@ -14,6 +18,8 @@ export class UpdateProductGuard extends BaseRolesGuard implements CanActivate {
       context,
       ACTION.UPDATE,
       this.rolesService,
+      this.roleAndFeatureService,
+      FEATURE.PRODUCT,
     );
   }
 }

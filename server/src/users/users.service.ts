@@ -7,8 +7,8 @@ import { CreateNewUserDto, DeleteUserDto, UpdateUserDto } from '@/dto/user.dto';
 export class UsersService {
   constructor(private readonly usersRepository: UsersRepository) {}
 
-  async findOne(email: string): Promise<User | null> {
-    return this.usersRepository.findByCondition({ email });
+  async findOne(id: string): Promise<User | null> {
+    return this.usersRepository.findById(id);
   }
 
   async findAll(): Promise<User[]> {

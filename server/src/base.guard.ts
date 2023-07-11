@@ -2,6 +2,7 @@ import { Injectable, ExecutionContext } from '@nestjs/common';
 import { GqlExecutionContext } from '@nestjs/graphql';
 import * as jwt from 'jsonwebtoken';
 import { RolesService } from './roles/roles.service';
+import { RoleAndFeatureService } from './features/role-and-feature.service';
 
 @Injectable()
 export class BaseRolesGuard {
@@ -9,10 +10,12 @@ export class BaseRolesGuard {
     context: ExecutionContext,
     action: string,
     rolesService: RolesService,
+    roleAndFeatureService: RoleAndFeatureService,
+    featureName: string,
   ): Promise<any> {
     const ctx = GqlExecutionContext.create(context).getContext();
 
-    const accessToken = ctx.req.headers.access_token;
+    const accessToken = ctx.req.headers.authorization.split(' ')[1];
 
     const user = JSON.parse(JSON.stringify(jwt.decode(accessToken)));
 
@@ -22,8 +25,18 @@ export class BaseRolesGuard {
 
     user.role = await rolesService.findOne(user.role);
 
-    console.log(user.role);
+    if (!user.role) return false;
 
-    return user.role.isActive && user.role.actions.includes(action);
+    const features = await roleAndFeatureService.findManyByCondition(
+      user.role._id.toString(),
+    );
+
+    const feature = features.find(
+      (f) => f.feature.name.toUpperCase() === featureName,
+    );
+
+    if (!feature) return false;
+
+    return user.role.isActive && feature.actions.includes(action);
   }
 }

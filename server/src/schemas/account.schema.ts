@@ -22,7 +22,11 @@ export class Account extends BaseSchema {
   @Field()
   picture: string;
 
-  @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Role' })
+  @Prop({
+    type: MongooseSchema.Types.ObjectId,
+    ref: 'Role',
+    default: new ObjectId('64aa78bc13a3a014626f4234'),
+  })
   @Field({ defaultValue: new ObjectId('64aa78bc13a3a014626f4234') })
   role: Role;
 
