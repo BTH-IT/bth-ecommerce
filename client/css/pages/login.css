@@ -1,0 +1,35 @@
+@import "../layouts/main-layout.css";
+@import "../components/input.css";
+@import "../layouts/toast.css";
+
+.login-form {
+  width: 100%;
+  background-color: white;
+  border-radius: 12px;
+  box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
+  padding: 40px 20px;
+}
+
+.login-form h1 {
+  text-align: center;
+  font-size: 3rem;
+  margin-bottom: 30px;
+  color: var(--primary);
+  text-transform: uppercase;
+}
+
+.form {
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.btn-login {
+  display: block;
+  margin: 0 auto;
+  max-width: 400px;
+  border-radius: 8px;
+  padding: 10px;
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+

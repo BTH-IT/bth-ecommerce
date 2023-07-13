@@ -1,0 +1,14 @@
+/* FOOTER */
+.footer {
+  color: var(--gray-800);
+  background-color: var(--gray-300);
+  width: 100%;
+}
+
+.footer-container {
+  width: 100%;
+  max-width: 1216px;
+  margin: 100px auto 0 auto;
+  padding: 30px 12px;
+  font-size: 1.2rem;
+}

@@ -1,0 +1,19 @@
+.modal-footer {
+  display: flex;
+  flex-wrap: unset;
+}
+
+.modal-status {
+  display: flex;
+  justify-content: space-evenly;
+}
+
+.modal-role {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
+  justify-content: center;
+  max-height: 600px;
+  overflow-y: auto;
+}

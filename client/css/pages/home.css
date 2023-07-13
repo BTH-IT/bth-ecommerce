@@ -1,0 +1,398 @@
+@import "../layouts/main-layout.css";
+@import "../components/product-card.css";
+@import "../components/skeleton.css";
+@import "../layouts/slider.css";
+@import "../layouts/toast.css";
+
+/* BANNER & CATEGORIES */
+.main {
+  margin-top: 120px !important;
+  max-height: 426px;
+  display: flex;
+  gap: 10px;
+}
+
+.brand {
+  list-style: none;
+  height: 100%;
+  width: 100%;
+  max-width: 200px;
+  max-height: 426px;
+  min-height: 426px;
+  display: block;
+  background-color: white;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 6px;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+.brand::-webkit-scrollbar {
+  display: none;
+}
+
+.brand_item {
+  padding: 8px 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.brand_item:hover {
+  background-color: #F3F5FC;
+}
+
+.brand_item:hover a {
+  color: var(--primary);
+}
+
+.brand_img {
+  width: 32px;
+  height: 32px;
+}
+
+.brand_img img {
+  object-fit: contain;
+  width: 100%;
+  height: 100%;
+}
+
+.brand_link {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  color: var(--dark);
+  font-weight: 500;
+  font-size: 1rem;
+  transition: all 0.1s ease;
+}
+
+/* DEAL HOT */
+.deal {
+  margin-top: 120px;
+}
+
+.deal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.deal-color {
+  color: var(--primary);
+}
+
+.deal h1 {
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.deal-more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--dark);
+  transition: all 0.2s ease;
+}
+
+.deal-more:hover {
+  color: var(--primary);
+}
+
+.deal-more i {
+  color: var(--primary);
+}
+
+.deal-slider {
+  margin-top: 30px;
+  width: 100%;
+  max-width: 1216px;
+  position: relative;
+}
+
+
+/* TOP BESTSELLER */
+.bestseller {
+  margin-top: 120px;
+}
+
+.bestseller_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.bestseller_color {
+  color: var(--primary);
+}
+
+.bestseller h1 {
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.bestseller_more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--dark);
+  transition: all 0.2s ease;
+}
+
+.bestseller_more:hover {
+  color: var(--primary);
+}
+
+.bestseller_more i {
+  color: var(--primary);
+}
+
+.bestseller_body {
+  margin-top: 40px;
+}
+
+.bestseller_card {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  cursor: pointer;
+  color: var(--dark);
+  text-decoration: none;
+}
+
+.bestseller_card:hover .bestseller_title {
+  color: var(--primary);
+}
+
+.bestseller_image {
+  width: 150px;
+  height: 150px;
+  border-radius: 50%;
+  border: 1px solid var(--gray-300);
+  transition: all 0.2s ease;
+}
+
+.bestseller_card:hover .bestseller_image {
+  border-color: var(--primary);
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  transform: translateY(-5px);
+}
+
+.bestseller_image img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  filter: brightness(0.94);
+}
+
+.bestseller_title {
+  font-size: 1.4rem;
+  transition: all 0.2s ease;
+}
+
+/* TOP BRANDS */
+.top-brands {
+  margin-top: 120px;
+}
+
+.top-brands_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.top-brands_color {
+  color: var(--primary);
+}
+
+.top-brands h1 {
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.top-brands_more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--dark);
+  transition: all 0.2s ease;
+}
+
+.top-brands_more:hover {
+  color: var(--primary);
+}
+
+.top-brands_more i {
+  color: var(--primary);
+}
+
+.top-brands_slider {
+  margin-top: 40px;
+}
+
+.top-brands_card {
+  display: block;
+  gap: 20px;
+  cursor: pointer;
+  color: var(--dark);
+  text-decoration: none;
+  margin: 0 10px;
+}
+
+.top-brands_card:hover .top-brands_title {
+  color: var(--primary);
+}
+
+.top-brands_image {
+  width: 100%;
+  height: 200px;
+  border-radius: 10px;
+  border: 1px solid var(--gray-300);
+  transition: all 0.2s ease;
+}
+
+.top-brands_card:hover .top-brands_image {
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+  transform: scale(1.05);
+}
+
+.top-brands_image img {
+  width: 100%;
+  height: 100%;
+  border-radius: inherit;
+  object-fit: cover;
+  filter: brightness(0.94);
+}
+
+.top-brands_title {
+  font-size: 1.4rem;
+  transition: all 0.2s ease;
+  text-align: center;
+  margin-top: 20px;
+}
+
+/* FOR USER */
+.for-user {
+  margin-top: 120px;
+}
+
+.for-user_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.for-user_color {
+  color: var(--primary);
+}
+
+.for-user h1 {
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.for-user_more {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 1rem;
+  text-decoration: none;
+  color: var(--dark);
+  transition: all 0.2s ease;
+}
+
+.for-user_more:hover {
+  color: var(--primary);
+}
+
+.for-user_more i {
+  color: var(--primary);
+}
+
+.for-user_body {
+  margin-top: 40px;
+}
+
+/* VIEWED PRODUCT */
+.viewed-product {
+  margin-top: 120px;
+}
+
+.viewed-product_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--gray-300);
+}
+
+.viewed-product_color {
+  color: var(--primary);
+}
+
+.viewed-product h1 {
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--primary);
+  display: inline-block;
+  font-size: 2rem;
+}
+
+.viewed-product_slider {
+  margin-top: 40px;
+}
+
+@media only screen and (max-width: 767px) {
+  .main {
+    max-height: 100%;
+  }
+
+  .brand {
+    display: none;
+  }
+
+  
+  .product-card {
+    margin: 0 auto;
+  }
+}
+
+@media only screen and (max-width: 576px) {
+  .deal-header h1,
+  .bestseller_header h1,
+  .for-user_header h1,
+  .top-brands_header h1{
+    padding-bottom: 8px;
+    font-size: 1.2rem;
+  }
+
+  .deal-more,
+  .bestseller_more,
+  .for-user_more,
+  .top-brands_more {
+    font-size: 0.8rem;
+    gap: 5px;
+    flex-shrink: 0;
+  }
+}

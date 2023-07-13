@@ -1,0 +1,22 @@
+.btn {
+  border: none;
+  font-size: 1rem;
+  width: 100%;
+  vertical-align: middle;
+  border-radius: 0.25rem;
+  display: inline-block;
+  font-weight: 400;
+  line-height: 1.5;
+  user-select: none;
+  text-align: center;
+}
+
+.btn.primary {
+  background-color: var(--primary) !important;
+  color: white !important;
+}
+
+.btn.secondary {
+  color: var(--primary) !important;
+  border: 1px solid var(--primary) !important;
+}

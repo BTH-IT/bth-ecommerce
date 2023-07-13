@@ -1,0 +1,26 @@
+:root {
+  --primary: #0D6EFD;
+
+  --blue-light: #E3F0FF;
+
+  --green-light: #C3FFCB;
+
+  --green: #00B517;
+
+  --skin: #FFE5BF;
+
+  --orange: #FF9017;
+
+  --red: #FA3434;
+
+  --gray-200: #EFF2F4;
+  --gray-300: #DEE2E7;
+  --gray-400: #BDC4CD;
+  --gray-500: #8B96A5;
+  --gray-600: #505050;
+  --dark: #1C1C1C;
+
+  --fs-16: 16;
+  --fs-14: 14;
+  --fs-12: 12;
+}

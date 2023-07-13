@@ -1,0 +1,69 @@
+.skeleton {
+  background: #f5f5f5;
+  background: linear-gradient(110deg, #ececec 8%, #f5f5f5 18%, #ececec 33%);
+  border-radius: 5px;
+  background-size: 200% 100%;
+  animation: 1.5s shine linear infinite;
+}
+
+.skeleton-text {
+  width: 100%;
+  height: 0.7rem;
+  border-radius:6px;
+}
+
+.skeleton-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  display: inline-block;
+}
+
+.skeleton-text__body {
+  width: 75%;
+}
+
+.skeleton-text__table {
+  width: 50%;
+  height: 10px;
+  margin: 0 auto;
+}
+
+.skeleton-banner {
+  width: 100%;
+  min-height: 426px;
+}
+
+.skeleton-product-img {
+  width: 100%;
+  height: 189px;
+}
+
+.skeleton-new-price {
+  width: 60%;
+  height: 0.7rem;
+  border-radius:6px;
+}
+
+.skeleton-old-price {
+  width: 40%;
+  height: 0.7rem;
+  border-radius:6px;
+}
+
+.skeleton-save-price {
+  width: 80%;
+  height: 0.7rem;
+  border-radius:6px;
+}
+.skeleton-brand-img {
+  width: 100%;
+  height: 200px;
+  border-radius:6px;
+}
+
+@keyframes shine {
+  to {
+    background-position-x: -200%;
+  }
+}

@@ -1,0 +1,38 @@
+.toggle {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.toggle label .toggle {
+  background-color: white;
+  border-radius: 50%;
+  width: 25px;
+  height: 25px;
+  transition: all 0.3s ease;
+  position: absolute;
+  top: 2px;
+  left: 3px;
+}
+
+.toggle label {
+  border: 1px solid var(--gray-300);
+  background-color: #e5e7eb;
+  border-radius: 16px;
+  width: 100%;
+  max-width: 75px;
+  height: 30px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.toggle input:checked + label .toggle {
+  left: calc(100% - 27px);
+}
+
+.toggle input:checked + label {
+  background-color: var(--primary);
+}
