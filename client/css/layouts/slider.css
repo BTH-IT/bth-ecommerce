@@ -3,17 +3,27 @@
   width: 100%;
   height: 100%;
   min-height: 426px;
+  max-height: 426px;
   border-radius: 10px;
   position: relative;
   overflow: hidden;
   flex: 1;
 }
 
-.slider:hover .slick-arrow,
-.deal-slider:hover .slick-arrow,
-.top-brands_slider:hover .slick-arrow,
-.viewed-product_slider:hover .slick-arrow,
-.detail-product_related-slider:hover .slick-arrow {
+.slider > .swiper {
+  height: 426px;
+}
+
+.slider:hover .swiper-button-prev,
+.deal-slider:hover .swiper-button-prev,
+.top-brands_slider:hover .swiper-button-prev,
+.viewed-product_slider:hover .swiper-button-prev,
+.detail-product_related-slider:hover .swiper-button-prev,
+.slider:hover .swiper-button-next,
+.deal-slider:hover .swiper-button-next,
+.top-brands_slider:hover .swiper-button-next,
+.viewed-product_slider:hover .swiper-button-next,
+.detail-product_related-slider:hover .swiper-button-next {
   visibility: visible;
   opacity: 0.8;
 }
@@ -28,23 +38,23 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  min-height: 426px;
-  max-height: 426px;
   border-radius: 10px;
 }
 
-.slick-arrow {
-  position: absolute;
-  z-index: 1;
-  border: none;
-  width: 50px;
-  height: 50px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  font-size: 2rem;
+.swiper-button-prev,
+.swiper-button-next {
+  position: absolute !important;
+  z-index: 1 !important;
+  border: none !important;
+  width: 75px !important;
+  height: 75px !important;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   background-color: var(--gray-300);
-  border-radius: 50%;
+  transform: translateY(-25%) !important;
+  top: 50% !important;
+  border-radius: 50% !important;
   color: var(--primary);
   cursor: pointer;
   visibility: hidden;
@@ -52,29 +62,29 @@
   transition: all 0.3s ease;
 }
 
-.slick-prev {
+.swiper-button-prev {
   top: 50%;
   left: 0;
   transform: translate(50%, -50%);
 }
 
-.slick-prev:hover {
+.swiper-button-prev:hover {
   opacity: 1 !important;
   filter: brightness(1.2);
 }
 
-.slick-next {
+.swiper-button-next {
   top: 50%;
   right: 0;
   transform: translate(-50%, -50%);
 }
 
-.slick-next:hover {
+.swiper-button-next:hover {
   opacity: 1 !important;
   filter: brightness(1.2);
 }
 
-.slick-dots {
+.swiper-pagination {
   position: absolute;
   bottom: 10px;
   left: 50%;
@@ -86,7 +96,7 @@
   gap: 0 10px;
 }
 
-.slick-dots button {
+.swiper-pagination .swiper-pagination-bullet {
   font-size: 0;
   width: 10px;
   height: 10px;
@@ -97,8 +107,8 @@
   transition: all 0.5s ease;
 }
 
-.slick-dots .slick-active button {
-  padding: 0 15px;
+.swiper-pagination .swiper-pagination-bullet-active {
+  padding: 0 25px;
   border-radius: 10px;
   background-color: var(--primary);
 }

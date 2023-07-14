@@ -21,6 +21,7 @@ export const FEATURE = {
   FEATURE: 'FEATURE',
   BRAND: 'BRAND',
   ACCOUNT: 'ACCOUNT',
+  BANNER: 'BANNER',
 };
 
 export const ObjectId = mongoose.Types.ObjectId;

@@ -5,7 +5,7 @@ import {
   DeleteOrderDto,
   UpdateOrderDto,
 } from '@/dto/order.dto';
-import { ObjectId } from '@/utils/constains';
+import { ObjectId } from '@/utils/contains';
 import { OrdersRepository } from '../repositories/orders.repo';
 
 @Injectable()

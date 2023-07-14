@@ -1,28 +1,56 @@
 "use client";
 
-import React from "react";
-// Import Swiper React components
 import { Swiper, SwiperSlide } from "swiper/react";
-
-// Import Swiper styles
 import "swiper/css";
+import "../css/layouts/slider.css";
+import Link from "next/link";
+import Image from "next/image";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import React from "react";
 
-const Slider = () => {
+type SliderType = {
+  list: any;
+  isNavigation: boolean;
+  isPagination: boolean;
+  isLoop: boolean;
+  autoplay: {
+    delay: number;
+    disableOnInteraction: boolean;
+    pauseOnMouseEnter: boolean;
+  };
+  slidesPerView: number;
+  children: React.ReactNode;
+};
+
+const Slider = ({
+  list,
+  isNavigation = true,
+  isPagination = true,
+  isLoop = true,
+  autoplay = {
+    delay: 8000,
+    disableOnInteraction: true,
+    pauseOnMouseEnter: true,
+  },
+  slidesPerView = 1,
+  children,
+}: SliderType) => {
   return (
     <Swiper
-      spaceBetween={50}
-      slidesPerView={3}
-      onSlideChange={() => console.log("slide change")}
-      onSwiper={(swiper) => console.log(swiper)}
+      modules={[Navigation, Pagination, Autoplay]}
+      slidesPerView={slidesPerView}
+      navigation={isNavigation}
+      pagination={isPagination ? { clickable: true } : false}
+      loop={isLoop}
+      autoplay={autoplay}
     >
-      <SwiperSlide>Slide 1</SwiperSlide>
-      <SwiperSlide>Slide 2</SwiperSlide>
-      <SwiperSlide>Slide 3</SwiperSlide>
-      <SwiperSlide>Slide 4</SwiperSlide>
-      <SwiperSlide>Slide 5</SwiperSlide>
-      <SwiperSlide>Slide 6</SwiperSlide>
-      <SwiperSlide>Slide 7</SwiperSlide>
-      <SwiperSlide>Slide 8</SwiperSlide>
+      {list &&
+        list.length > 0 &&
+        list.map((item: any) => (
+          <SwiperSlide key={item}>{children}</SwiperSlide>
+        ))}
     </Swiper>
   );
 };

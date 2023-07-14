@@ -15,6 +15,7 @@ import { TypesModule } from 'types.module';
 import { WarrantiesModule } from './warranties/warranties.module';
 import { ImportOrdersModule } from './import-orders/import-orders.module';
 import { OrdersModule } from './orders/orders.module';
+import { BannersModule } from './banners/banners.module';
 
 @Module({
   imports: [
@@ -36,6 +37,7 @@ import { OrdersModule } from './orders/orders.module';
     WarrantiesModule,
     ImportOrdersModule,
     OrdersModule,
+    BannersModule,
   ],
 })
 export class AppModule {}

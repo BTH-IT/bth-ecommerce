@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Role } from './role.schema';
 import { Feature } from './feature.schema';
-import { ACTIONLIST } from '@/utils/constains';
+import { ACTIONLIST } from '@/utils/contains';
 
 @Schema({
   timestamps: false,

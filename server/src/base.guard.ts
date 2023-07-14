@@ -32,7 +32,7 @@ export class BaseRolesGuard {
     );
 
     const feature = features.find(
-      (f) => f.feature.name.toUpperCase() === featureName,
+      (f) => f.feature.name.toUpperCase() === featureName && f.feature.isActive,
     );
 
     if (!feature) return false;

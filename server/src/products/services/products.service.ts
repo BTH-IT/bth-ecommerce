@@ -7,7 +7,7 @@ import { Injectable } from '@nestjs/common';
 import { ProductsRepository } from '../repositories/products.repo';
 import { Product } from '@/schemas/product.schema';
 import { ProductDetailsRepository } from '../repositories/product-details.repo';
-import { ObjectId } from '@/utils/constains';
+import { ObjectId } from '@/utils/contains';
 
 @Injectable()
 export class ProductsService {

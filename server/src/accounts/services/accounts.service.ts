@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { Account } from '@/schemas/account.schema';
 import { AccountsRepository } from '../repositories/accounts.repo';
-import { ObjectId } from '@/utils/constains';
+import { ObjectId } from '@/utils/contains';
 import {
   CreateNewAccountDto,
   DeleteAccountDto,

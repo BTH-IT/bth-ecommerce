@@ -3,7 +3,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { BaseSchema } from './base.schema';
 import { Schema as MongooseSchema } from 'mongoose';
 import { Role } from './role.schema';
-import { ObjectId } from '@/utils/constains';
+import { ObjectId } from '@/utils/contains';
 
 @Schema({
   timestamps: true,

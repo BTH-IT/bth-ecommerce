@@ -1,6 +1,6 @@
 import { Injectable, CanActivate, ExecutionContext } from '@nestjs/common';
 import { BaseRolesGuard } from '../../base.guard';
-import { ACTION, FEATURE } from '@/utils/constains';
+import { ACTION, FEATURE } from '@/utils/contains';
 import { RolesService } from '@/roles/roles.service';
 import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
 

@@ -5,7 +5,7 @@ import {
   DeleteFeatureDto,
   UpdateFeatureDto,
 } from '@/dto/feature.dto';
-import { ObjectId } from '@/utils/constains';
+import { ObjectId } from '@/utils/contains';
 import { RoleAndFeatureRepository } from '../repositories/role-and-feature.repo';
 import { FeaturesRepository } from '../repositories/features.repo';
 

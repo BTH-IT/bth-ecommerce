@@ -14,6 +14,16 @@ type Account {
   updatedAt: DateTime!
 }
 
+type Banner {
+  _id: String!
+  createdAt: DateTime!
+  description: String!
+  isShow: Boolean!
+  name: String!
+  thumbUrl: String!
+  updatedAt: DateTime!
+}
+
 type Brand {
   _id: String!
   createdAt: DateTime!
@@ -29,6 +39,12 @@ input CreateNewAccountInput {
   password: String!
   role: String!
   type: String! = "default"
+}
+
+input CreateNewBannerInput {
+  description: String! = ""
+  name: String!
+  thumbUrl: String!
 }
 
 input CreateNewBrandInput {
@@ -130,6 +146,10 @@ input DeleteAccountInput {
   _id: ID!
 }
 
+input DeleteBannerInput {
+  _id: ID!
+}
+
 input DeleteBrandInput {
   _id: ID!
 }
@@ -198,6 +218,7 @@ type ImportOrderDetail {
 
 type Mutation {
   createNewAccount(createNewAccount: CreateNewAccountInput!): Account!
+  createNewBanner(createNewBanner: CreateNewBannerInput!): Banner!
   createNewBrand(createNewBrand: CreateNewBrandInput!): Brand!
   createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
   createNewImportOrder(createNewImportOrder: CreateNewImportOrderInput!): ImportOrder!
@@ -209,6 +230,7 @@ type Mutation {
   createNewUser(createNewUser: CreateNewUserInput!): User!
   createNewWarranty(createNewWarranty: CreateNewWarrantyInput!): Warranty!
   deleteAccount(deleteAccount: DeleteAccountInput!): Account!
+  deleteBanner(deleteBanner: DeleteBannerInput!): Banner!
   deleteBrand(deleteBrand: DeleteBrandInput!): Brand!
   deleteFeature(deleteFeature: DeleteFeatureInput!): Feature!
   deleteImportOrder(deleteImportOrder: DeleteImportOrderInput!): ImportOrder!
@@ -220,6 +242,7 @@ type Mutation {
   deleteUser(deleteUser: DeleteUserInput!): User!
   deleteWarranty(deleteWarranty: DeleteWarrantyInput!): Warranty!
   updateAccount(updateAccount: UpdateAccountInput!): Account!
+  updateBanner(updateBanner: UpdateBannerInput!): Banner!
   updateBrand(updateBrand: UpdateBrandInput!): Brand!
   updateFeature(updateFeature: UpdateFeatureInput!): Feature!
   updateImportOrder(updateImportOrder: UpdateImportOrderInput!): ImportOrder!
@@ -298,6 +321,7 @@ type Product {
 type Query {
   getAccount(id: String!): Account!
   getAllAccounts: [Account!]!
+  getAllBanners: [Banner!]!
   getAllBrands: [Brand!]!
   getAllFeatures: [Feature!]!
   getAllImportOrders: [ImportOrder!]!
@@ -308,6 +332,7 @@ type Query {
   getAllTypes: [Type!]!
   getAllUsers: [User!]!
   getAllWarranties: [Warranty!]!
+  getBanner(id: String!): Banner!
   getBrand(id: String!): Brand!
   getFeature(id: String!): Feature!
   getImportOrder(id: String!): ImportOrder!
@@ -360,6 +385,14 @@ input UpdateAccountInput {
   email: String!
   password: String!
   role: String!
+}
+
+input UpdateBannerInput {
+  _id: ID!
+  description: String!
+  isShow: Boolean!
+  name: String!
+  thumbUrl: String!
 }
 
 input UpdateBrandInput {
