@@ -1,11 +1,20 @@
-import { Field, InputType, ObjectType } from '@nestjs/graphql';
+import { Field, InputType } from '@nestjs/graphql';
+
+@InputType()
+export class ProductParamsInput {
+  @Field({ defaultValue: 'none' })
+  sort?: string;
+
+  @Field({ defaultValue: false })
+  sale?: boolean;
+}
 
 @InputType()
 export class CreateNewProductInput {
   @Field()
   productName: string;
 
-  @Field((type) => [String])
+  @Field(() => [String])
   imageUrlList: [string];
 
   @Field()

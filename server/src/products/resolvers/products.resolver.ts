@@ -9,6 +9,7 @@ import { Product } from '@/schemas/product.schema';
 import {
   CreateNewProductInput,
   DeleteProductInput,
+  ProductParamsInput,
   UpdateProductInput,
 } from '@/input-types/product.input';
 import { DeleteProductGuard } from '../guards/delete-product.guard';
@@ -23,9 +24,8 @@ export class ProductsResolver {
   ) {}
 
   @Query(() => [Product])
-  @UseGuards(ReadProductGuard)
-  getAllProducts() {
-    return this.productsService.findAll();
+  getAllProducts(@Args('params') params: ProductParamsInput) {
+    return this.productsService.findAll(params);
   }
 
   @Query(() => Product)

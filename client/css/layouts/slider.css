@@ -84,6 +84,16 @@
   filter: brightness(1.2);
 }
 
+.slider .swiper .swiper-wrapper {
+  padding-top: 0px !important;
+}
+
+.swiper-button-lock,
+.swiper-button-disabled {
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 .swiper-pagination {
   position: absolute;
   bottom: 10px;

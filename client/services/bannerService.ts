@@ -2,12 +2,10 @@ import { BannerType } from '@/types/banner';
 import { createAxiosGraphql } from '@/utils/contains';
 
 const bannerService = {
-  async getAll(params?: any): Promise<{
-    getAllBanners: BannerType[]
-  }> {
+  async getAll(params?: any): Promise<BannerType[]> {
     const graphqlQuery = {
       query: `
-        query getAllBanners {
+        query {
           getAllBanners {
             _id
             name
@@ -18,12 +16,12 @@ const bannerService = {
             updatedAt
           }
         }`,
-      variables: {}
+      variables: {},
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);
-    
-    return response;
+
+    return response.getAllBanners;
   },
   async getById(id: string) {
     const graphqlQuery = {
@@ -40,8 +38,8 @@ const bannerService = {
           }
         }`,
       variables: {
-        id
-      }
+        id,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -63,8 +61,8 @@ const bannerService = {
           }
         }`,
       variables: {
-        "createNewBanner": data
-      }
+        createNewBanner: data,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -80,8 +78,8 @@ const bannerService = {
           }
         }`,
       variables: {
-        "updateBanner": data
-      }
+        updateBanner: data,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -97,10 +95,10 @@ const bannerService = {
           }
         }`,
       variables: {
-        "deleteBanner": {
-          _id: id
-        }
-      }
+        deleteBanner: {
+          _id: id,
+        },
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);

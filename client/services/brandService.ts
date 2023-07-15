@@ -1,10 +1,11 @@
+import { BrandType } from '@/types/brand';
 import { createAxiosGraphql } from '@/utils/contains';
 
 const brandService = {
-  async getAll(params?: any) {
+  async getAll(params?: any): Promise<BrandType[]> {
     const graphqlQuery = {
       query: `
-        query getAllBrands {
+        query {
           getAllBrands {
             _id
             name
@@ -15,12 +16,12 @@ const brandService = {
             updatedAt
           }
         }`,
-      variables: {}
+      variables: {},
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
 
-    return response;
+    return response.getAllBrands;
   },
   async getById(id: string) {
     const graphqlQuery = {
@@ -37,8 +38,8 @@ const brandService = {
           }
         }`,
       variables: {
-        id
-      }
+        id,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -60,8 +61,8 @@ const brandService = {
           }
         }`,
       variables: {
-        "createNewBrand": data
-      }
+        createNewBrand: data,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -77,8 +78,8 @@ const brandService = {
           }
         }`,
       variables: {
-        "updateBrand": data
-      }
+        updateBrand: data,
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
@@ -94,10 +95,10 @@ const brandService = {
           }
         }`,
       variables: {
-        "deleteBrand": {
-          _id: id
-        }
-      }
+        deleteBrand: {
+          _id: id,
+        },
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);

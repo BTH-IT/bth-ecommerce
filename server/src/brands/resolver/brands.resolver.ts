@@ -17,7 +17,6 @@ export class BrandsResolver {
   constructor(private brandsService: BrandsService) {}
 
   @Query(() => [Brand])
-  @UseGuards(ReadBrandGuard)
   async getAllBrands() {
     return await this.brandsService.findAll();
   }

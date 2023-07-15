@@ -1,17 +1,14 @@
-"use client";
+'use client';
 
-import { Swiper, SwiperSlide } from "swiper/react";
-import "swiper/css";
-import "../css/layouts/slider.css";
-import Link from "next/link";
-import Image from "next/image";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import React from "react";
+import { Swiper, SwiperSlide } from 'swiper/react';
+import 'swiper/css';
+import '../css/layouts/slider.css';
+import 'swiper/css/navigation';
+import 'swiper/css/pagination';
+import { Navigation, Pagination, Autoplay } from 'swiper/modules';
+import React from 'react';
 
 type SliderType = {
-  list: any;
   isNavigation: boolean;
   isPagination: boolean;
   isLoop: boolean;
@@ -25,7 +22,6 @@ type SliderType = {
 };
 
 const Slider = ({
-  list,
   isNavigation = true,
   isPagination = true,
   isLoop = true,
@@ -46,11 +42,7 @@ const Slider = ({
       loop={isLoop}
       autoplay={autoplay}
     >
-      {list &&
-        list.length > 0 &&
-        list.map((item: any) => (
-          <SwiperSlide key={item}>{children}</SwiperSlide>
-        ))}
+      {children}
     </Swiper>
   );
 };

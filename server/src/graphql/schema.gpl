@@ -318,6 +318,11 @@ type Product {
   weight: Float!
 }
 
+input ProductParamsInput {
+  sale: Boolean! = false
+  sort: String! = "none"
+}
+
 type Query {
   getAccount(id: String!): Account!
   getAllAccounts: [Account!]!
@@ -326,7 +331,7 @@ type Query {
   getAllFeatures: [Feature!]!
   getAllImportOrders: [ImportOrder!]!
   getAllOrders: [Order!]!
-  getAllProducts: [Product!]!
+  getAllProducts(params: ProductParamsInput!): [Product!]!
   getAllRoles: [Role!]!
   getAllSuppliers: [Supplier!]!
   getAllTypes: [Type!]!

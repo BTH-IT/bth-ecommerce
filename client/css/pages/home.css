@@ -111,10 +111,13 @@
 }
 
 .deal-slider {
-  margin-top: 30px;
   width: 100%;
   max-width: 1216px;
   position: relative;
+}
+
+.swiper-wrapper {
+  padding-top: 30px !important;
 }
 
 
@@ -244,10 +247,6 @@
 
 .top-brands_more i {
   color: var(--primary);
-}
-
-.top-brands_slider {
-  margin-top: 40px;
 }
 
 .top-brands_card {

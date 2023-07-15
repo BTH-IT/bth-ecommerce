@@ -17,7 +17,6 @@ export class BannersResolver {
   constructor(private bannersService: BannersService) {}
 
   @Query(() => [Banner])
-  @UseGuards(ReadBannerGuard)
   async getAllBanners() {
     return await this.bannersService.findAll();
   }
