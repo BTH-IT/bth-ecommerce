@@ -27,9 +27,15 @@ const ProductSlider = ({ productList }: { productList: ProductType[] }) => {
           ))
         ) : (
           <SwiperSlide>
-            {/* <div className="slider-background">
-              <div className="skeleton skeleton-banner"></div>
-            </div> */}
+            <div className="product-card">
+              <div className="product-card_image skeleton skeleton-product-img"></div>
+              <div className="product-card_info">
+                <div className="skeleton skeleton-text"></div>
+                <div className="mt-2 skeleton skeleton-new-price"></div>
+                <div className="mt-2 skeleton skeleton-old-price"></div>
+                <div className="mt-2 skeleton skeleton-save-price"></div>
+              </div>
+            </div>
           </SwiperSlide>
         )}
       </>

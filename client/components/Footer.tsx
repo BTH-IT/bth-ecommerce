@@ -1,7 +1,12 @@
-import React from "react";
+import React from 'react';
+import '../css/layouts/footer.css';
 
 const Footer = () => {
-  return <div>Footer</div>;
+  return (
+    <footer className="footer">
+      <div className="footer-container">© 2023 Ecommerce.</div>
+    </footer>
+  );
 };
 
 export default Footer;
