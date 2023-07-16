@@ -4,6 +4,12 @@ import Loading from '../loading';
 import productService from '@/services/productService';
 import ProductGrid from '@/components/ProductGrid';
 import FilterList from './_components/FilterList';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'BTH Ecommerce | Search',
+  description: 'BTH Ecommerce | Search',
+};
 
 const Search = async () => {
   const productList = await productService.getAll();

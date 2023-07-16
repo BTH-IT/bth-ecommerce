@@ -3,6 +3,12 @@ import React from 'react';
 import '../../../css/pages/cart.css';
 import Image from 'next/image';
 import TableBodyCart from './_components/TableBodyCart';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'BTH Ecommerce | Cart',
+  description: 'BTH Ecommerce | Cart',
+};
 
 const CartPage = () => {
   let cartList: any[] = [];

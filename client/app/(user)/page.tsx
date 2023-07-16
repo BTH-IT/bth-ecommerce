@@ -10,6 +10,12 @@ import HotDealSlider from './_components/HotDealSlider';
 import productService from '@/services/productService';
 import ProductGrid from '@/components/ProductGrid';
 import BrandSlider from './_components/BrandSlider';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+  title: 'BTH Ecommerce | Home',
+  description: 'BTH Ecommerce | Home',
+};
 
 export default async function Home() {
   const brandList = await brandService.getAll();
