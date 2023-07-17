@@ -93,7 +93,6 @@ function* watchLoginFlow() {
           }
         }
       } else {
-        localStorage.setItem('dmm', JSON.stringify('logout1'));
         yield call(handleLogout);
       }
     }
