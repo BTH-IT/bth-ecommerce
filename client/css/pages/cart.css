@@ -1,5 +1,3 @@
-@import '../layouts/main-layout.css';
-@import '../layouts/toast.css';
 @import '../components/select.css';
 
 input::-webkit-outer-spin-button,
@@ -92,6 +90,7 @@ body {
     text-align: center;
     border-radius: 10px;
     width: 100%;
+    table-layout: fixed;
 }
 
 .table-head_row {
@@ -254,6 +253,17 @@ body {
 
 .purchase-btn:disabled, input:disabled {
     cursor: not-allowed;
+}
+
+.product-img_container {
+    width: 80px;
+    height: 80px;
+}
+
+.product-img_container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .product-link {

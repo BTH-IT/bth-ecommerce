@@ -1,8 +1,12 @@
+@import url("bootstrap-icons/font/bootstrap-icons.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-@import url("../css/utils/reset.css");
-@import url("../css/utils/variables.css");
 @import url("../css/components/skeleton.css");
-@import url("bootstrap-icons/font/bootstrap-icons.css");
+@import "../css/components/product-card.css";
+@import "../css/layouts/slider.css";
+@import "../css/components/input.css";
+@import "../css/components/label.css";
+@import "../css/components/button.css";

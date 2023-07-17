@@ -6,6 +6,10 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Register',
   description: 'BTH Ecommerce | Register',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 };
 
 const RegisterPage = () => {

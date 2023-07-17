@@ -33,7 +33,7 @@ export function* handleLogin(payload: LoginFormType) {
       }),
     );
   } catch (error) {
-    // yield put(authActions.loginFailed());
+    yield put(authActions.loginFailed());
   }
 }
 
@@ -58,12 +58,12 @@ function* handleRefreshToken(refreshToken: string) {
     }
 
     yield put(
-      authActions.updateData({
+      authActions.updateAccessToken({
         accessToken: res.data.accessToken,
       }),
     );
   } catch (error) {
-    // yield put(authActions.loginFailed());
+    yield put(authActions.loginFailed());
   }
 }
 

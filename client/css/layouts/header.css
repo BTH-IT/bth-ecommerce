@@ -133,16 +133,8 @@
   color: var(--primary);
 }
 
-.action-link span path {
-  transition: all 0.2s ease;
-}
-
 .action-icon i {
   font-size: 1.6rem;
-}
-
-.action-link:hover span path {
-  fill: var(--primary);
 }
 
 .action-title {
@@ -360,9 +352,10 @@
   gap: 20px;
   color: var(--dark);
   font-weight: 400;
-  padding: 10px 0;
+  padding: 10px 8px;
   cursor: pointer;
   text-decoration: none;
+  font-size: 1rem;
 }
 
 .action-logged_item a:hover {

@@ -9,6 +9,10 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Search',
   description: 'BTH Ecommerce | Search',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 };
 
 const Search = async () => {

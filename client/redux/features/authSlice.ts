@@ -6,6 +6,7 @@ import { LoginFormType } from '@/types/form';
 
 type LoginSliceType = LoginResponseType & {
   loggedIn: boolean;
+  cartList: any[];
 };
 
 function getInitState(): LoginSliceType {
@@ -15,6 +16,7 @@ function getInitState(): LoginSliceType {
       accessToken: localStorage.getItem('access_token') || '',
       refreshToken: localStorage.getItem('refresh_token') || '',
       loggedIn: false,
+      cartList: JSON.parse(localStorage.getItem('cart_list') || '[]'),
     };
   }
   return {
@@ -22,6 +24,7 @@ function getInitState(): LoginSliceType {
     accessToken: '',
     refreshToken: '',
     loggedIn: false,
+    cartList: [],
   };
 }
 
@@ -34,10 +37,19 @@ export const authSlice = createSlice({
       state,
       payload: PayloadAction<{ refreshToken: string }>,
     ) => {},
-    updateData: (state, payload: PayloadAction<{ accessToken: string }>) => {
+    updateAccessToken: (
+      state,
+      payload: PayloadAction<{ accessToken: string }>,
+    ) => {
       return {
         ...state,
         accessToken: payload.payload.accessToken,
+      };
+    },
+    updateCartList: (state, payload: PayloadAction<{ cartList: any[] }>) => {
+      return {
+        ...state,
+        cartList: payload.payload.cartList,
       };
     },
     loginSuccess: (state, payload: PayloadAction<LoginSliceType>) => {
@@ -50,6 +62,13 @@ export const authSlice = createSlice({
       state.accessToken = '';
       state.refreshToken = '';
       state.newAccount = {};
+      state.loggedIn = false;
+    },
+    loginFailed: (state) => {
+      state.accessToken = '';
+      state.refreshToken = '';
+      state.newAccount = {};
+      state.loggedIn = false;
     },
   },
 });

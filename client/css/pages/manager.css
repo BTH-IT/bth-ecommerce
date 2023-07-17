@@ -1,5 +1,3 @@
-@import "../utils/reset.css";
-@import "../utils/variables.css";
 @import url("../components/button.css");
 @import url("../components/input.css");
 @import url("../components/select.css");

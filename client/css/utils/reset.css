@@ -18,8 +18,7 @@ time, mark, audio, video {
 	margin: 0;
 	padding: 0;
 	border: 0;
-	font-size: 100%;
-	font-family: 'Roboto', sans-serif;
+	font-family: 'Inter', sans-serif;
 	vertical-align: baseline;
 }
 /* HTML5 display-role reset for older browsers */
@@ -49,8 +48,8 @@ table {
 button:focus {outline:0;}
 
 * {
-  font-family: 'Roboto', sans-serif;
-  font-size: 10px;
+  font-family: 'Inter', sans-serif;
+  font-size: 16px;
   box-sizing: border-box;
 }
 

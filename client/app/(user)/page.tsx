@@ -15,6 +15,10 @@ import { Metadata } from 'next';
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Home',
   description: 'BTH Ecommerce | Home',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 };
 
 export default async function Home() {

@@ -1,11 +1,14 @@
+'use client';
+
+import { CartType } from '@/types/cart';
 import { convertCurrency } from '@/utils/contains';
 import Image from 'next/image';
 import Link from 'next/link';
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 
-const TableBodyCart = ({ cartList }: { cartList: any[] }) => {
+const TableBodyCart = ({ cartList }: { cartList: CartType[] }) => {
   return cartList.map((cart, idx) => (
-    <tr className="table-body_row">
+    <tr className="table-body_row" key={idx}>
       <td className="table-body_item">{idx + 1}</td>
       <td className="table-body_item">
         <Link className="product-link" href={`/product-detail/${cart._id}`}>
@@ -14,9 +17,9 @@ const TableBodyCart = ({ cartList }: { cartList: any[] }) => {
               <Image
                 className="product-img"
                 src={cart.thumbUrl}
-                alt={cart.productName}
-                width={10000}
-                height={10000}
+                alt={cart.productName + cart._id}
+                width={80}
+                height={60}
               />
             </div>
             <div className="product-name_container">
@@ -54,7 +57,7 @@ const TableBodyCart = ({ cartList }: { cartList: any[] }) => {
             name="amount"
             id="amount"
             min="1"
-            value={cart.amount}
+            defaultValue={cart.amount}
           />
           <button className="product-amount_plus">+</button>
         </div>

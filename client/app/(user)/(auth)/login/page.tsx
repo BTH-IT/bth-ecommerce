@@ -5,6 +5,10 @@ import LoginForm from '../_components/LoginForm';
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Login',
   description: 'BTH Ecommerce | Login',
+  icons: {
+    icon: '/logo.svg',
+    apple: '/logo.svg',
+  },
 };
 
 const LoginPage = () => {
