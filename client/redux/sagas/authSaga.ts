@@ -5,6 +5,7 @@ import { LoginFormType } from '@/types/form';
 import authService from '@/services/authService';
 import { authActions } from '../features/authSlice';
 import { PayloadAction } from '@reduxjs/toolkit';
+import * as jwt from 'jsonwebtoken';
 
 export interface ResponseGenerator {
   config?: any;
@@ -25,7 +26,12 @@ export function* handleLogin(payload: LoginFormType) {
       localStorage.setItem('refresh_token', res.data.refreshToken);
     }
 
-    yield put(authActions.loginSuccess(res.data));
+    yield put(
+      authActions.loginSuccess({
+        ...res.data,
+        loggedIn: true,
+      }),
+    );
   } catch (error) {
     // yield put(authActions.loginFailed());
   }
@@ -36,6 +42,28 @@ function* handleLogout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('current_user');
+    yield put(authActions.logout());
+  }
+}
+
+function* handleRefreshToken(refreshToken: string) {
+  try {
+    const res: ResponseGenerator = yield call(
+      authService.refresh,
+      refreshToken,
+    );
+
+    if (typeof window !== 'undefined') {
+      localStorage.setItem('access_token', res.data.accessToken);
+    }
+
+    yield put(
+      authActions.updateData({
+        accessToken: res.data.accessToken,
+      }),
+    );
+  } catch (error) {
+    // yield put(authActions.loginFailed());
   }
 }
 
@@ -44,7 +72,30 @@ function* watchLoginFlow() {
     let isLoggedIn = false;
 
     if (typeof window !== 'undefined') {
-      isLoggedIn = Boolean(localStorage.getItem('access_token') || '');
+      const refreshToken = localStorage.getItem('refresh_token') || '';
+
+      if (refreshToken) {
+        const now = Math.floor(Date.now() / 1000);
+        const refreshTokenDecode: any = jwt.decode(refreshToken);
+
+        if (now > refreshTokenDecode.exp && refreshTokenDecode) {
+          isLoggedIn = false;
+          yield call(handleLogout);
+        } else {
+          const accessToken = localStorage.getItem('access_token') || '';
+
+          const accessTokenDecode: any = jwt.decode(accessToken);
+
+          isLoggedIn = true;
+
+          if (now > accessTokenDecode.exp && accessTokenDecode) {
+            yield call(handleRefreshToken, refreshToken);
+          }
+        }
+      } else {
+        localStorage.setItem('dmm', JSON.stringify('logout1'));
+        yield call(handleLogout);
+      }
     }
 
     if (!isLoggedIn) {
