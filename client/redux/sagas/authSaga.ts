@@ -22,7 +22,11 @@ export function* handleLogin(payload: LoginFormType) {
 
     if (typeof window !== 'undefined') {
       localStorage.setItem('access_token', res.data.accessToken);
-      localStorage.setItem('current_user', JSON.stringify(res.data.newAccount));
+      localStorage.setItem('current_user', JSON.stringify(res.data.user));
+      localStorage.setItem(
+        'current_account',
+        JSON.stringify(res.data.newAccount),
+      );
       localStorage.setItem('refresh_token', res.data.refreshToken);
     }
 
@@ -42,6 +46,7 @@ function* handleLogout() {
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     localStorage.removeItem('current_user');
+    localStorage.removeItem('current_account');
     yield put(authActions.logout());
   }
 }

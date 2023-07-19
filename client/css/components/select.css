@@ -27,11 +27,12 @@
   border: none;
   width: 100%;
   flex: 1 1 auto;
-  font-size: 1rem;
+  font-size: 1.3rem;
   background-color: transparent;
   outline: none;
   cursor: pointer;
   color: var(--dark);
+  padding: 4px;
 }
 
 .select select option {

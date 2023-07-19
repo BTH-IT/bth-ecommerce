@@ -2,20 +2,16 @@ import { IsNotEmpty, IsPositive } from 'class-validator';
 
 export class CreateNewUserDto {
   @IsNotEmpty() fullname: string;
-  @IsNotEmpty() gender: string;
+  gender?: string;
 
-  @IsNotEmpty()
   @IsPositive()
-  birthYear: number;
+  birthYear?: number;
 
-  @IsNotEmpty()
-  phone: string;
+  phone?: string;
 
-  @IsNotEmpty()
-  address: string;
+  address?: string;
 
-  @IsNotEmpty() account?: string;
-  @IsNotEmpty() type: string;
+  account?: string;
 }
 
 export class UpdateUserDto {

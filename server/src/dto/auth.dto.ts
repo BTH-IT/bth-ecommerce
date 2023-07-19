@@ -4,3 +4,13 @@ export class LoginDto {
   @IsNotEmpty() email: string;
   @IsNotEmpty() password: string;
 }
+
+export class RegisterDto {
+  @IsNotEmpty() email: string;
+  @IsNotEmpty() password: string;
+  @IsNotEmpty() fullname: string;
+  @IsNotEmpty() gender: string;
+  @IsNotEmpty() address: string;
+  @IsNotEmpty() phone: string;
+  @IsNotEmpty() birthYear: number;
+}

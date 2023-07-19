@@ -11,9 +11,32 @@ import * as yup from 'yup';
 import authService from '@/services/authService';
 import { useAppSelector } from '@/redux/hooks';
 import { useRouter } from 'next/navigation';
+import SelectForm from './SelectForm';
+import toast from 'react-hot-toast';
+
+const yearNow = new Date().getFullYear();
 
 const schema = yup
   .object({
+    fullname: yup.string().required('This field is required'),
+    gender: yup
+      .string()
+      .required('This field is required')
+      .oneOf(
+        ['Nam', 'Nữ', 'Khác'],
+        'This field must be equal to one of Nam, Nữ, Khác',
+      ),
+    phone: yup
+      .string()
+      .required('This field is required')
+      .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Phone number is not valid'),
+    address: yup.string().required('This field is required'),
+    birthYear: yup
+      .number()
+      .typeError('This field must be a number')
+      .required('This field is required')
+      .min(yearNow - 200, 'This field must be greater than ' + (yearNow - 200))
+      .max(yearNow, 'This field must be less than ' + yearNow),
     email: yup
       .string()
       .email('This field must be an email')
@@ -30,6 +53,9 @@ const RegisterForm = () => {
   const loginSuccess = Boolean(
     useAppSelector((state) => state.auth.accessToken),
   );
+  const [showPass, setShowPass] = useState(false);
+  const [showConfirmPass, setShowConfirmPass] = useState(false);
+
   const router = useRouter();
 
   useEffect(() => {
@@ -38,14 +64,17 @@ const RegisterForm = () => {
     }
   }, [loginSuccess]);
 
-  const [showPass, setShowPass] = useState(false);
-  const [showConfirmPass, setShowConfirmPass] = useState(false);
   const {
     handleSubmit,
     formState: { isValid },
     control,
   } = useForm<RegisterFormType>({
     defaultValues: {
+      fullname: '',
+      gender: '',
+      phone: '',
+      address: '',
+      birthYear: 1,
       email: '',
       password: '',
       confirmPassword: '',
@@ -59,16 +88,48 @@ const RegisterForm = () => {
     try {
       await authService.register(data);
 
-      if (loginSuccess) {
-        router.push('/login');
-      }
+      router.push('/login');
     } catch (error: any) {
-      console.log(error.message);
+      toast.error(error.response.data.message);
     }
   };
 
   return (
     <form className="form" onSubmit={handleSubmit(onSubmit)}>
+      <InputForm
+        control={control}
+        name="fullname"
+        title="Fullname"
+        placeholder="Nhập fullname..."
+        type="text"
+      ></InputForm>
+      <SelectForm
+        control={control}
+        name="gender"
+        title="Gender"
+        placeholder="Chọn gender..."
+      ></SelectForm>
+      <InputForm
+        control={control}
+        name="phone"
+        title="Phone number"
+        placeholder="Nhập phone..."
+        type="text"
+      ></InputForm>
+      <InputForm
+        control={control}
+        name="address"
+        title="Address"
+        placeholder="Nhập address..."
+        type="text"
+      ></InputForm>
+      <InputForm
+        control={control}
+        name="birthYear"
+        title="Birth Year"
+        placeholder="Nhập birth year..."
+        type="number"
+      ></InputForm>
       <InputForm
         control={control}
         name="email"

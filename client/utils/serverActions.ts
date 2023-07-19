@@ -1,5 +1,6 @@
 'use server';
 
+import authService from '@/services/authService';
 import productService from '@/services/productService';
 import { ProductType } from '@/types/product';
 

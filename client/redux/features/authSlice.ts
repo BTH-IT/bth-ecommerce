@@ -12,7 +12,8 @@ type LoginSliceType = LoginResponseType & {
 function getInitState(): LoginSliceType {
   if (typeof window !== 'undefined') {
     return {
-      newAccount: JSON.parse(localStorage.getItem('current_user') || '{}'),
+      newAccount: JSON.parse(localStorage.getItem('current_account') || '{}'),
+      user: JSON.parse(localStorage.getItem('current_user') || '{}'),
       accessToken: localStorage.getItem('access_token') || '',
       refreshToken: localStorage.getItem('refresh_token') || '',
       loggedIn: false,
@@ -21,6 +22,7 @@ function getInitState(): LoginSliceType {
   }
   return {
     newAccount: {},
+    user: {},
     accessToken: '',
     refreshToken: '',
     loggedIn: false,
@@ -62,12 +64,14 @@ export const authSlice = createSlice({
       state.accessToken = '';
       state.refreshToken = '';
       state.newAccount = {};
+      state.user = {};
       state.loggedIn = false;
     },
     loginFailed: (state) => {
       state.accessToken = '';
       state.refreshToken = '';
       state.newAccount = {};
+      state.user = {};
       state.loggedIn = false;
     },
   },

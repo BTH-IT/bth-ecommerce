@@ -1,3 +1,6 @@
+@import url("../components/select.css");
+@import url("../components/label.css");
+
 .profile-form {
   width: 100%;
   background-color: white;

@@ -5,23 +5,20 @@ export class CreateNewUserInput {
   @Field()
   fullname: string;
 
-  @Field()
-  gender: string;
+  @Field({ nullable: true })
+  gender?: string;
 
-  @Field()
-  birthYear: number;
+  @Field({ nullable: true })
+  birthYear?: number;
 
-  @Field()
-  phone: string;
+  @Field({ nullable: true })
+  phone?: string;
 
-  @Field()
-  address: string;
+  @Field({ nullable: true })
+  address?: string;
 
   @Field({ nullable: true })
   account?: string;
-
-  @Field()
-  type: string;
 }
 
 @InputType()

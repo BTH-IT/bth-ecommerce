@@ -1,7 +1,8 @@
+import { UsersService } from './../users/users.service';
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import * as bcrypt from 'bcrypt';
 import { JwtService } from '@nestjs/jwt';
-import { LoginDto } from '@/dto/auth.dto';
+import { LoginDto, RegisterDto } from '@/dto/auth.dto';
 import { AccountsService } from '@/accounts/services/accounts.service';
 import { Account } from '@/schemas/account.schema';
 
@@ -10,6 +11,7 @@ export class AuthService {
   constructor(
     private accountsService: AccountsService,
     private jwtService: JwtService,
+    private usersService: UsersService,
   ) {}
 
   async validateAccount(email: string) {
@@ -26,21 +28,18 @@ export class AuthService {
   }
 
   async login(loginInput: LoginDto) {
-    const Account = await this.accountsService.findOneWithCondition(
+    const account = await this.accountsService.findOneWithCondition(
       loginInput.email,
       'default',
     );
 
-    if (!Account) {
+    if (!account) {
       throw new HttpException('Email not found', HttpStatus.UNAUTHORIZED);
     }
 
-    const { ...acc }: any = Account;
-    const { password, ...newAccount } = acc._doc;
-
     const isVerified = bcrypt.compareSync(
       loginInput.password as string,
-      Account.password as string,
+      account.password as string,
     );
 
     if (!isVerified) {
@@ -49,6 +48,19 @@ export class AuthService {
         HttpStatus.UNAUTHORIZED,
       );
     }
+
+    const { ...acc }: any = account;
+    const { password, ...newAccount } = acc._doc;
+
+    const user = await this.usersService.findOneByAccountId(
+      newAccount._id.toString(),
+    );
+
+    if (!user) {
+      throw new HttpException('User not found', HttpStatus.UNAUTHORIZED);
+    }
+
+    user.account = newAccount;
 
     const refreshToken = this.jwtService.sign(newAccount, {
       secret: process.env.SECRETKEY,
@@ -62,6 +74,7 @@ export class AuthService {
 
     return {
       newAccount,
+      user,
       accessToken,
       refreshToken,
     };
@@ -71,14 +84,15 @@ export class AuthService {
     if (!req.account) {
       return new HttpException('No Account login', HttpStatus.UNAUTHORIZED);
     }
+    const { email, fullname, picture } = req.account;
     let account = await this.accountsService.findOneWithCondition(
-      req.account.email,
+      email,
       'google',
     );
 
     if (!account) {
       req.account.password = bcrypt.hashSync(
-        req.account.email.reverse() + req.account.email,
+        email.reverse() + fullname.reverse() + picture.reverse(),
         10,
       );
       req.account.type = 'google';
@@ -88,13 +102,40 @@ export class AuthService {
     const { ...acc }: any = account;
     const { password, ...newAccount } = acc._doc;
 
-    return newAccount;
+    const user = await this.usersService.createNewUser({
+      account: newAccount._id,
+      fullname,
+      gender: undefined,
+      birthYear: undefined,
+      phone: undefined,
+      address: undefined,
+    });
+
+    user.account = newAccount;
+
+    const refreshToken = this.jwtService.sign(newAccount, {
+      secret: process.env.SECRETKEY,
+      expiresIn: process.env.EXPIRESIN_REFRESHTOKEN,
+    });
+
+    const accessToken = this.jwtService.sign(newAccount, {
+      secret: process.env.SECRETKEY,
+      expiresIn: process.env.EXPIRESIN,
+    });
+
+    return {
+      newAccount,
+      user,
+      accessToken,
+      refreshToken,
+    };
   }
 
-  async register(data: LoginDto) {
+  async register(data: RegisterDto) {
     if (!data) throw new HttpException('Invalid data', HttpStatus.BAD_REQUEST);
 
-    const { email, password } = data;
+    const { email, password, fullname, gender, birthYear, phone, address } =
+      data;
 
     const isExisted = await this.accountsService.findOneWithCondition(
       email,
@@ -109,13 +150,22 @@ export class AuthService {
 
     const passwordHash = bcrypt.hashSync(password, 10);
 
-    const Account = await this.accountsService.createNewAccount({
+    const account = await this.accountsService.createNewAccount({
       email,
       password: passwordHash,
     });
 
-    const { ...acc }: any = Account;
+    const { ...acc }: any = account;
     const { password: pwd, ...newAccount } = acc._doc;
+
+    await this.usersService.createNewUser({
+      fullname,
+      gender,
+      birthYear,
+      phone,
+      address,
+      account: newAccount._id,
+    });
 
     return newAccount;
   }
@@ -142,8 +192,14 @@ export class AuthService {
   async getProfile(data: Account) {
     if (!data) throw new HttpException('No data', HttpStatus.BAD_REQUEST);
 
-    const Account = await this.validateAccount(data.email);
+    const account = await this.validateAccount(data.email);
+    const user = await this.usersService.findOneByAccountId(
+      account._id.toString(),
+    );
 
-    return Account;
+    return {
+      account,
+      user,
+    };
   }
 }

@@ -11,6 +11,12 @@ export class UsersService {
     return this.usersRepository.findById(id);
   }
 
+  async findOneByAccountId(id: string): Promise<User | null> {
+    return this.usersRepository.findByCondition({
+      account: id,
+    });
+  }
+
   async findAll(): Promise<User[]> {
     return this.usersRepository.getByCondition({ isActive: true });
   }

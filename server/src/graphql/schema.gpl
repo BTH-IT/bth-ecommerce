@@ -125,12 +125,11 @@ input CreateNewTypeInput {
 
 input CreateNewUserInput {
   account: String
-  address: String!
-  birthYear: Float!
+  address: String
+  birthYear: Float
   fullname: String!
-  gender: String!
-  phone: String!
-  type: String!
+  gender: String
+  phone: String
 }
 
 input CreateNewWarrantyInput {
@@ -512,11 +511,13 @@ input UpdateWarrantyInput {
 type User {
   _id: String!
   account: Account!
-  age: Float!
+  address: String
+  birthYear: Float
   createdAt: DateTime!
   fullname: String!
-  gender: String!
+  gender: String
   isActive: Boolean!
+  phone: String
   type: Type!
   updatedAt: DateTime!
 }

@@ -7,7 +7,6 @@ import React, {
   useRef,
   useState,
 } from 'react';
-import '../css/layouts/header.css';
 import { useAppSelector } from '@/redux/hooks';
 import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { useDispatch } from 'react-redux';
@@ -24,6 +23,7 @@ import { useClickOutSide } from '@/hooks/useClickOutSide';
 
 const Header = () => {
   const isLogged = Boolean(useAppSelector(selectAuth).accessToken);
+  const user: any = useAppSelector(selectAuth).user;
   const cartList = useAppSelector(selectAuth).cartList;
   const dispatch = useDispatch();
 
@@ -155,7 +155,7 @@ const Header = () => {
                     </span>
                     <span className="action-title">
                       Xin chào, <br />
-                      <p>Hung</p>
+                      <p>{user?.fullname ? user?.fullname : 'fullname'}</p>
                     </span>
                   </div>
                   <div className="action-hover">
