@@ -125,9 +125,11 @@ input CreateNewTypeInput {
 
 input CreateNewUserInput {
   account: String
-  age: Float!
+  address: String!
+  birthYear: Float!
   fullname: String!
   gender: String!
+  phone: String!
   type: String!
 }
 
@@ -320,6 +322,7 @@ type Product {
 
 input ProductParamsInput {
   sale: Boolean! = false
+  search: SearchInput! = {}
   sort: String! = "none"
 }
 
@@ -365,6 +368,10 @@ type RoleAndFeature {
   feature: Feature!
   isActive: Boolean!
   role: Role!
+}
+
+input SearchInput {
+  key: String! = ""
 }
 
 type Supplier {
@@ -487,9 +494,11 @@ input UpdateTypeInput {
 input UpdateUserInput {
   _id: ID!
   account: String
-  age: Float!
+  address: String!
+  birthYear: Float!
   fullname: String!
   gender: String!
+  phone: String!
   type: String!
 }
 

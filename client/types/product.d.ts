@@ -43,3 +43,8 @@ export type ProductType = {
     thumbUrl: string;
   };
 };
+
+export type SuggestProductType = {
+  _id: string;
+  productName: string;
+};

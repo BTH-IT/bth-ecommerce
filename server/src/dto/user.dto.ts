@@ -6,7 +6,13 @@ export class CreateNewUserDto {
 
   @IsNotEmpty()
   @IsPositive()
-  age: number;
+  birthYear: number;
+
+  @IsNotEmpty()
+  phone: string;
+
+  @IsNotEmpty()
+  address: string;
 
   @IsNotEmpty() account?: string;
   @IsNotEmpty() type: string;
@@ -19,7 +25,14 @@ export class UpdateUserDto {
 
   @IsNotEmpty()
   @IsPositive()
-  age?: number;
+  birthYear?: number;
+
+  @IsNotEmpty()
+  phone?: string;
+
+  @IsNotEmpty()
+  address?: string;
+
   @IsNotEmpty() account?: string;
   @IsNotEmpty() type?: string;
 }

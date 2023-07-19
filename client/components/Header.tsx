@@ -1,15 +1,26 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, {
+  ChangeEvent,
+  LegacyRef,
+  useEffect,
+  useRef,
+  useState,
+} from 'react';
 import '../css/layouts/header.css';
-import Link from 'next/link';
-import Image from 'next/image';
-import SidebarMobile from './SidebarMobile';
 import { useAppSelector } from '@/redux/hooks';
 import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { useDispatch } from 'react-redux';
-import { convertCurrency } from '@/utils/contains';
+import debounce from 'lodash.debounce';
+import Link from 'next/link';
+import SidebarMobile from './SidebarMobile';
+import Image from 'next/image';
 import { CartType } from '@/types/cart';
+import { convertCurrency } from '@/utils/contains';
+import { ProductType, SuggestProductType } from '@/types/product';
+import { searchingSuggest } from '@/utils/serverActions';
+import { useRouter } from 'next/navigation';
+import { useClickOutSide } from '@/hooks/useClickOutSide';
 
 const Header = () => {
   const isLogged = Boolean(useAppSelector(selectAuth).accessToken);
@@ -17,6 +28,9 @@ const Header = () => {
   const dispatch = useDispatch();
 
   const [showSidebarMobile, setShowSidebarMobile] = useState(false);
+  const [suggestList, setSuggestList] = useState<SuggestProductType[] | []>([]);
+  const router = useRouter();
+  const { elementRef, setShow, show } = useClickOutSide();
 
   const [mounted, setMounted] = useState(false);
 
@@ -28,11 +42,51 @@ const Header = () => {
     dispatch(authActions.logout());
   };
 
+  const handleChangeSearching = debounce(
+    async (e: ChangeEvent<HTMLInputElement>) => {
+      let value = e.target.value.trim();
+
+      if (!value) {
+        setSuggestList([]);
+        return;
+      }
+      const params = {
+        search: {
+          key: value,
+        },
+      };
+
+      const productList: ProductType[] = await searchingSuggest(params);
+
+      const suggestProductList = productList.map((product) => {
+        return {
+          _id: product._id,
+          productName: product.productName,
+        };
+      });
+
+      setSuggestList(suggestProductList);
+      if (suggestProductList.length > 0) {
+        setShow(true);
+      }
+    },
+    200,
+  );
+
+  const handleSubmit = async (e: React.SyntheticEvent) => {
+    e.preventDefault();
+    const target = e.target as typeof e.target & {
+      search: { value: string };
+    };
+
+    if (target.search.value) router.push(`/search?key=${target.search.value}`);
+  };
+
   return (
     mounted && (
       <>
         <header className="header-container">
-          <div className="header">
+          <div className="container header">
             <Link className="logo" href="/">
               <span className="logo-img">
                 <Image
@@ -51,18 +105,41 @@ const Header = () => {
                 ></Image>
               </span>
             </Link>
-            <div className="search-container">
-              <div className="search-box">
+            <div className="search-container" onSubmit={handleSubmit}>
+              <form
+                className="search-box"
+                ref={elementRef as LegacyRef<HTMLFormElement> | undefined}
+              >
                 <input
                   type="text"
+                  name="search"
                   className="header-input"
-                  placeholder="Search"
+                  placeholder="Searching..."
+                  onChange={handleChangeSearching}
                 />
-                <ul className="search-suggest"></ul>
-                <button type="button" className="btn primary btn-header">
+                {suggestList.length > 0 && show && (
+                  <ul className="search-suggest">
+                    {suggestList.map((suggest: SuggestProductType) => (
+                      <li
+                        className="search-suggest_item"
+                        key={suggest._id}
+                        onClick={() => setShow(!show)}
+                      >
+                        <Link
+                          href={`/product-detail/${suggest._id}`}
+                          className="search-suggest_item-link"
+                        >
+                          <i className="bi bi-search"></i>
+                          <span>{suggest.productName}</span>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                )}
+                <button type="submit" className="btn primary btn-header">
                   <i className="bi bi-search"></i>
                 </button>
-              </div>
+              </form>
             </div>
             <div className="action">
               {isLogged ? (
@@ -272,7 +349,20 @@ const Header = () => {
                   setShowSidebarMobile(!showSidebarMobile);
                 }}
               >
-                <i className="bi bi-list"></i>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  strokeWidth="1.5"
+                  stroke="currentColor"
+                  className="w-10 h-10"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5"
+                  />
+                </svg>
               </div>
             </div>
           </div>

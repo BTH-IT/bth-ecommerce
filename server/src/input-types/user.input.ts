@@ -9,7 +9,13 @@ export class CreateNewUserInput {
   gender: string;
 
   @Field()
-  age: number;
+  birthYear: number;
+
+  @Field()
+  phone: string;
+
+  @Field()
+  address: string;
 
   @Field({ nullable: true })
   account?: string;
@@ -30,7 +36,13 @@ export class UpdateUserInput {
   gender?: string;
 
   @Field()
-  age?: number;
+  birthYear?: number;
+
+  @Field()
+  phone?: string;
+
+  @Field()
+  address?: string;
 
   @Field({ nullable: true })
   account?: string;

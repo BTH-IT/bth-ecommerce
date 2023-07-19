@@ -1,11 +1,19 @@
 import { IsNotEmpty, IsPositive } from 'class-validator';
 
+export class SearchDto {
+  @IsNotEmpty()
+  key?: string;
+}
+
 export class ProductParamsDto {
   @IsNotEmpty()
   sort?: string;
 
   @IsNotEmpty()
   sale?: boolean;
+
+  @IsNotEmpty()
+  search?: SearchDto;
 }
 
 export class CreateNewProductDto {

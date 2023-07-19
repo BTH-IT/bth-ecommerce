@@ -1,12 +1,21 @@
 import { Field, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class SearchInput {
+  @Field({ defaultValue: '' })
+  key?: string;
+}
+
+@InputType()
 export class ProductParamsInput {
   @Field({ defaultValue: 'none' })
   sort?: string;
 
   @Field({ defaultValue: false })
   sale?: boolean;
+
+  @Field({ defaultValue: {} })
+  search?: SearchInput;
 }
 
 @InputType()

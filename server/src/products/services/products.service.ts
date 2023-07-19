@@ -92,6 +92,18 @@ export class ProductsService {
           },
         },
       ]);
+    } else if (params.search && params.search.key) {
+      const re = new RegExp(params.search.key, 'g');
+      return await this.productsRepository.aggregate([
+        ...aggregateList,
+        {
+          $match: {
+            productName: {
+              $regex: re,
+            },
+          },
+        },
+      ]);
     }
 
     return await this.productsRepository.aggregate(aggregateList);
