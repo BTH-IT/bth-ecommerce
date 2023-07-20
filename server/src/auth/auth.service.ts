@@ -160,6 +160,7 @@ export class AuthService {
 
     await this.usersService.createNewUser({
       fullname,
+      picture: 'https://server.bthung313.site/images/avatar.jpg',
       gender,
       birthYear,
       phone,

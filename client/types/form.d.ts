@@ -11,3 +11,13 @@ export type RegisterFormType = LoginFormType & {
   birthYear: number;
   confirmPassword: string;
 };
+
+export type InformationFormType = {
+  email: string;
+  fullname: string;
+  gender: string;
+  phone: string;
+  address: string;
+  birthYear: number;
+  avatar: any;
+};

@@ -9,6 +9,8 @@ export class CreateNewUserDto {
 
   phone?: string;
 
+  picture?: string;
+
   address?: string;
 
   account?: string;

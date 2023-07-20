@@ -2,6 +2,9 @@
 import { CartType } from '@/types/cart';
 import { ProductType } from '@/types/product';
 import toast from 'react-hot-toast';
+import * as jwt from 'jsonwebtoken';
+import { authActions } from '@/redux/features/authSlice';
+import authService from '@/services/authService';
 
 function handleCart(product: ProductType) {
   const cart = {
@@ -44,5 +47,44 @@ export function handleBuyNow(product: ProductType) {
 export function handleAddToCart(product: ProductType) {
   if (handleCart(product)) {
     toast.success('Thêm sản phẩm vào giỏ hàng thành công!!');
+  }
+}
+
+async function updateAccessToken(refreshToken: string, dispatch: any) {
+  try {
+    const res: any = await authService.refresh(refreshToken);
+
+    localStorage.setItem('access_token', res.data.accessToken);
+
+    dispatch(
+      authActions.updateAccessToken({
+        accessToken: res.data.accessToken,
+      }),
+    );
+  } catch (error) {
+    dispatch(authActions.logout());
+  }
+}
+
+export function handleRefreshToken(dispatch: any) {
+  const refreshToken = localStorage.getItem('refresh_token') || '';
+
+  if (refreshToken) {
+    const now = Math.floor(Date.now() / 1000);
+    const refreshTokenDecode: any = jwt.decode(refreshToken);
+
+    if (now > refreshTokenDecode.exp && refreshTokenDecode) {
+      dispatch(authActions.logout());
+    } else {
+      const accessToken = localStorage.getItem('access_token') || '';
+
+      const accessTokenDecode: any = jwt.decode(accessToken);
+
+      if (now > accessTokenDecode.exp && accessTokenDecode) {
+        updateAccessToken(refreshToken, dispatch);
+      }
+    }
+  } else {
+    dispatch(authActions.logout());
   }
 }

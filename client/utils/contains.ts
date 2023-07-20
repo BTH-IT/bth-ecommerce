@@ -20,6 +20,19 @@ export function convertCurrency(value: number): string {
   });
 }
 
+export function checkIfFilesAreTooBig(files?: [File]): boolean {
+  let valid = true;
+  if (files) {
+    files.map((file) => {
+      const size = file.size / 1024 / 1024;
+      if (size > 10) {
+        valid = false;
+      }
+    });
+  }
+  return valid;
+}
+
 export const filterList = [
   {
     ma: 'brand',

@@ -16,7 +16,7 @@
   overflow: hidden;
 }
 
-.avatar .fa-trash {
+.avatar svg {
   position: absolute;
   top: 50%;
   left: 50%;
@@ -33,7 +33,7 @@
   opacity: 0;
 }
 
-.avatar .fa-trash.active {
+.avatar:hover svg.active {
   visibility: visible;
   opacity: 1;
 }

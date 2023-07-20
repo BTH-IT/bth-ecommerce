@@ -1,3 +1,5 @@
+'use client';
+
 import React from 'react';
 import { useController } from 'react-hook-form';
 
@@ -7,6 +9,7 @@ const InputForm = ({
   title,
   icon,
   iconActionClick = () => {},
+  defaultValue = '',
   ...props
 }: any) => {
   const {
@@ -15,6 +18,7 @@ const InputForm = ({
   } = useController({
     control,
     name,
+    defaultValue: defaultValue,
   });
 
   return (
