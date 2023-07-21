@@ -7,18 +7,11 @@ import { UploadsRepository } from './uploads.repo';
 import { MongooseModule } from '@nestjs/mongoose';
 import { Upload, UploadSchema } from '@/schemas/upload.schema';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
-import { MulterModule } from '@nestjs/platform-express';
-import { v2 as cloudinary } from 'cloudinary';
-import { CloudinaryStorage } from 'multer-storage-cloudinary';
-import { BullModule } from '@nestjs/bull';
 
 @Module({
   imports: [
     ConfigModule.forRoot(),
     MongooseModule.forFeature([{ name: Upload.name, schema: UploadSchema }]),
-    BullModule.registerQueue({
-      name: 'upload-file',
-    }),
   ],
   controllers: [UploadsController],
   providers: [

@@ -3,7 +3,6 @@ import { ConfigModule } from '@nestjs/config';
 import { Module } from '@nestjs/common';
 import { ProductsModule } from './products/products.module';
 import { GraphQLModule } from '@nestjs/graphql';
-import { BullModule } from '@nestjs/bull';
 import { ApolloDriverConfig, ApolloDriver } from '@nestjs/apollo';
 import { join } from 'path';
 import { UsersModule } from './users/users.module';
@@ -27,12 +26,6 @@ import { UploadsModule } from './uploads/uploads.module';
       driver: ApolloDriver,
       autoSchemaFile: join(process.cwd(), 'src/graphql/schema.gpl'),
       sortSchema: true,
-    }),
-    BullModule.forRoot({
-      redis: {
-        host: 'localhost',
-        port: 6739,
-      },
     }),
     ProductsModule,
     UsersModule,
