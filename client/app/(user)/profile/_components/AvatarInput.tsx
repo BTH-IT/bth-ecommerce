@@ -16,13 +16,13 @@ const AvatarInput = ({
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length < 0 || !e.target.files[0])
       return;
-    setValue(name, e.target.files);
+    setValue(name, e.target.files[0]);
     setImage(URL.createObjectURL(e.target.files[0]));
   };
 
   const {
     field: { name: id, value },
-    fieldState: { error },
+    fieldState: { error, isDirty },
   } = useController({
     control,
     name,
@@ -40,7 +40,7 @@ const AvatarInput = ({
 
   return (
     <div className="avatar_container">
-      <div className="mt-2 flex justify-center items-center flex-col">
+      <div className="flex flex-col items-center justify-center mt-2">
         <div className="avatar">
           <input
             id={id}
@@ -55,7 +55,7 @@ const AvatarInput = ({
             <Image src={image} alt="avatar" width={10000} height={10000} />
           </label>
           <svg
-            className={value ? 'active' : ''}
+            className={isDirty ? 'active' : ''}
             fill="none"
             stroke="currentColor"
             strokeWidth={1.5}

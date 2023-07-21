@@ -13,6 +13,7 @@ import { useForm } from 'react-hook-form';
 import { InformationFormType } from '@/types/form';
 import AvatarInput from './AvatarInput';
 import { handleRefreshToken } from '@/utils/clientActions';
+import uploadService from '@/services/uploadService';
 
 const yearNow = new Date().getFullYear();
 
@@ -101,10 +102,14 @@ const InformationForm = () => {
     fetchProfile();
   }, [accessToken]);
 
-  const updateInformation = async (values: any) => {
-    if (!isValid) return;
+  const updateInformation = async (values: InformationFormType) => {
+    if (!isValid || !data) return;
 
-    console.log(values);
+    try {
+      const fileUpload = values.avatar;
+
+      const imageUrl = await uploadService.add(fileUpload);
+    } catch (error: any) {}
   };
 
   return (

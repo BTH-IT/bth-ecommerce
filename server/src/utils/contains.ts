@@ -24,4 +24,6 @@ export const FEATURE = {
   BANNER: 'BANNER',
 };
 
+export const CLOUDINARY = 'Cloudinary';
+
 export const ObjectId = mongoose.Types.ObjectId;
