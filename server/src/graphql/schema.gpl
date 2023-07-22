@@ -37,7 +37,7 @@ type Brand {
 input CreateNewAccountInput {
   email: String!
   password: String!
-  role: String!
+  role: String
   type: String! = "default"
 }
 
@@ -393,44 +393,45 @@ type Type {
 
 input UpdateAccountInput {
   _id: ID!
-  email: String!
-  password: String!
-  role: String!
+  email: String
+  password: String
+  picture: String
+  role: String
 }
 
 input UpdateBannerInput {
   _id: ID!
-  description: String!
-  isShow: Boolean!
-  name: String!
-  thumbUrl: String!
+  description: String
+  isShow: Boolean
+  name: String
+  thumbUrl: String
 }
 
 input UpdateBrandInput {
   _id: ID!
-  iconUrl: String!
-  name: String!
-  thumbUrl: String!
+  iconUrl: String
+  name: String
+  thumbUrl: String
 }
 
 input UpdateFeatureInput {
   _id: ID!
-  name: String!
+  name: String
 }
 
 input UpdateImportOrderInput {
   _id: ID!
-  employee: String!
-  importedProducts: [String!]!
-  supplier: String!
+  employee: String
+  importedProducts: [String!]
+  supplier: String
 }
 
 input UpdateOrderInput {
   _id: ID!
-  boughtProducts: [String!]!
-  employee: String!
-  purchaseFrom: String!
-  user: String!
+  boughtProducts: [String!]
+  employee: String
+  purchaseFrom: String
+  user: String
 }
 
 input UpdateProductInput {
@@ -475,37 +476,37 @@ input UpdateProductInput {
 input UpdateRoleInput {
   _id: ID!
   description: String
-  name: String!
+  name: String
 }
 
 input UpdateSupplierInput {
   _id: ID!
-  address: String!
-  name: String!
-  phoneNum: String!
+  address: String
+  name: String
+  phoneNum: String
 }
 
 input UpdateTypeInput {
   _id: ID!
-  name: String!
+  name: String
 }
 
 input UpdateUserInput {
   _id: ID!
   account: String
-  address: String!
-  birthYear: Float!
-  fullname: String!
-  gender: String!
-  phone: String!
-  type: String!
+  address: String
+  birthYear: Float
+  fullname: String
+  gender: String
+  phone: String
+  type: String
 }
 
 input UpdateWarrantyInput {
   _id: ID!
-  product: String!
-  productDetail: String!
-  warrantyYear: Float!
+  product: String
+  productDetail: String
+  warrantyYear: Float
 }
 
 type User {

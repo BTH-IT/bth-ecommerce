@@ -8,7 +8,7 @@ export class CreateNewAccountInput {
   @Field()
   password: string;
 
-  @Field()
+  @Field({ nullable: true })
   role?: string;
 
   @Field({ defaultValue: 'default' })
@@ -20,13 +20,16 @@ export class UpdateAccountInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   email?: string;
 
-  @Field()
+  @Field({ nullable: true })
+  picture?: string;
+
+  @Field({ nullable: true })
   password?: string;
 
-  @Field()
+  @Field({ nullable: true })
   role?: string;
 }
 

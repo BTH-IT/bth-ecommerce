@@ -10,6 +10,10 @@ export class Upload {
   @Field(() => String)
   filename: string;
 
+  @Prop()
+  @Field(() => String)
+  publicId: string;
+
   @Prop({ default: '' })
   @Field({ defaultValue: '' })
   imageUrl?: string;

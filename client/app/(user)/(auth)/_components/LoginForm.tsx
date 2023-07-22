@@ -53,8 +53,6 @@ const LoginForm = () => {
     if (!isValid) return;
 
     dispatch(authActions.login(data));
-
-    console.log(loginSuccess);
   };
 
   return (

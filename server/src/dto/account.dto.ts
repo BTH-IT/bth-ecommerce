@@ -10,6 +10,7 @@ export class CreateNewAccountDto {
 export class UpdateAccountDto {
   @IsNotEmpty() _id: string;
   @IsNotEmpty() email?: string;
+  @IsNotEmpty() picture?: string;
   @IsNotEmpty() password?: string;
   @IsNotEmpty() role?: string;
 }

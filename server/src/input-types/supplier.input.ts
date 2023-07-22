@@ -17,13 +17,13 @@ export class UpdateSupplierInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 
-  @Field()
+  @Field({ nullable: true })
   phoneNum?: string;
 
-  @Field()
+  @Field({ nullable: true })
   address?: string;
 }
 

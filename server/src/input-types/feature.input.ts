@@ -11,7 +11,7 @@ export class UpdateFeatureInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 }
 

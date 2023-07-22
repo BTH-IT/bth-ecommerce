@@ -24,6 +24,7 @@ import { useClickOutSide } from '@/hooks/useClickOutSide';
 const Header = () => {
   const isLogged = Boolean(useAppSelector(selectAuth).accessToken);
   const user: any = useAppSelector(selectAuth).user;
+  const account: any = useAppSelector(selectAuth).newAccount;
   const cartList = useAppSelector(selectAuth).cartList;
   const dispatch = useDispatch();
 
@@ -147,8 +148,8 @@ const Header = () => {
                   <div className="action-logged">
                     <span className="action-img">
                       <Image
-                        src="https://server.bthung313.site/images/avatar.jpg"
-                        alt=""
+                        src={account?.picture}
+                        alt="avatar"
                         width={32}
                         height={32}
                       />

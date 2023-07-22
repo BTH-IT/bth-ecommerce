@@ -1,6 +1,6 @@
 'use client';
 
-import { selectAuth } from '@/redux/features/authSlice';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import authService from '@/services/authService';
 import React, { useEffect, useLayoutEffect, useState } from 'react';
@@ -14,6 +14,9 @@ import { InformationFormType } from '@/types/form';
 import AvatarInput from './AvatarInput';
 import { handleRefreshToken } from '@/utils/clientActions';
 import uploadService from '@/services/uploadService';
+import userService from '@/services/userService';
+import accountService from '@/services/accountService';
+import toast from 'react-hot-toast';
 
 const yearNow = new Date().getFullYear();
 
@@ -50,10 +53,12 @@ const InformationForm = () => {
   const accessToken = useAppSelector(selectAuth).accessToken;
   const dispatch = useAppDispatch();
   const [data, setData] = useState<any>(null);
+  const [url, setUrl] = useState<any>('');
 
   const {
     setValue,
     handleSubmit,
+    setFocus,
     formState: { isValid },
     control,
   } = useForm<InformationFormType>({
@@ -87,13 +92,14 @@ const InformationForm = () => {
         }
 
         setData(res.data);
+        setUrl(res.data.account?.picture);
+        setFocus('email');
         setValue('email', res.data.account?.email);
         setValue('fullname', res.data.user?.fullname);
         setValue('gender', res.data.user?.gender);
         setValue('phone', res.data.user?.phone);
         setValue('address', res.data.user?.address);
         setValue('birthYear', res.data.user?.birthYear);
-        setValue('avatar', res.data.account?.picture);
       } catch (error: any) {
         console.log(error);
       }
@@ -106,10 +112,36 @@ const InformationForm = () => {
     if (!isValid || !data) return;
 
     try {
-      const fileUpload = values.avatar;
+      const { avatar, email, ...restValues }: InformationFormType = values;
 
-      const imageUrl = await uploadService.add(fileUpload);
-    } catch (error: any) {}
+      const { data: avatarData } = await uploadService.uploadSingle(avatar);
+
+      const account = {
+        picture: avatarData.imageUrl || data.account.picture,
+        email,
+        _id: data.account._id,
+      };
+
+      const user = {
+        ...restValues,
+        _id: data.user._id,
+      };
+
+      await userService.update(user);
+      await accountService.update(account);
+
+      dispatch(authActions.updateAccount({ account }));
+      dispatch(authActions.updateUser({ user }));
+
+      toast.success("Change user's information successfully!!");
+    } catch (error: any) {
+      if (error.statusCode === 403) {
+        handleRefreshToken(dispatch);
+        await updateInformation(values);
+      } else {
+        toast.error("Change user's information failure!!");
+      }
+    }
   };
 
   return (
@@ -118,6 +150,9 @@ const InformationForm = () => {
         name="avatar"
         setValue={setValue}
         control={control}
+        url={url}
+        image={url}
+        setImage={setUrl}
         accept="image/*"
         hidden
       ></AvatarInput>

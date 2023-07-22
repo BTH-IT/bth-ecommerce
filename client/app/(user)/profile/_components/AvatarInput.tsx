@@ -1,17 +1,18 @@
 'use client';
 
 import Image from 'next/image';
-import React, { ChangeEvent, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef } from 'react';
 import { useController } from 'react-hook-form';
 
 const AvatarInput = ({
   control,
   name,
   setValue,
-  url = 'https://server.bthung313.site/images/avatar.jpg',
+  url,
+  image,
+  setImage,
   ...props
 }: any) => {
-  const [image, setImage] = useState(url);
   const inputRef = useRef<HTMLInputElement | null>(null);
   const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (!e.target.files || e.target.files.length < 0 || !e.target.files[0])
@@ -52,7 +53,16 @@ const AvatarInput = ({
             type="file"
           />
           <label htmlFor="avatar">
-            <Image src={image} alt="avatar" width={10000} height={10000} />
+            <Image
+              src={
+                image
+                  ? image
+                  : 'https://server.bthung313.site/images/avatar.jpg'
+              }
+              alt="avatar"
+              width={10000}
+              height={10000}
+            />
           </label>
           <svg
             className={isDirty ? 'active' : ''}

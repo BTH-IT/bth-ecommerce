@@ -54,6 +54,24 @@ export const authSlice = createSlice({
         cartList: payload.payload.cartList,
       };
     },
+    updateAccount: (state, payload: PayloadAction<{ account: any }>) => {
+      return {
+        ...state,
+        newAccount: {
+          ...state.newAccount,
+          ...payload.payload.account,
+        },
+      };
+    },
+    updateUser: (state, payload: PayloadAction<{ user: any }>) => {
+      return {
+        ...state,
+        user: {
+          ...state.user,
+          ...payload.payload.user,
+        },
+      };
+    },
     loginSuccess: (state, payload: PayloadAction<LoginSliceType>) => {
       return {
         ...state,

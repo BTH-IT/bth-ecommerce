@@ -17,13 +17,13 @@ export class UpdateImportOrderInput {
   @Field(() => ID)
   _id: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   importedProducts?: [string];
 
-  @Field()
+  @Field({ nullable: true })
   supplier?: string;
 
-  @Field()
+  @Field({ nullable: true })
   employee?: string;
 }
 

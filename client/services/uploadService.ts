@@ -1,109 +1,47 @@
-import { UploadType } from '@/types/upload';
-import { createAxiosGraphql } from '@/utils/contains';
+import axios from 'axios';
 
 const uploadService = {
-  async getAll(params?: any): Promise<UploadType[]> {
-    const graphqlQuery = {
-      query: `
-        query {
-          getAllUploads {
-            _id
-            name
-            thumbUrl
-            iconUrl
-            isActive
-            createdAt
-            updatedAt
-          }
-        }`,
-      variables: {},
-    };
+  uploadSingle(data: File) {
+    const url = '/upload/single';
+    const formData = new FormData();
+    formData.append('file', data);
 
-    const response = await createAxiosGraphql(graphqlQuery);
-
-    return response.getAllUploads;
-  },
-  async getById(id: string) {
-    const graphqlQuery = {
-      query: `
-        query getUpload($id: String!) {
-          getUpload(id: $id) {
-            _id
-            name
-            thumbUrl
-            iconUrl
-            isActive
-            updatedAt
-            createdAt
-          }
-        }`,
-      variables: {
-        id,
+    return axios.post('http://localhost:5000' + url, formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
-    };
-
-    const response = await createAxiosGraphql(graphqlQuery);
-
-    return response;
+    });
   },
-  async add(data: any) {
-    const graphqlQuery = {
-      query: `
-        mutation createNewUpload($createNewUpload: CreateNewUploadInput!){
-          createNewUpload(createNewUpload: $createNewUpload) {
-            _id
-            name
-            thumbUrl
-            iconUrl
-            isActive
-            updatedAt
-            createdAt
-          }
-        }`,
-      variables: {
-        createNewUpload: data,
+  uploadMultiple(data: File[]) {
+    const url = `/upload/multiple`;
+    const formData = new FormData();
+
+    data.forEach((file) => formData.append('file', file));
+
+    return axios.post('http://localhost:5000' + url, data, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
-    };
-
-    const response = await createAxiosGraphql(graphqlQuery);
-
-    return response;
+    });
   },
-  async update(data: any) {
-    const graphqlQuery = {
-      query: `
-        mutation updateUpload($updateUpload: UpdateUploadInput!){
-          updateUpload(updateUpload: $updateUpload) {
-            _id
-          }
-        }`,
-      variables: {
-        updateUpload: data,
+  deleteSingle(data: { filename: string; publicId: string }) {
+    const url = `/upload/single/${data.filename}/${data.publicId}`;
+    return axios.delete('http://localhost:5000' + url, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },
-    };
-
-    const response = await createAxiosGraphql(graphqlQuery);
-
-    return response;
+    });
   },
-  async remove(id: string) {
-    const graphqlQuery = {
-      query: `
-        mutation deleteUpload($deleteUpload: DeleteUploadInput!){
-          deleteUpload(deleteUpload: $deleteUpload) {
-            _id
-          }
-        }`,
-      variables: {
-        deleteUpload: {
-          _id: id,
+
+  deleteMultiple(data: { filename: string; publicId: string }[]) {
+    return data.forEach((item) => {
+      const url = `/upload/single/${item.filename}/${item.publicId}`;
+      return axios.delete('http://localhost:5000' + url, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('access_token')}`,
         },
-      },
-    };
-
-    const response = await createAxiosGraphql(graphqlQuery);
-
-    return response;
+      });
+    });
   },
 };
 

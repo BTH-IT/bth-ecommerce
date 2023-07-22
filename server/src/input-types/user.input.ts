@@ -26,25 +26,25 @@ export class UpdateUserInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   fullname?: string;
 
-  @Field()
+  @Field({ nullable: true })
   gender?: string;
 
-  @Field()
+  @Field({ nullable: true })
   birthYear?: number;
 
-  @Field()
+  @Field({ nullable: true })
   phone?: string;
 
-  @Field()
+  @Field({ nullable: true })
   address?: string;
 
   @Field({ nullable: true })
   account?: string;
 
-  @Field()
+  @Field({ nullable: true })
   type?: string;
 }
 

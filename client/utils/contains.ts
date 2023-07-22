@@ -7,7 +7,7 @@ export async function createAxiosGraphql(graphqlQuery: any) {
   );
 
   if (res.statusCode && res.statusCode !== 200) {
-    throw new Error(res.message);
+    throw res;
   }
 
   return res.data;

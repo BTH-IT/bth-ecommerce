@@ -20,16 +20,16 @@ export class UpdateOrderInput {
   @Field(() => ID)
   _id: string;
 
-  @Field(() => [String])
+  @Field(() => [String], { nullable: true })
   boughtProducts?: [string];
 
-  @Field()
+  @Field({ nullable: true })
   user?: string;
 
-  @Field()
+  @Field({ nullable: true })
   employee?: string;
 
-  @Field()
+  @Field({ nullable: true })
   purchaseFrom?: string;
 }
 

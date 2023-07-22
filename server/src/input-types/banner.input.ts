@@ -17,16 +17,16 @@ export class UpdateBannerInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 
-  @Field()
+  @Field({ nullable: true })
   description?: string;
 
-  @Field()
+  @Field({ nullable: true })
   thumbUrl?: string;
 
-  @Field()
+  @Field({ nullable: true })
   isShow?: boolean;
 }
 

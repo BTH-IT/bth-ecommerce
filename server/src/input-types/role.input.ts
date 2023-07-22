@@ -14,7 +14,7 @@ export class UpdateRoleInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 
   @Field({ nullable: true })

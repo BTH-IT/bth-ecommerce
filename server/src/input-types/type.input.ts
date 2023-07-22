@@ -11,7 +11,7 @@ export class UpdateTypeInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   name?: string;
 }
 

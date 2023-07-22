@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosClient = axios.create({
-  baseURL: process.env.NEST_SERVER_URL || '',
+  baseURL: process.env.NEST_SERVER_URL || 'http://localhost:5000/graphql',
 });
 
 // Add a request interceptor
@@ -9,7 +9,13 @@ axiosClient.interceptors.request.use(
   function (config) {
     // Do something before request is sent
 
-    config.headers.Authorization = `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJfaWQiOiI2NGFkNDc5YjI4NGIyMTY5ZGYxMjNhNTAiLCJlbWFpbCI6ImJ0aHVuZ0BnbWFpbC5jb20iLCJyb2xlIjoiNjRhYWY1ZjE1YjQ0OTE5MjcwN2RkZTc4IiwidHlwZSI6ImRlZmF1bHQiLCJpc0FjdGl2ZSI6dHJ1ZSwiY3JlYXRlZEF0IjoiMjAyMy0wNy0xMVQxMjoxNDoxOS44NjhaIiwidXBkYXRlZEF0IjoiMjAyMy0wNy0xMVQxMjoxNDoxOS44NjhaIiwiX192IjowLCJpYXQiOjE2ODkzNDkwODgsImV4cCI6MTY4OTQzNTQ4OH0.XWsxG_PBfMkFKi1xWtukMcZCM-s5JBWhGwLj4Lx7bSo`;
+    if (typeof window !== 'undefined') {
+      config.headers.Authorization = `Bearer ${
+        localStorage.getItem('access_token') || ' '
+      }`;
+    } else {
+      config.headers.Authorization = `Bearer ${' '}`;
+    }
 
     return config;
   },

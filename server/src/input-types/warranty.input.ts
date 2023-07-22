@@ -17,13 +17,13 @@ export class UpdateWarrantyInput {
   @Field(() => ID)
   _id: string;
 
-  @Field()
+  @Field({ nullable: true })
   productDetail?: string;
 
-  @Field()
+  @Field({ nullable: true })
   product?: string;
 
-  @Field()
+  @Field({ nullable: true })
   warrantyYear?: number;
 }
 

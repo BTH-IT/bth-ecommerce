@@ -1,3 +1,4 @@
+import { DeleteUploadDto } from './../dto/upload.dto';
 import { Injectable } from '@nestjs/common';
 import { UploadsRepository } from './uploads.repo';
 import { Upload } from '@/schemas/upload.schema';
@@ -15,5 +16,11 @@ export class UploadsService {
 
   async createNewUpload(upload: CreateNewUploadDto): Promise<Upload> {
     return this.uploadsRepository.create(upload);
+  }
+
+  async deleteUpload(upload: DeleteUploadDto): Promise<any> {
+    return this.uploadsRepository.deleteByCondition({
+      filename: upload.filename,
+    });
   }
 }
