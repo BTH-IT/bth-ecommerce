@@ -83,7 +83,7 @@ const InformationForm = () => {
           res = await authService.getProfile(accessToken);
         } catch (error: any) {
           if (error.response.data.statusCode === 401) {
-            handleRefreshToken(dispatch);
+            await handleRefreshToken(dispatch);
             res = await authService.getProfile(accessToken);
           }
         }
@@ -100,7 +100,7 @@ const InformationForm = () => {
         setValue('birthYear', res.data.user?.birthYear);
       } catch (error: any) {
         if (error.response.data.statusCode === 401) {
-          handleRefreshToken(dispatch);
+          await handleRefreshToken(dispatch);
         }
       }
     }
@@ -141,7 +141,7 @@ const InformationForm = () => {
       toast.success("Change user's information successfully!!");
     } catch (error: any) {
       if (error.statusCode === 403) {
-        handleRefreshToken(dispatch);
+        await handleRefreshToken(dispatch);
         await updateInformation(values);
       } else {
         toast.error("Change user's information failure!!");

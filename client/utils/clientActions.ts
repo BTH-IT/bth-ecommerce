@@ -54,7 +54,7 @@ async function updateAccessToken(refreshToken: string, dispatch: any) {
   }
 }
 
-export function handleRefreshToken(dispatch: any) {
+export async function handleRefreshToken(dispatch: any) {
   const refreshToken = localStorage.getItem('refresh_token') || '';
 
   if (refreshToken) {
@@ -69,7 +69,7 @@ export function handleRefreshToken(dispatch: any) {
       const accessTokenDecode: any = jwt.decode(accessToken);
 
       if (now > accessTokenDecode.exp && accessTokenDecode) {
-        updateAccessToken(refreshToken, dispatch);
+        await updateAccessToken(refreshToken, dispatch);
       }
     }
   } else {

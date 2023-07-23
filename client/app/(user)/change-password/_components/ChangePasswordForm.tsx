@@ -63,7 +63,7 @@ const ChangePasswordForm = () => {
       reset();
     } catch (error: any) {
       if (error.response.data.statusCode === 401) {
-        handleRefreshToken(dispatch);
+        await handleRefreshToken(dispatch);
         await handleChangePassword(values);
       } else {
         toast.error(error.response.data.message);
