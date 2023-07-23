@@ -21,3 +21,9 @@ export type InformationFormType = {
   birthYear: number;
   avatar: any;
 };
+
+export type ChangePasswordFormType = {
+  oldPassword: string;
+  newPassword: string;
+  confirmNewPassword: string;
+};

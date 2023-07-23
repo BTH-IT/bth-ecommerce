@@ -43,3 +43,7 @@
   height: 100%;
   object-fit: cover;
 }
+
+.select_container label {
+  font-size: 1.3rem;
+}

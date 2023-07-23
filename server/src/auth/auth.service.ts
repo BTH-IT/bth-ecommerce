@@ -203,4 +203,34 @@ export class AuthService {
       user,
     };
   }
+
+  async changePassword(data: {
+    email: string;
+    oldPassword: string;
+    newPassword: string;
+  }) {
+    if (!data) throw new HttpException('No data', HttpStatus.BAD_REQUEST);
+
+    const account = await this.accountsService.findOne(data.email);
+
+    if (!account) throw new HttpException('No account', HttpStatus.BAD_REQUEST);
+
+    const isVerified = bcrypt.compareSync(data.oldPassword, account.password);
+
+    if (!isVerified) {
+      throw new HttpException(
+        'Old Password is not valid!',
+        HttpStatus.BAD_REQUEST,
+      );
+    }
+
+    const passwordHash = bcrypt.hashSync(data.newPassword, 10);
+
+    await this.accountsService.updateAccount({
+      _id: account._id.toString(),
+      password: passwordHash,
+    });
+
+    return true;
+  }
 }

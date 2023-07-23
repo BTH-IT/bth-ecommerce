@@ -63,13 +63,13 @@ const InformationForm = () => {
     control,
   } = useForm<InformationFormType>({
     defaultValues: {
-      fullname: data?.user?.fullname || '',
-      gender: data?.user?.gender || '',
-      phone: data?.user?.phone || '',
-      address: data?.user?.address || '',
-      birthYear: data?.user?.birthYear || 1,
-      email: data?.account?.email || '',
-      avatar: data?.account?.picture || '',
+      fullname: '',
+      gender: '',
+      phone: '',
+      address: '',
+      birthYear: 1,
+      email: '',
+      avatar: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -78,18 +78,7 @@ const InformationForm = () => {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        let res = null;
-        try {
-          res = await authService.getProfile(accessToken);
-        } catch (error: any) {
-          if (error.response.data.statusCode === 401) {
-            handleRefreshToken(dispatch);
-          }
-        }
-
-        if (!res) {
-          throw new Error('Error Server');
-        }
+        const res = await authService.getProfile(accessToken);
 
         setData(res.data);
         setUrl(res.data.account?.picture);
@@ -101,7 +90,10 @@ const InformationForm = () => {
         setValue('address', res.data.user?.address);
         setValue('birthYear', res.data.user?.birthYear);
       } catch (error: any) {
-        console.log(error);
+        if (error.response.data.statusCode === 401) {
+          handleRefreshToken(dispatch);
+          await fetchProfile();
+        }
       }
     }
 
@@ -133,6 +125,9 @@ const InformationForm = () => {
       dispatch(authActions.updateAccount({ account }));
       dispatch(authActions.updateUser({ user }));
 
+      localStorage.setItem('current_account', JSON.stringify(account));
+      localStorage.setItem('current_account', JSON.stringify(user));
+
       toast.success("Change user's information successfully!!");
     } catch (error: any) {
       if (error.statusCode === 403) {
@@ -161,30 +156,35 @@ const InformationForm = () => {
         name="email"
         title="Email"
         type="text"
+        placeholder="Nhập email...."
       ></InputForm>
       <InputForm
         control={control}
         name="fullname"
         title="Họ tên"
         type="text"
+        placeholder="Nhập họ tên...."
       ></InputForm>
       <InputForm
         control={control}
         name="birthYear"
         title="Năm sinh"
         type="number"
+        placeholder="Nhập năm sinh...."
       ></InputForm>
       <InputForm
         control={control}
         name="phone"
         title="Số điện thoại"
         type="text"
+        placeholder="Nhập số điện thoại...."
       ></InputForm>
       <InputForm
         control={control}
         name="address"
         title="Địa chỉ"
         type="text"
+        placeholder="Nhập địa chỉ...."
       ></InputForm>
       <SelectForm
         control={control}
