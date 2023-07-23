@@ -1,15 +1,27 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class OrderDetailInput {
+  @Field()
+  product: string;
+
+  @Field()
+  amount: number;
+
+  @Field()
+  price: number;
+}
+
+@InputType()
 export class CreateNewOrderInput {
-  @Field(() => [String])
-  boughtProducts: [string];
+  @Field(() => [OrderDetailInput])
+  boughtProducts: [OrderDetailInput];
 
   @Field()
   user: string;
 
-  @Field()
-  employee: string;
+  @Field({ nullable: true })
+  employee?: string;
 
   @Field()
   purchaseForm: string;

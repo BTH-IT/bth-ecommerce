@@ -78,7 +78,16 @@ const InformationForm = () => {
   useEffect(() => {
     async function fetchProfile() {
       try {
-        const res = await authService.getProfile(accessToken);
+        let res;
+        try {
+          res = await authService.getProfile(accessToken);
+        } catch (error: any) {
+          if (error.response.data.statusCode === 401) {
+            handleRefreshToken(dispatch);
+            res = await authService.getProfile(accessToken);
+          }
+        }
+        if (!res) throw new Error('Error server');
 
         setData(res.data);
         setUrl(res.data.account?.picture);
@@ -92,13 +101,12 @@ const InformationForm = () => {
       } catch (error: any) {
         if (error.response.data.statusCode === 401) {
           handleRefreshToken(dispatch);
-          await fetchProfile();
         }
       }
     }
 
     fetchProfile();
-  }, [accessToken]);
+  }, []);
 
   const updateInformation = async (values: InformationFormType) => {
     if (!isValid || !data) return;
@@ -122,8 +130,10 @@ const InformationForm = () => {
       await userService.update(user);
       await accountService.update(account);
 
-      dispatch(authActions.updateAccount({ account }));
-      dispatch(authActions.updateUser({ user }));
+      const res = await authService.getProfile(accessToken);
+
+      dispatch(authActions.updateAccount({ account: res.data.account }));
+      dispatch(authActions.updateUser({ user: res.data.user }));
 
       localStorage.setItem('current_account', JSON.stringify(account));
       localStorage.setItem('current_account', JSON.stringify(user));
@@ -186,11 +196,14 @@ const InformationForm = () => {
         type="text"
         placeholder="Nhập địa chỉ...."
       ></InputForm>
-      <SelectForm
-        control={control}
-        name="gender"
-        title="Giới tính"
-      ></SelectForm>
+      <SelectForm control={control} name="gender" title="Giới tính">
+        <option value="" hidden>
+          Chọn gender
+        </option>
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+        <option value="Khác">Khác</option>
+      </SelectForm>
       <Button type="submit" className="btn primary btn-update">
         Cập nhật
       </Button>

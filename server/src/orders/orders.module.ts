@@ -30,6 +30,7 @@ import { RoleAndFeatureRepository } from '@/features/repositories/role-and-featu
 import { FeaturesRepository } from '@/features/repositories/features.repo';
 import { RolesService } from '@/roles/roles.service';
 import { RolesRepository } from '@/roles/roles.repo';
+import { ProductDetailsService } from '@/products/services/productDetails.service';
 
 @Module({
   imports: [
@@ -60,6 +61,8 @@ import { RolesRepository } from '@/roles/roles.repo';
     FeaturesRepository,
     RolesService,
     RolesRepository,
+    ProductDetailsService,
+    ProductDetailsRepository,
   ],
 })
 export class OrdersModule {}

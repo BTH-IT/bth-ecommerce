@@ -19,6 +19,7 @@ import {
   RoleAndFeatureSchema,
 } from '@/schemas/role-and-feature.schema';
 import { Feature, FeatureSchema } from '@/schemas/feature.schema';
+import { ProductDetailsService } from './services/productDetails.service';
 
 @Module({
   imports: [

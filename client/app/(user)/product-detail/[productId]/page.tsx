@@ -2,14 +2,13 @@ import productService from '@/services/productService';
 import Link from 'next/link';
 import React from 'react';
 import '../../../../css/pages/product-detail.css';
-import Button from '@/components/Button';
 import ProductSlider from './_components/ProductSlider';
 import { Metadata } from 'next';
 import ImagesProduct from './_components/ImagesProduct';
 import DescriptionProduct from './_components/DescriptionProduct';
 import InforProduct from './_components/InforProduct';
 import AmountAndPriceProduct from './_components/AmountAndPriceProduct';
-import { handleAddToCart, handleBuyNow } from '@/utils/clientActions';
+import AddProductToCart from './_components/AddProductToCart';
 
 export async function generateMetadata({
   params,
@@ -50,26 +49,7 @@ const ProductDetailPage = async ({
           <div className="col-span-3 p-2 product__info-container">
             <AmountAndPriceProduct product={product}></AmountAndPriceProduct>
             <div className="p-0">
-              <div className="grid grid-cols-3 gap-3 product__info-btn_container">
-                <Button
-                  type="button"
-                  className="col-span-1 buy-btn"
-                  data={product}
-                  handleEventClick={handleBuyNow}
-                  disabled={product.remain === 0}
-                >
-                  MUA NGAY
-                </Button>
-                <Button
-                  type="button"
-                  className="col-span-2 addToCart-btn"
-                  data={product}
-                  handleEventClick={handleAddToCart}
-                  disabled={product.remain === 0}
-                >
-                  THÊM VÀO GIỎ HÀNG
-                </Button>
-              </div>
+              <AddProductToCart product={product}></AddProductToCart>
             </div>
           </div>
         </div>

@@ -1,10 +1,14 @@
 import { IsNotEmpty } from 'class-validator';
 
 export class CreateNewOrderDto {
-  @IsNotEmpty() boughtProducts: [string];
-  @IsNotEmpty() employee: string;
+  @IsNotEmpty() boughtProducts: string[];
+  @IsNotEmpty() employee?: string;
   @IsNotEmpty() user: string;
   @IsNotEmpty() purchaseForm: string;
+  @IsNotEmpty() status: string;
+  @IsNotEmpty() fullname: string;
+  @IsNotEmpty() address: string;
+  @IsNotEmpty() phone: string;
 }
 
 export class UpdateOrderDto {
@@ -13,6 +17,10 @@ export class UpdateOrderDto {
   @IsNotEmpty() employee?: string;
   @IsNotEmpty() user?: string;
   @IsNotEmpty() purchaseForm?: string;
+  @IsNotEmpty() status?: string;
+  @IsNotEmpty() fullname?: string;
+  @IsNotEmpty() address?: string;
+  @IsNotEmpty() phone?: string;
 }
 
 export class DeleteOrderDto {

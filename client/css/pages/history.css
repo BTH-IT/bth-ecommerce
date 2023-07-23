@@ -233,13 +233,6 @@ select {
     border: .5px solid var(--gray-500);
 }
 
-input:focus,
-select:focus {
-    border: 1px solid var(--primary);
-    transition: all 0.2s ease;
-
-}
-
 .btn-primary:disabled {
     cursor: not-allowed;
     pointer-events: all !important;

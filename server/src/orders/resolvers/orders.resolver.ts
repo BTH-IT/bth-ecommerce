@@ -22,12 +22,14 @@ import { ReadOrderGuard } from '../guards/read-order.guard';
 import { CreateOrderGuard } from '../guards/create-order.guard';
 import { UpdateOrderGuard } from '../guards/update-order.guard';
 import { DeleteOrderGuard } from '../guards/delete-order.guard';
+import { ProductDetailsService } from '@/products/services/productDetails.service';
 
 @Resolver(() => Order)
 export class OrdersResolver {
   constructor(
     private readonly ordersService: OrdersService,
     private readonly orderDetailsService: OrderDetailsService,
+    private readonly productDetailsService: ProductDetailsService,
     private readonly usersService: UsersService,
   ) {}
 
@@ -46,7 +48,45 @@ export class OrdersResolver {
   @Mutation(() => Order)
   @UseGuards(CreateOrderGuard)
   async createNewOrder(@Args('createNewOrder') data: CreateNewOrderInput) {
-    return this.ordersService.createNewOrder(data);
+    const { boughtProducts, ...order } = data;
+
+    const newBoughtProducts = boughtProducts.map((cart) => cart.product);
+
+    const user = await this.usersService.findOne(order.user);
+
+    const newOrder = {
+      ...order,
+      boughtProducts: newBoughtProducts,
+      status: 'waiting',
+      fullname: user?.fullname || '',
+      phone: user?.phone || '',
+      address: user?.address || '',
+    };
+
+    const orderDoc = await this.ordersService.createNewOrder(newOrder);
+
+    boughtProducts.forEach(async (p) => {
+      const productDetail =
+        await this.productDetailsService.deleteProductDetail({
+          _id: p.product,
+        });
+
+      if (!productDetail) return;
+
+      const data = {
+        amount: p.amount,
+        price: p.price,
+        productDetail: productDetail._id.toString(),
+        product: p.product,
+      };
+
+      await this.orderDetailsService.createNewOrderDetail({
+        ...data,
+        order: orderDoc._id.toString(),
+      });
+    });
+
+    return orderDoc;
   }
 
   @Mutation(() => Order)
@@ -62,9 +102,9 @@ export class OrdersResolver {
   }
 
   @ResolveField('boughtProducts', () => [OrderDetail])
-  async getedProducts(@Parent() order: Order) {
+  async getProducts(@Parent() order: Order) {
     return await this.orderDetailsService.findManyByCondition(
-      order.boughtProducts,
+      order._id.toString(),
     );
   }
 
@@ -74,7 +114,12 @@ export class OrdersResolver {
   }
 
   @ResolveField('employee', () => User)
-  async getRoleAndFeature(@Parent() Order: Order) {
-    return await this.usersService.findOne(Order.employee._id.toString());
+  async getRoleAndFeature(@Parent() order: Order) {
+    if (!order.employee) {
+      return {
+        _id: '',
+      };
+    }
+    return await this.usersService.findOne(order.employee._id.toString());
   }
 }

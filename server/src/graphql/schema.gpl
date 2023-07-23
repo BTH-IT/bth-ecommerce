@@ -64,8 +64,8 @@ input CreateNewImportOrderInput {
 }
 
 input CreateNewOrderInput {
-  boughtProducts: [String!]!
-  employee: String!
+  boughtProducts: [OrderDetailInput!]!
+  employee: String
   purchaseForm: String!
   user: String!
 }
@@ -258,11 +258,15 @@ type Mutation {
 
 type Order {
   _id: String!
+  address: String!
   boughtProducts: [OrderDetail!]!
   createdAt: DateTime!
   employee: User!
+  fullname: String!
   isHidden: Boolean!
+  phoneNumber: String!
   purchaseForm: String!
+  status: String!
   updatedAt: DateTime!
   user: User!
 }
@@ -271,9 +275,17 @@ type OrderDetail {
   _id: String!
   amount: Float!
   createdAt: DateTime!
+  order: Order!
   price: Float!
   product: Product!
+  productDetail: String!
   updatedAt: DateTime!
+}
+
+input OrderDetailInput {
+  amount: Float!
+  price: Float!
+  product: String!
 }
 
 type Product {

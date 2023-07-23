@@ -1,4 +1,5 @@
 import axiosClient from '@/services/configService';
+import { Error403 } from '@/services/errorService';
 
 export async function createAxiosGraphql(graphqlQuery: any) {
   const res: any = await axiosClient.post(
@@ -7,7 +8,7 @@ export async function createAxiosGraphql(graphqlQuery: any) {
   );
 
   if (res.statusCode && res.statusCode !== 200) {
-    throw res;
+    throw new Error403(res.message);
   }
 
   return res.data;

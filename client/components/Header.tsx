@@ -346,7 +346,6 @@ const Header = () => {
               <div
                 className="action-bars"
                 onClick={() => {
-                  console.log(showSidebarMobile);
                   setShowSidebarMobile(!showSidebarMobile);
                 }}
               >

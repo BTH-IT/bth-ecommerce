@@ -3,19 +3,141 @@
 import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import TableBodyCart from './TableBodyCart';
-import { useAppSelector } from '@/redux/hooks';
-import { selectAuth } from '@/redux/features/authSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { CartType } from '@/types/cart';
 import Link from 'next/link';
+import SelectForm from '../../(auth)/_components/SelectForm';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { getAllProduct } from '@/utils/serverActions';
+import Button from '@/components/Button';
+import toast from 'react-hot-toast';
+import orderService from '@/services/orderService';
+import { convertCurrency } from '@/utils/contains';
+import { handleRefreshToken } from '@/utils/clientActions';
+
+const schema = yup
+  .object({
+    payType: yup
+      .string()
+      .required('This field is required')
+      .oneOf(
+        ['momo', 'vnpay', 'received'],
+        'This field must be equal to one of momo, vnpay or received',
+      ),
+  })
+  .required();
 
 const CartContentPage = () => {
   const cartList: CartType[] = useAppSelector(selectAuth).cartList;
-
+  const totalPay = cartList.reduce((p, c) => {
+    return p + c.originPrice - (c.originPrice * c.salePercent) / 100;
+  }, 0);
+  const user: any = useAppSelector(selectAuth).user;
+  const dispatch = useAppDispatch();
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  const {
+    handleSubmit,
+    reset,
+    formState: { isValid, isSubmitting },
+    control,
+  } = useForm<any>({
+    defaultValues: {
+      payType: '',
+    },
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
+
+  const handleRemoveAll = () => {
+    localStorage.setItem('cart_list', '[]');
+    dispatch(
+      authActions.updateCartList({
+        cartList: [],
+      }),
+    );
+  };
+
+  const handleBuy = async (values: { payType: string }) => {
+    if (!isValid || cartList.length <= 0) return;
+
+    const productList = await getAllProduct();
+
+    const newCartList = cartList.filter((cart: CartType) => {
+      const isValidRemain = Boolean(
+        productList.find((product) => cart.amount <= product.remain),
+      );
+      return isValidRemain;
+    });
+
+    const invalidCartList = cartList.filter((cart) => {
+      if (newCartList.length <= 0) return true;
+
+      const isValidRemain = Boolean(
+        newCartList.find((c) => c._id !== cart._id),
+      );
+
+      return isValidRemain;
+    });
+
+    invalidCartList.forEach((cart) => {
+      const product = productList.find((pro) => pro._id === cart._id);
+      toast(
+        `${product?.productName} is currently only ${product?.remain} products`,
+        {
+          duration: 10000,
+        },
+      );
+    });
+
+    if (invalidCartList.length > 0) return;
+
+    const boughtProducts = cartList.map((cart) => {
+      return {
+        product: cart._id,
+        price: cart.originPrice - (cart.originPrice * cart.salePercent) / 100,
+        amount: cart.amount,
+      };
+    });
+
+    const data = {
+      boughtProducts,
+      user: user._id,
+      purchaseForm: values.payType,
+    };
+
+    try {
+      await orderService.add(data);
+
+      toast.success('Payment successfully!!');
+      localStorage.setItem('cart_list', '[]');
+      dispatch(authActions.updateCartList({ cartList: [] }));
+      reset();
+    } catch (error: any) {
+      if (error.statusCode === 403) {
+        try {
+          handleRefreshToken(dispatch);
+          await orderService.add(data);
+
+          toast.success('Payment successfully!!');
+          localStorage.setItem('cart_list', '[]');
+          dispatch(authActions.updateCartList({ cartList: [] }));
+          reset();
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      } else {
+        toast.error(error.message);
+      }
+    }
+  };
 
   return mounted && cartList.length > 0 ? (
     <div className="grid grid-cols-12 gap-3">
@@ -26,7 +148,9 @@ const CartContentPage = () => {
               <h4>Giỏ hàng</h4>
             </div>
             <div className="cart-delete">
-              <span className="delete">Xoá tất cả</span>
+              <span className="delete" onClick={handleRemoveAll}>
+                Xoá tất cả
+              </span>
             </div>
           </div>
         </div>
@@ -50,20 +174,36 @@ const CartContentPage = () => {
       </div>
       <div className="col-span-4 gap-3">
         <div className="mt-14 total-container">
-          <div className="total-title">
-            <h5>Thành tiền</h5>
-          </div>
-          <div className="pre-price_container">
-            <div className="pre-price_title">Tổng tạm tính</div>
-            <div className="pre-price">0 VND</div>
-          </div>
-          <div className="total-price_container">
-            <div className="total-price_title">Thành tiền</div>
-            <div className="total-price">0 VND</div>
-          </div>
-          <div className="purchase-btn_container">
-            <button className="purchase-btn">THANH TOÁN</button>
-          </div>
+          <form action="" onSubmit={handleSubmit(handleBuy)}>
+            <SelectForm name="payType" title="Pay Method" control={control}>
+              <option value="" hidden>
+                Chọn phương thức thanh toán
+              </option>
+              <option value="momo">Thanh toán bằng MomoPay</option>
+              <option value="vnpay">Thanh toán bằng VNPay</option>
+              <option value="received">Thanh toán khi nhận hàng</option>
+            </SelectForm>
+            <div className="total-title text-primary">
+              <h5>Thành tiền</h5>
+            </div>
+            <div className="pre-price_container">
+              <div className="pre-price_title">Tổng tạm tính</div>
+              <div className="pre-price">{convertCurrency(totalPay)}</div>
+            </div>
+            <div className="total-price_container">
+              <div className="total-price_title">Thành tiền</div>
+              <div className="total-price">{convertCurrency(totalPay)}</div>
+            </div>
+            <div className="purchase-btn_container">
+              <Button
+                className="purchase-btn"
+                type="submit"
+                disabled={isSubmitting}
+              >
+                THANH TOÁN
+              </Button>
+            </div>
+          </form>
         </div>
       </div>
     </div>

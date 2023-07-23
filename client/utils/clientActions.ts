@@ -6,7 +6,7 @@ import * as jwt from 'jsonwebtoken';
 import { authActions } from '@/redux/features/authSlice';
 import authService from '@/services/authService';
 
-function handleCart(product: ProductType) {
+export function handleCart(product: ProductType) {
   const cart = {
     _id: product._id,
     thumbUrl: product.imageUrlList[0],
@@ -36,18 +36,6 @@ function handleCart(product: ProductType) {
   localStorage.setItem('cart_list', JSON.stringify(cartList));
 
   return true;
-}
-
-export function handleBuyNow(product: ProductType) {
-  if (handleCart(product)) {
-    window.location.href = '/cart';
-  }
-}
-
-export function handleAddToCart(product: ProductType) {
-  if (handleCart(product)) {
-    toast.success('Thêm sản phẩm vào giỏ hàng thành công!!');
-  }
 }
 
 async function updateAccessToken(refreshToken: string, dispatch: any) {

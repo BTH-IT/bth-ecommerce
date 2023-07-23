@@ -6,30 +6,25 @@ import {
   DeleteOrderDetailDto,
   UpdateOrderDetailDto,
 } from '@/dto/order-details.dto';
+import { ObjectId } from '@/utils/contains';
 
 @Injectable()
 export class OrderDetailsService {
   constructor(
-    private readonly OrderDetailsRepository: OrderDetailsRepository,
+    private readonly orderDetailsRepository: OrderDetailsRepository,
   ) {}
 
   async findAll(): Promise<OrderDetail[]> {
-    return this.OrderDetailsRepository.findAll();
+    return this.orderDetailsRepository.findAll();
   }
 
   async findOne(id: string): Promise<OrderDetail | null> {
-    return this.OrderDetailsRepository.findById(id);
+    return this.orderDetailsRepository.findById(id);
   }
 
-  async findManyByCondition(data: [OrderDetail]): Promise<OrderDetail[]> {
-    const OrderDetailIdList = data.map((Order) => Order._id);
-
-    return this.OrderDetailsRepository.getByCondition({
-      where: {
-        _id: {
-          $in: OrderDetailIdList,
-        },
-      },
+  async findManyByCondition(orderId: string): Promise<OrderDetail[]> {
+    return this.orderDetailsRepository.getByCondition({
+      order: new ObjectId(orderId),
     });
   }
 
@@ -37,16 +32,16 @@ export class OrderDetailsService {
     data: UpdateOrderDetailDto,
   ): Promise<OrderDetail | null> {
     const { _id, ...orderDetail } = data;
-    return this.OrderDetailsRepository.findByIdAndUpdate(_id, orderDetail);
+    return this.orderDetailsRepository.findByIdAndUpdate(_id, orderDetail);
   }
 
-  async createNewOrderDetailDto(
+  async createNewOrderDetail(
     data: CreateNewOrderDetailDto,
   ): Promise<OrderDetail> {
-    return this.OrderDetailsRepository.create(data);
+    return this.orderDetailsRepository.create(data);
   }
 
   async deleteOrderDetail(data: DeleteOrderDetailDto): Promise<any> {
-    return this.OrderDetailsRepository.deleteOne(data._id);
+    return this.orderDetailsRepository.deleteOne(data._id);
   }
 }

@@ -103,12 +103,14 @@ const RegisterForm = () => {
         placeholder="Nhập fullname..."
         type="text"
       ></InputForm>
-      <SelectForm
-        control={control}
-        name="gender"
-        title="Gender"
-        placeholder="Chọn gender..."
-      ></SelectForm>
+      <SelectForm control={control} name="gender" title="Gender">
+        <option value="" hidden>
+          Chọn gender
+        </option>
+        <option value="Nam">Nam</option>
+        <option value="Nữ">Nữ</option>
+        <option value="Khác">Khác</option>
+      </SelectForm>
       <InputForm
         control={control}
         name="phone"

@@ -6,7 +6,7 @@ const SelectForm = ({
   name,
   title = 'Giới tính',
   defaultValue = '',
-  placeholder = 'Chọn gender',
+  children,
   ...props
 }: any) => {
   const {
@@ -23,14 +23,9 @@ const SelectForm = ({
       <label htmlFor={name} className="label">
         {title}
       </label>
-      <div className="select">
+      <div className={`select ${error && error.message ? 'select-error' : ''}`}>
         <select id={name} {...field} {...props}>
-          <option value="" hidden>
-            {placeholder}
-          </option>
-          <option value="Nam">Nam</option>
-          <option value="Nữ">Nữ</option>
-          <option value="Khác">Khác</option>
+          {children}
         </select>
       </div>
       {error && error.message && (
