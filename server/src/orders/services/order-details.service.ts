@@ -23,9 +23,57 @@ export class OrderDetailsService {
   }
 
   async findManyByCondition(orderId: string): Promise<OrderDetail[]> {
-    return this.orderDetailsRepository.getByCondition({
-      order: new ObjectId(orderId),
+    const list = await this.orderDetailsRepository.aggregate([
+      {
+        $match: {
+          order: {
+            $eq: new ObjectId(orderId),
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'orderdetails',
+          localField: 'product',
+          foreignField: 'product',
+          as: 'remainList',
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          product: 1,
+          productDetail: 1,
+          price: 1,
+          order: 1,
+          amount: {
+            $size: '$remainList',
+          },
+        },
+      },
+    ]);
+
+    const newList: any[] = [];
+
+    list.forEach((order) => {
+      if (order.amount === 1 || newList.length <= 0) {
+        newList.push(order);
+        return;
+      }
+
+      const isHad = Boolean(
+        newList.find((ord) => {
+          return ord.product.toString() === order.product.toString();
+        }),
+      );
+
+      if (!isHad) {
+        newList.push(order);
+        return;
+      }
     });
+
+    return newList;
   }
 
   async updateOrderDetail(

@@ -176,9 +176,11 @@ body {
 
 #amount {
     background-color: white !important;
-    width: 30px;
+    width: 60px;
     text-align: center;
-    border: 1px solid var(--gray-300);
+    border-top: 1px solid var(--gray-300);
+    border-bottom: 1px solid var(--gray-300);
+    border-radius: 0px !important;
 }
 
 .product-amount_plus,

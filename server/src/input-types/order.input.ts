@@ -42,7 +42,19 @@ export class UpdateOrderInput {
   employee?: string;
 
   @Field({ nullable: true })
-  purchaseFrom?: string;
+  fullname?: string;
+
+  @Field({ nullable: true })
+  address?: string;
+
+  @Field({ nullable: true })
+  phoneNumber?: string;
+
+  @Field({ nullable: true })
+  status?: string;
+
+  @Field({ nullable: true })
+  isPaid?: boolean;
 }
 
 @InputType()

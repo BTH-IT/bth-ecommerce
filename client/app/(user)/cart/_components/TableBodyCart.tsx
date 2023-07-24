@@ -1,10 +1,16 @@
 'use client';
 
+import { authActions, selectAuth } from '@/redux/features/authSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import productService from '@/services/productService';
 import { CartType } from '@/types/cart';
 import { convertCurrency } from '@/utils/contains';
+import debounce from 'lodash.debounce';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useEffect, useState } from 'react';
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import toast from 'react-hot-toast';
+import AmountAction from './AmountAction';
 
 const TableBodyCart = ({ cartList }: { cartList: CartType[] }) => {
   return cartList.map((cart, idx) => (
@@ -49,18 +55,7 @@ const TableBodyCart = ({ cartList }: { cartList: CartType[] }) => {
         </div>
       </td>
       <td className="table-body_item">
-        <div className="product-amount_container">
-          <button className="product-amount_minus">-</button>
-          <input
-            className={`amount-${idx + 1 + cart.productName}`}
-            type="number"
-            name="amount"
-            id="amount"
-            min="1"
-            defaultValue={cart.amount}
-          />
-          <button className="product-amount_plus">+</button>
-        </div>
+        <AmountAction cart={cart}></AmountAction>
         <div className="delete-product">Xoá</div>
       </td>
     </tr>

@@ -27,8 +27,7 @@ export class OrderDetail extends BaseSchema {
   @Field()
   price: number;
 
-  @Prop()
-  @Field()
+  @Field({ defaultValue: 0 })
   amount: number;
 }
 export type OrderDetailDocument = OrderDetail & Document;

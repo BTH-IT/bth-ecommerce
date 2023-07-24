@@ -264,6 +264,7 @@ type Order {
   employee: User!
   fullname: String!
   isHidden: Boolean!
+  isPaid: Boolean!
   phoneNumber: String!
   purchaseForm: String!
   status: String!
@@ -440,9 +441,13 @@ input UpdateImportOrderInput {
 
 input UpdateOrderInput {
   _id: ID!
+  address: String
   boughtProducts: [String!]
   employee: String
-  purchaseFrom: String
+  fullname: String
+  isPaid: Boolean
+  phoneNumber: String
+  status: String
   user: String
 }
 

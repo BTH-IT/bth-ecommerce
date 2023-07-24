@@ -66,24 +66,25 @@ export class OrdersResolver {
     const orderDoc = await this.ordersService.createNewOrder(newOrder);
 
     boughtProducts.forEach(async (p) => {
-      const productDetail =
-        await this.productDetailsService.deleteProductDetail({
-          _id: p.product,
+      for (let i = 1; i <= p.amount; i++) {
+        const productDetail =
+          await this.productDetailsService.deleteProductDetail({
+            _id: p.product,
+          });
+
+        if (!productDetail) return;
+
+        const data = {
+          price: p.price,
+          productDetail: productDetail._id.toString(),
+          product: p.product,
+        };
+
+        await this.orderDetailsService.createNewOrderDetail({
+          ...data,
+          order: orderDoc._id.toString(),
         });
-
-      if (!productDetail) return;
-
-      const data = {
-        amount: p.amount,
-        price: p.price,
-        productDetail: productDetail._id.toString(),
-        product: p.product,
-      };
-
-      await this.orderDetailsService.createNewOrderDetail({
-        ...data,
-        order: orderDoc._id.toString(),
-      });
+      }
     });
 
     return orderDoc;

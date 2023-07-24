@@ -5,7 +5,6 @@ export class CreateNewOrderDetailDto {
   @IsNotEmpty() productDetail: string;
   @IsNotEmpty() product: string;
   @IsNotEmpty() price: number;
-  @IsNotEmpty() amount: number;
 }
 
 export class UpdateOrderDetailDto {
@@ -14,7 +13,6 @@ export class UpdateOrderDetailDto {
   @IsNotEmpty() productDetail?: string;
   @IsNotEmpty() product?: string;
   @IsNotEmpty() price?: number;
-  @IsNotEmpty() amount?: number;
 }
 
 export class DeleteOrderDetailDto {

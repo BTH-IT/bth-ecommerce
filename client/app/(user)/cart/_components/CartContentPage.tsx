@@ -17,6 +17,7 @@ import toast from 'react-hot-toast';
 import orderService from '@/services/orderService';
 import { convertCurrency } from '@/utils/contains';
 import { handleRefreshToken } from '@/utils/clientActions';
+import { useRouter } from 'next/navigation';
 
 const schema = yup
   .object({
@@ -32,12 +33,14 @@ const schema = yup
 
 const CartContentPage = () => {
   const cartList: CartType[] = useAppSelector(selectAuth).cartList;
+  const loggedIn: boolean = useAppSelector(selectAuth).loggedIn;
   const totalPay = cartList.reduce((p, c) => {
     return p + c.originPrice - (c.originPrice * c.salePercent) / 100;
   }, 0);
   const user: any = useAppSelector(selectAuth).user;
   const dispatch = useAppDispatch();
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     setMounted(true);
@@ -66,38 +69,43 @@ const CartContentPage = () => {
   };
 
   const handleBuy = async (values: { payType: string }) => {
+    if (!loggedIn) {
+      toast.error('Bạn hãy đăng nhận trước khi mua hàng');
+
+      setTimeout(() => {
+        router.push('/login');
+      }, 1000);
+
+      return;
+    }
+
     if (!isValid || cartList.length <= 0) return;
 
     const productList = await getAllProduct();
 
-    const newCartList = cartList.filter((cart: CartType) => {
-      const isValidRemain = Boolean(
+    const validCartList: CartType[] = [];
+    const invalidCartList: CartType[] = [];
+
+    cartList.forEach((cart: CartType) => {
+      const isValidCart = Boolean(
         productList.find((product) => cart.amount <= product.remain),
       );
-      return isValidRemain;
+      if (isValidCart) validCartList.push(cart);
+      else invalidCartList.push(cart);
     });
 
-    const invalidCartList = cartList.filter((cart) => {
-      if (newCartList.length <= 0) return true;
-
-      const isValidRemain = Boolean(
-        newCartList.find((c) => c._id !== cart._id),
-      );
-
-      return isValidRemain;
-    });
-
-    invalidCartList.forEach((cart) => {
-      const product = productList.find((pro) => pro._id === cart._id);
-      toast(
-        `${product?.productName} is currently only ${product?.remain} products`,
-        {
-          duration: 10000,
-        },
-      );
-    });
-
-    if (invalidCartList.length > 0) return;
+    if (invalidCartList.length > 0) {
+      invalidCartList.forEach((cart) => {
+        const product = productList.find((pro) => pro._id === cart._id);
+        toast(
+          `${product?.productName} is currently only ${product?.remain} products`,
+          {
+            duration: 10000,
+          },
+        );
+      });
+      return;
+    }
 
     const boughtProducts = cartList.map((cart) => {
       return {

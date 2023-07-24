@@ -101,6 +101,7 @@ const InformationForm = () => {
       } catch (error: any) {
         if (error.response.data.statusCode === 401) {
           await handleRefreshToken(dispatch);
+          await fetchProfile();
         }
       }
     }

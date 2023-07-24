@@ -4,7 +4,6 @@ import { Schema as MongooseSchema } from 'mongoose';
 import { BaseSchema } from './base.schema';
 import { User } from './user.schema';
 import { OrderDetail } from './order-detail.schema';
-import { ObjectId } from '@/utils/contains';
 
 @Schema({
   timestamps: true,
@@ -48,6 +47,10 @@ export class Order extends BaseSchema {
   @Prop({ default: 'waiting' })
   @Field({ defaultValue: 'waiting' })
   status: string;
+
+  @Prop({ default: false })
+  @Field({ defaultValue: false })
+  isPaid: boolean;
 
   @Prop({ default: true })
   @Field({ defaultValue: true })
