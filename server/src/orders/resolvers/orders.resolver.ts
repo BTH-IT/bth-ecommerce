@@ -61,6 +61,7 @@ export class OrdersResolver {
       fullname: user?.fullname || '',
       phone: user?.phone || '',
       address: user?.address || '',
+      isPaid: false,
     };
 
     const orderDoc = await this.ordersService.createNewOrder(newOrder);
