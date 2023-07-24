@@ -17,6 +17,7 @@ import uploadService from '@/services/uploadService';
 import userService from '@/services/userService';
 import accountService from '@/services/accountService';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 const yearNow = new Date().getFullYear();
 
@@ -51,31 +52,13 @@ const schema = yup
 
 const InformationForm = () => {
   const accessToken = useAppSelector(selectAuth).accessToken;
-  const dispatch = useAppDispatch();
-  const [data, setData] = useState<any>(null);
-  const [url, setUrl] = useState<any>('');
+  const loginSuccess = Boolean(
+    useAppSelector((state) => state.auth.accessToken),
+  );
+  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
+  const router = useRouter();
 
-  const {
-    setValue,
-    handleSubmit,
-    setFocus,
-    formState: { isValid },
-    control,
-  } = useForm<InformationFormType>({
-    defaultValues: {
-      fullname: '',
-      gender: '',
-      phone: '',
-      address: '',
-      birthYear: 1,
-      email: '',
-      avatar: '',
-    },
-    resolver: yupResolver(schema),
-    mode: 'onChange',
-  });
-
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function fetchProfile() {
       try {
         let res;
@@ -106,8 +89,35 @@ const InformationForm = () => {
       }
     }
 
-    fetchProfile();
-  }, []);
+    if (!loginSuccess || !loggedIn) {
+      router.push('/');
+    } else {
+      fetchProfile();
+    }
+  }, [loginSuccess, loggedIn]);
+  const dispatch = useAppDispatch();
+  const [data, setData] = useState<any>(null);
+  const [url, setUrl] = useState<any>('');
+
+  const {
+    setValue,
+    handleSubmit,
+    setFocus,
+    formState: { isValid },
+    control,
+  } = useForm<InformationFormType>({
+    defaultValues: {
+      fullname: '',
+      gender: '',
+      phone: '',
+      address: '',
+      birthYear: 1,
+      email: '',
+      avatar: '',
+    },
+    resolver: yupResolver(schema),
+    mode: 'onChange',
+  });
 
   const updateInformation = async (values: InformationFormType) => {
     if (!isValid || !data) return;

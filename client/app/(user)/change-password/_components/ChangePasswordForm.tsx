@@ -1,7 +1,7 @@
 'use client';
 
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import InputForm from '../../(auth)/_components/InputForm';
 import Button from '@/components/Button';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -12,6 +12,7 @@ import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { selectAuth } from '@/redux/features/authSlice';
 import authService from '@/services/authService';
+import { useRouter } from 'next/navigation';
 
 const schema = yup
   .object({
@@ -26,6 +27,17 @@ const schema = yup
 
 const ChangePasswordForm = () => {
   const account: any = useAppSelector(selectAuth).newAccount;
+  const loginSuccess = Boolean(
+    useAppSelector((state) => state.auth.accessToken),
+  );
+  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
+  const router = useRouter();
+
+  useEffect(() => {
+    if (!loginSuccess || !loggedIn) {
+      router.push('/');
+    }
+  }, [loginSuccess]);
   const dispatch = useAppDispatch();
   const [showOldPass, setShowOldPass] = useState(false);
   const [showNewPass, setShowNewPass] = useState(false);
