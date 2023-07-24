@@ -42,6 +42,7 @@
     "@types/redux-logger": "^3.0.9",
     "@types/redux-saga": "^0.10.5",
     "bootstrap-icons": "^1.10.5",
-    "lodash.debounce": "^4.0.8"
+    "lodash.debounce": "^4.0.8",
+    "rsuite": "^5.37.1"
   }
 }
