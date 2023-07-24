@@ -30,11 +30,10 @@ const ChangePasswordForm = () => {
   const loginSuccess = Boolean(
     useAppSelector((state) => state.auth.accessToken),
   );
-  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
   const router = useRouter();
 
   useEffect(() => {
-    if (!loginSuccess || !loggedIn) {
+    if (!loginSuccess) {
       router.push('/');
     }
   }, [loginSuccess]);

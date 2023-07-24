@@ -14,6 +14,10 @@ export interface OrderType {
     amount: number;
     price: number;
   };
+  status: string;
+  purchaseForm: string;
+  isPaid: boolean;
+  totalPay: number;
   updatedAt: Date;
   createdAt: Date;
 }

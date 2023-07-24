@@ -15,6 +15,7 @@ import { OrderDetail } from '@/schemas/order-detail.schema';
 import {
   CreateNewOrderInput,
   DeleteOrderInput,
+  ParamsOrderInput,
   UpdateOrderInput,
 } from '@/input-types/order.input';
 import { UseGuards } from '@nestjs/common';
@@ -35,8 +36,8 @@ export class OrdersResolver {
 
   @Query(() => [Order])
   @UseGuards(ReadOrderGuard)
-  getAllOrders() {
-    return this.ordersService.findAll();
+  getAllOrders(@Args('params') params: ParamsOrderInput) {
+    return this.ordersService.findAll(params);
   }
 
   @Query(() => Order)
@@ -51,6 +52,7 @@ export class OrdersResolver {
     const { boughtProducts, ...order } = data;
 
     const newBoughtProducts = boughtProducts.map((cart) => cart.product);
+    const totalPay = boughtProducts.reduce((p, c) => p + c.amount * c.price, 0);
 
     const user = await this.usersService.findOne(order.user);
 
@@ -62,6 +64,7 @@ export class OrdersResolver {
       phone: user?.phone || '',
       address: user?.address || '',
       isPaid: false,
+      totalPay,
     };
 
     const orderDoc = await this.ordersService.createNewOrder(newOrder);

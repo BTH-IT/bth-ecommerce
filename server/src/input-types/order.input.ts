@@ -1,6 +1,15 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class ParamsOrderInput {
+  @Field({ nullable: true })
+  userId?: string;
+
+  @Field({ nullable: true })
+  type?: string;
+}
+
+@InputType()
 export class OrderDetailInput {
   @Field()
   product: string;

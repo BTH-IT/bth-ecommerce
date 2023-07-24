@@ -44,6 +44,10 @@ export class Order extends BaseSchema {
   @Field()
   fullname: string;
 
+  @Prop()
+  @Field()
+  totalPay: number;
+
   @Prop({ default: 'waiting' })
   @Field({ defaultValue: 'waiting' })
   status: string;

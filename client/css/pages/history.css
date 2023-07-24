@@ -86,10 +86,6 @@ body {
     border-bottom: 1px solid var(--primary);
 }
 
-.container {
-    margin-top: 5px !important;
-}
-
 .history__table {
     background-color: #fff;
     text-align: center;
@@ -120,6 +116,7 @@ body {
 
 .history__table-body-item {
     padding-block: 20px;
+    vertical-align: middle;
 }
 
 .paid-item,
@@ -178,6 +175,17 @@ body {
     padding: 10px;
     color: var(--primary);
     cursor: pointer;
+}
+
+.info-item svg {
+    margin: 0 auto;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    padding: 6px;
+}
+
+.info-item svg:hover {
+    background-color: var(--gray-200);
 }
 
 .detail-container {

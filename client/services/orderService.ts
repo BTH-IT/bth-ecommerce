@@ -5,8 +5,8 @@ const orderService = {
   async getAll(params?: any): Promise<OrderType[]> {
     const graphqlQuery = {
       query: `
-        query getAllOrders {
-          getAllOrders {
+        query getAllOrders($params: ParamsOrderInput!) {
+          getAllOrders(params: $params) {
             _id
             boughtProducts {
               _id
@@ -21,11 +21,16 @@ const orderService = {
             user {
               _id
             }
+            status
+            totalPay
+            isPaid
             createdAt
             updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params,
+      },
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);
@@ -51,6 +56,9 @@ const orderService = {
             user {
               _id
             }
+            status
+            totalPay
+            isPaid
             createdAt
             updatedAt
           }
@@ -83,6 +91,9 @@ const orderService = {
             user {
               _id
             }
+            status
+            totalPay
+            isPaid
             createdAt
             updatedAt
           }

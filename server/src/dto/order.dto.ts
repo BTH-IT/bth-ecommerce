@@ -1,5 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsOrderDto {
+  @IsNotEmpty() userId?: string;
+  @IsNotEmpty() type?: string;
+}
+
 export class CreateNewOrderDto {
   @IsNotEmpty() boughtProducts: string[];
   @IsNotEmpty() employee?: string;

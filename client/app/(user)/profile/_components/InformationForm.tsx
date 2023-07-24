@@ -55,7 +55,6 @@ const InformationForm = () => {
   const loginSuccess = Boolean(
     useAppSelector((state) => state.auth.accessToken),
   );
-  const loggedIn = useAppSelector((state) => state.auth.loggedIn);
   const router = useRouter();
 
   useLayoutEffect(() => {
@@ -89,12 +88,12 @@ const InformationForm = () => {
       }
     }
 
-    if (!loginSuccess || !loggedIn) {
+    if (!loginSuccess) {
       router.push('/');
     } else {
       fetchProfile();
     }
-  }, [loginSuccess, loggedIn]);
+  }, [loginSuccess]);
   const dispatch = useAppDispatch();
   const [data, setData] = useState<any>(null);
   const [url, setUrl] = useState<any>('');
