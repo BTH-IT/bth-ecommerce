@@ -65,8 +65,12 @@ const InformationForm = () => {
           res = await authService.getProfile(accessToken);
         } catch (error: any) {
           if (error.response.data.statusCode === 401) {
-            await handleRefreshToken(dispatch);
-            res = await authService.getProfile(accessToken);
+            try {
+              await handleRefreshToken(dispatch);
+              res = await authService.getProfile(accessToken);
+            } catch (error: any) {
+              console.log(error.message);
+            }
           }
         }
         if (!res) throw new Error('Error server');
@@ -81,10 +85,7 @@ const InformationForm = () => {
         setValue('address', res.data.user?.address);
         setValue('birthYear', res.data.user?.birthYear);
       } catch (error: any) {
-        if (error.response.data.statusCode === 401) {
-          await handleRefreshToken(dispatch);
-          await fetchProfile();
-        }
+        console.log(error.message);
       }
     }
 
@@ -151,8 +152,38 @@ const InformationForm = () => {
       toast.success("Change user's information successfully!!");
     } catch (error: any) {
       if (error.statusCode === 403) {
-        await handleRefreshToken(dispatch);
-        await updateInformation(values);
+        try {
+          await handleRefreshToken(dispatch);
+          const { avatar, email, ...restValues }: InformationFormType = values;
+
+          const { data: avatarData } = await uploadService.uploadSingle(avatar);
+
+          const account = {
+            picture: avatarData.imageUrl || data.account.picture,
+            email,
+            _id: data.account._id,
+          };
+
+          const user = {
+            ...restValues,
+            _id: data.user._id,
+          };
+
+          await userService.update(user);
+          await accountService.update(account);
+
+          const res = await authService.getProfile(accessToken);
+
+          dispatch(authActions.updateAccount({ account: res.data.account }));
+          dispatch(authActions.updateUser({ user: res.data.user }));
+
+          localStorage.setItem('current_account', JSON.stringify(account));
+          localStorage.setItem('current_account', JSON.stringify(user));
+
+          toast.success("Change user's information successfully!!");
+        } catch (error: any) {
+          toast.error("Change user's information failure!!");
+        }
       } else {
         toast.error("Change user's information failure!!");
       }

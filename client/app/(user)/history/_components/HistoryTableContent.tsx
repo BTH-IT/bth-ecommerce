@@ -73,22 +73,23 @@ const HistoryTableContent = ({
           });
         } catch (error: any) {
           if (error.statusCode === 403) {
-            await handleRefreshToken(dispatch);
-            res = await orderService.getAll({
-              userId: user._id,
-              type: orderType,
-              dateRange: dateRangeFilter,
-            });
+            try {
+              await handleRefreshToken(dispatch);
+              res = await orderService.getAll({
+                userId: user._id,
+                type: orderType,
+                dateRange: dateRangeFilter,
+              });
+            } catch (error: any) {
+              console.log(error.message);
+            }
           }
         }
         if (!res) throw new Error('Error server');
 
         setOrderList(res);
       } catch (error: any) {
-        if (error.statusCode === 403) {
-          await handleRefreshToken(dispatch);
-          await fetchOrderList();
-        }
+        console.log(error.message);
       }
     }
 

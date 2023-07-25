@@ -74,8 +74,16 @@ const ChangePasswordForm = () => {
       reset();
     } catch (error: any) {
       if (error.response.data.statusCode === 401) {
-        await handleRefreshToken(dispatch);
-        await handleChangePassword(values);
+        try {
+          await handleRefreshToken(dispatch);
+          await authService.changePassword(newData);
+
+          toast.success('Change password successfully!!');
+
+          reset();
+        } catch (error: any) {
+          toast.error(error.response.data.message);
+        }
       } else {
         toast.error(error.response.data.message);
       }

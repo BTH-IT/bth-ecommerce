@@ -130,8 +130,8 @@ const CartContentPage = () => {
       reset();
     } catch (error: any) {
       if (error.statusCode === 403) {
-        await handleRefreshToken(dispatch);
         try {
+          await handleRefreshToken(dispatch);
           await orderService.add(data);
 
           toast.success('Payment successfully!!');

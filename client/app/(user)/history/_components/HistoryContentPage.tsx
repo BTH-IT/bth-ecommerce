@@ -25,15 +25,20 @@ const HistoryContentPage = () => {
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
   const handleOpen = async (orderId: string) => {
-    await handleRefreshToken(dispatch);
     try {
       const res = await orderService.getById(orderId);
 
       setOrder(res);
     } catch (error: any) {
       if (error.statusCode === 403) {
-        await handleRefreshToken(dispatch);
-        await handleOpen(orderId);
+        try {
+          await handleRefreshToken(dispatch);
+          const res = await orderService.getById(orderId);
+
+          setOrder(res);
+        } catch (error: any) {
+          console.log(error.message);
+        }
       }
     }
     setOpen(true);
