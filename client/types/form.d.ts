@@ -27,3 +27,8 @@ export type ChangePasswordFormType = {
   newPassword: string;
   confirmNewPassword: string;
 };
+export type OrderFormType = {
+  phone: string;
+  address: string;
+  status: string;
+};

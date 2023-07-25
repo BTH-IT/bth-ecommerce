@@ -161,7 +161,7 @@
   cursor: default;
   color: var(--dark);
   display: none;
-  z-index: 2;
+  z-index: 4;
 }
 
 .action-hover::before {

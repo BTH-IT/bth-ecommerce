@@ -13,11 +13,14 @@ export interface OrderType {
     };
     amount: number;
     price: number;
-  };
+  }[];
   status: string;
   purchaseForm: string;
   isPaid: boolean;
   totalPay: number;
+  phone: string;
+  fullname: string;
+  address: string;
   updatedAt: Date;
   createdAt: Date;
 }

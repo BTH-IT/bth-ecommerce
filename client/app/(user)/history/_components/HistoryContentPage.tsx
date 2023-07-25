@@ -1,20 +1,49 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
+import React, { useLayoutEffect, useState } from 'react';
 import HistoryTableContent from './HistoryTableContent';
-import { handleRefreshToken } from '@/utils/clientActions';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import orderService from '@/services/orderService';
 import { selectAuth } from '@/redux/features/authSlice';
-import { OrderType } from '@/types/order';
 import Link from 'next/link';
+import { DateRangePicker } from 'rsuite';
+import { DateRange } from 'rsuite/esm/DateRangePicker';
+import { Modal, Button, Placeholder } from 'rsuite';
+import { OrderType } from '@/types/order';
+import { handleRefreshToken } from '@/utils/clientActions';
+import orderService from '@/services/orderService';
+import UpdateOrderForm from './UpdateOrderForm';
+import SeeMoreOrder from './SeeMoreOrder';
 
 const HistoryContentPage = () => {
+  const dispatch = useAppDispatch();
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
   const params = useSearchParams();
   const type = params.get('type');
+  const [dateRange, setDateRage] = useState<DateRange | null>(null);
+  const [open, setOpen] = useState(false);
+  const [order, setOrder] = useState<OrderType | null>(null);
+  const handleOpen = async (orderId: string) => {
+    await handleRefreshToken(dispatch);
+    try {
+      const res = await orderService.getById(orderId);
+
+      setOrder(res);
+    } catch (error: any) {
+      if (error.statusCode === 403) {
+        await handleRefreshToken(dispatch);
+        await handleOpen(orderId);
+      }
+    }
+    setOpen(true);
+  };
+  const handleClose = () => setOpen(false);
+
+  const [modalData, setModalData] = useState({
+    title: 'Xem chi tiết',
+    key: 'see-more',
+  });
 
   useLayoutEffect(() => {
     if (!loginSuccess) {
@@ -27,7 +56,12 @@ const HistoryContentPage = () => {
       <div className="history__header">
         <div className="history__header-title">Lịch sử mua hàng</div>
         <div className="history__header-date-container">
-          <input type="text" name="dates" className="history__header-date" />
+          <DateRangePicker
+            showOneCalendar
+            placeholder="Chọn khoảng thời gian"
+            style={{ width: 300, zIndex: 1 }}
+            onChange={(value) => setDateRage(value)}
+          />
         </div>
       </div>
       <div className="history__menu">
@@ -99,10 +133,45 @@ const HistoryContentPage = () => {
             </tr>
           </thead>
           <tbody className="history__table-body">
-            <HistoryTableContent type={type}></HistoryTableContent>
+            <HistoryTableContent
+              type={type}
+              dateRange={dateRange}
+              handleOpen={handleOpen}
+              handleModal={setModalData}
+            ></HistoryTableContent>
           </tbody>
         </table>
       </div>
+      <Modal overflow={true} open={open} onClose={handleClose}>
+        <Modal.Header>
+          <Modal.Title>{modalData.title}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          {modalData.key === 'see-more' && order && (
+            <SeeMoreOrder order={order}></SeeMoreOrder>
+          )}
+          {modalData.key === 'update-order' && order && (
+            <UpdateOrderForm
+              order={order}
+              handleClose={handleClose}
+            ></UpdateOrderForm>
+          )}
+          {modalData.key === 'cancel-order' && order && (
+            <p className="text-center">Bạn thật sự muốn xóa chứ?</p>
+          )}
+        </Modal.Body>
+        {modalData.key === 'see-more' ||
+          (modalData.key === 'cancel-order' && order && (
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
+          ))}
+      </Modal>
     </>
   );
 };

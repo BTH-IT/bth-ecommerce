@@ -14,22 +14,36 @@ export class OrdersService {
   constructor(private readonly ordersRepository: OrdersRepository) {}
 
   async findAll(params: ParamsOrderDto): Promise<Order[]> {
-    if (params.type) {
-      if (params.userId) {
-        return this.ordersRepository.getByCondition({
-          user: new ObjectId(params.userId),
-          status: params.type,
-          isHidden: true,
-        });
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {
+      isHidden: true,
+    };
+
+    for (const key in params) {
+      if (key === 'type' && parameters[key] !== null) {
+        filter['status'] = parameters[key];
+        continue;
       }
 
-      return this.ordersRepository.getByCondition({
-        user: new ObjectId(params.userId),
-        isHidden: true,
-      });
+      if (key === 'userId' && parameters[key] !== null) {
+        filter['user'] = new ObjectId(parameters[key]);
+        continue;
+      }
+
+      if (key === 'dateRange' && parameters[key] !== null) {
+        filter['createdAt'] = {
+          $gte: parameters[key].from,
+          $lt: parameters[key].to,
+        };
+        continue;
+      }
+      filter[key] = parameters[key];
     }
 
-    return this.ordersRepository.getByCondition({ isHidden: true });
+    return this.ordersRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<Order | null> {

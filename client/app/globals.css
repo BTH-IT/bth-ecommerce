@@ -10,3 +10,16 @@
 @import "../css/components/input.css";
 @import "../css/components/label.css";
 @import "../css/components/button.css";
+
+div[role="combobox"] {
+  z-index: -1 !important;
+}
+
+div[role="dialog"] {
+  z-index: 1 !important;
+}
+
+input, select {
+  margin-bottom: 0px !important;
+  outline: none;
+}

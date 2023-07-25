@@ -24,6 +24,9 @@ const orderService = {
             status
             totalPay
             isPaid
+            fullname
+            phone
+            address
             createdAt
             updatedAt
           }
@@ -59,6 +62,9 @@ const orderService = {
             status
             totalPay
             isPaid
+            fullname
+            phone
+            address
             createdAt
             updatedAt
           }
@@ -94,6 +100,9 @@ const orderService = {
             status
             totalPay
             isPaid
+            fullname
+            phone
+            address
             createdAt
             updatedAt
           }

@@ -1,12 +1,24 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+class DateRangeInput {
+  @Field({ nullable: true })
+  from?: Date;
+
+  @Field({ nullable: true })
+  to?: Date;
+}
+
+@InputType()
 export class ParamsOrderInput {
   @Field({ nullable: true })
   userId?: string;
 
   @Field({ nullable: true })
   type?: string;
+
+  @Field({ nullable: true })
+  dateRange?: DateRangeInput;
 }
 
 @InputType()
@@ -57,7 +69,7 @@ export class UpdateOrderInput {
   address?: string;
 
   @Field({ nullable: true })
-  phoneNumber?: string;
+  phone?: string;
 
   @Field({ nullable: true })
   status?: string;

@@ -1,8 +1,14 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class DateRangeDto {
+  @IsNotEmpty() from?: Date;
+  @IsNotEmpty() to?: Date;
+}
+
 export class ParamsOrderDto {
   @IsNotEmpty() userId?: string;
   @IsNotEmpty() type?: string;
+  @IsNotEmpty() dateRange?: DateRangeDto;
 }
 
 export class CreateNewOrderDto {

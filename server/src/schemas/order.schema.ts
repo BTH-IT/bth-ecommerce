@@ -34,7 +34,7 @@ export class Order extends BaseSchema {
 
   @Prop()
   @Field()
-  phoneNumber: string;
+  phone: string;
 
   @Prop()
   @Field()

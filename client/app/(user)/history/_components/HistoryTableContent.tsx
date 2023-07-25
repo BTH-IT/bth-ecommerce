@@ -8,14 +8,40 @@ import { handleRefreshToken } from '@/utils/clientActions';
 import { convertCurrency } from '@/utils/contains';
 import moment from 'moment';
 import React, { useEffect, useState } from 'react';
+import MoreAction from './MoreAction';
+import { DateRange } from 'rsuite/esm/DateRangePicker';
 
-const HistoryTableContent = ({ type }: { type: string | null }) => {
+const HistoryTableContent = ({
+  type,
+  dateRange,
+  handleOpen,
+  handleModal,
+}: {
+  type: string | null;
+  dateRange: DateRange | null;
+  handleOpen: (orderId: string) => void;
+  handleModal: React.Dispatch<
+    React.SetStateAction<{
+      title: string;
+      key: string;
+    }>
+  >;
+}) => {
   const dispatch = useAppDispatch();
   const [orderList, setOrderList] = useState<OrderType[]>([]);
   const user: any = useAppSelector(selectAuth).user;
 
   useEffect(() => {
     let orderType: any = null;
+    let dateRangeFilter: any = null;
+
+    if (dateRange !== null) {
+      dateRangeFilter = {
+        from: dateRange[0],
+        to: dateRange[1],
+      };
+    }
+
     if (type) {
       switch (type) {
         case 'waiting':
@@ -35,6 +61,7 @@ const HistoryTableContent = ({ type }: { type: string | null }) => {
           break;
       }
     }
+
     async function fetchOrderList() {
       try {
         let res;
@@ -42,6 +69,7 @@ const HistoryTableContent = ({ type }: { type: string | null }) => {
           res = await orderService.getAll({
             userId: user._id,
             type: orderType,
+            dateRange: dateRangeFilter,
           });
         } catch (error: any) {
           if (error.statusCode === 403) {
@@ -49,6 +77,7 @@ const HistoryTableContent = ({ type }: { type: string | null }) => {
             res = await orderService.getAll({
               userId: user._id,
               type: orderType,
+              dateRange: dateRangeFilter,
             });
           }
         }
@@ -64,7 +93,7 @@ const HistoryTableContent = ({ type }: { type: string | null }) => {
     }
 
     fetchOrderList();
-  }, [type]);
+  }, [type, dateRange]);
 
   return (
     orderList.length > 0 &&
@@ -81,29 +110,14 @@ const HistoryTableContent = ({ type }: { type: string | null }) => {
           <span className="price-item">{convertCurrency(order.totalPay)}</span>
         </td>
         <td className="history__table-body-item">
-          <span className="status-item ${convertSatus(item.trang_thai)}">
-            {order.status}
-          </span>
+          <span className={`status-item ${order.status}`}>{order.status}</span>
         </td>
         <td className="history__table-body-item">
-          <span className="info-item">
-            <svg
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.5}
-              viewBox="0 0 24 24"
-              width={36}
-              height={36}
-              xmlns="http://www.w3.org/2000/svg"
-              aria-hidden="true"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                d="M12 6.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 12.75a.75.75 0 110-1.5.75.75 0 010 1.5zM12 18.75a.75.75 0 110-1.5.75.75 0 010 1.5z"
-              />
-            </svg>
-          </span>
+          <MoreAction
+            orderId={order._id}
+            handleOpen={handleOpen}
+            handleModal={handleModal}
+          ></MoreAction>
         </td>
       </tr>
     ))

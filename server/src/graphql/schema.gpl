@@ -138,6 +138,11 @@ input CreateNewWarrantyInput {
   warrantyYear: Float!
 }
 
+input DateRangeInput {
+  from: DateTime
+  to: DateTime
+}
+
 """
 A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date-time format.
 """
@@ -265,7 +270,7 @@ type Order {
   fullname: String!
   isHidden: Boolean!
   isPaid: Boolean!
-  phoneNumber: String!
+  phone: String!
   purchaseForm: String!
   status: String!
   totalPay: Float!
@@ -291,6 +296,7 @@ input OrderDetailInput {
 }
 
 input ParamsOrderInput {
+  dateRange: DateRangeInput
   type: String
   userId: String
 }
@@ -452,7 +458,7 @@ input UpdateOrderInput {
   employee: String
   fullname: String
   isPaid: Boolean
-  phoneNumber: String
+  phone: String
   status: String
   user: String
 }

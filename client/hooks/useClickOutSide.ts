@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 export function useClickOutSide() {
-  const elementRef = useRef<HTMLElement>(null);
+  const elementRef = useRef<any>(null);
   const [show, setShow] = useState(false);
 
   useEffect(() => {
