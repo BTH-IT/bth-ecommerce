@@ -7,17 +7,19 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useForm } from 'react-hook-form';
 import { OrderFormType } from '@/types/form';
-import SelectForm from '../../(auth)/_components/SelectForm';
 import Button from '@/components/Button';
+import { handleRefreshToken } from '@/utils/clientActions';
+import { useAppDispatch } from '@/redux/hooks';
+import { authActions } from '@/redux/features/authSlice';
 
 const schema = yup
   .object({
     phone: yup
       .string()
-      .email('This field must be an email')
+      .matches(/(84|0[3|5|7|8|9])+([0-9]{8})\b/g, 'Phone number is not valid')
       .required('This field is required'),
     address: yup.string().required('This field is required'),
-    status: yup.string().required('This field is required'),
+    fullname: yup.string().required('This field is required'),
   })
   .required();
 
@@ -28,10 +30,11 @@ const UpdateOrderForm = ({
   order: OrderType;
   handleClose: () => void;
 }) => {
+  const dispatch = useAppDispatch();
   useEffect(() => {
     setValue('phone', order.phone);
     setValue('address', order.address);
-    setValue('status', order.status);
+    setValue('fullname', order.fullname);
   }, []);
 
   const {
@@ -43,14 +46,24 @@ const UpdateOrderForm = ({
     defaultValues: {
       phone: '',
       address: '',
-      status: '',
+      fullname: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
+
   const onSubmit = async (data: OrderFormType) => {
     if (!isValid) return;
+
+    try {
+      await handleRefreshToken(dispatch);
+    } catch (error: any) {
+      if (error.statusCode === 403) {
+        dispatch(authActions.logout());
+      }
+    }
   };
+
   return (
     <form action="" onSubmit={handleSubmit(onSubmit)}>
       <InputForm
@@ -67,20 +80,13 @@ const UpdateOrderForm = ({
         placeholder="Nhập address..."
         type="text"
       ></InputForm>
-      <SelectForm
+      <InputForm
         control={control}
-        name="status"
-        title="Trạng thái"
-        defaultValue={order.status}
-      >
-        <option value="" hidden>
-          Chọn status
-        </option>
-        <option value="waiting">Waiting</option>
-        <option value="shipping">Shipping</option>
-        <option value="done">Done</option>
-        <option value="canceled">Canceled</option>
-      </SelectForm>
+        name="fullname"
+        title="Fullname"
+        placeholder="Nhập fullname..."
+        type="text"
+      ></InputForm>
       <Button type="submit" className="primary">
         Ok
       </Button>

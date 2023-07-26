@@ -30,5 +30,5 @@ export type ChangePasswordFormType = {
 export type OrderFormType = {
   phone: string;
   address: string;
-  status: string;
+  fullname: string;
 };

@@ -10,7 +10,7 @@ import { useForm } from 'react-hook-form';
 import { ChangePasswordFormType } from '@/types/form';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
-import { selectAuth } from '@/redux/features/authSlice';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
 import authService from '@/services/authService';
 import { useRouter } from 'next/navigation';
 
@@ -67,25 +67,17 @@ const ChangePasswordForm = () => {
     };
 
     try {
+      await handleRefreshToken(dispatch);
+
       await authService.changePassword(newData);
 
       toast.success('Change password successfully!!');
 
       reset();
     } catch (error: any) {
+      toast.error(error.response.data.message);
       if (error.response.data.statusCode === 401) {
-        try {
-          await handleRefreshToken(dispatch);
-          await authService.changePassword(newData);
-
-          toast.success('Change password successfully!!');
-
-          reset();
-        } catch (error: any) {
-          toast.error(error.response.data.message);
-        }
-      } else {
-        toast.error(error.response.data.message);
+        dispatch(authActions.logout());
       }
     }
   };

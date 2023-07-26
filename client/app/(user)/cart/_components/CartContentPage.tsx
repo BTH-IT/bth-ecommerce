@@ -122,6 +122,8 @@ const CartContentPage = () => {
     };
 
     try {
+      await handleRefreshToken(dispatch);
+
       await orderService.add(data);
 
       toast.success('Payment successfully!!');
@@ -129,20 +131,9 @@ const CartContentPage = () => {
       dispatch(authActions.updateCartList({ cartList: [] }));
       reset();
     } catch (error: any) {
+      toast.error(error.message);
       if (error.statusCode === 403) {
-        try {
-          await handleRefreshToken(dispatch);
-          await orderService.add(data);
-
-          toast.success('Payment successfully!!');
-          localStorage.setItem('cart_list', '[]');
-          dispatch(authActions.updateCartList({ cartList: [] }));
-          reset();
-        } catch (error: any) {
-          toast.error(error.message);
-        }
-      } else {
-        toast.error(error.message);
+        dispatch(authActions.logout());
       }
     }
   };

@@ -1,6 +1,6 @@
 'use client';
 
-import { selectAuth } from '@/redux/features/authSlice';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import orderService from '@/services/orderService';
 import { OrderType } from '@/types/order';
@@ -10,6 +10,7 @@ import moment from 'moment';
 import React, { useEffect, useState } from 'react';
 import MoreAction from './MoreAction';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
+import toast from 'react-hot-toast';
 
 const HistoryTableContent = ({
   type,
@@ -64,32 +65,20 @@ const HistoryTableContent = ({
 
     async function fetchOrderList() {
       try {
-        let res;
-        try {
-          res = await orderService.getAll({
-            userId: user._id,
-            type: orderType,
-            dateRange: dateRangeFilter,
-          });
-        } catch (error: any) {
-          if (error.statusCode === 403) {
-            try {
-              await handleRefreshToken(dispatch);
-              res = await orderService.getAll({
-                userId: user._id,
-                type: orderType,
-                dateRange: dateRangeFilter,
-              });
-            } catch (error: any) {
-              console.log(error.message);
-            }
-          }
-        }
-        if (!res) throw new Error('Error server');
+        await handleRefreshToken(dispatch);
+
+        const res = await orderService.getAll({
+          userId: user._id,
+          type: orderType,
+          dateRange: dateRangeFilter,
+        });
 
         setOrderList(res);
       } catch (error: any) {
-        console.log(error.message);
+        toast.error(error.message);
+        if (error.statusCode === 403) {
+          dispatch(authActions.logout());
+        }
       }
     }
 

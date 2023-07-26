@@ -4,7 +4,7 @@ import React, { useLayoutEffect, useState } from 'react';
 import HistoryTableContent from './HistoryTableContent';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAuth } from '@/redux/features/authSlice';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
 import Link from 'next/link';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
@@ -14,6 +14,7 @@ import { handleRefreshToken } from '@/utils/clientActions';
 import orderService from '@/services/orderService';
 import UpdateOrderForm from './UpdateOrderForm';
 import SeeMoreOrder from './SeeMoreOrder';
+import toast from 'react-hot-toast';
 
 const HistoryContentPage = () => {
   const dispatch = useAppDispatch();
@@ -26,19 +27,15 @@ const HistoryContentPage = () => {
   const [order, setOrder] = useState<OrderType | null>(null);
   const handleOpen = async (orderId: string) => {
     try {
+      await handleRefreshToken(dispatch);
+
       const res = await orderService.getById(orderId);
 
       setOrder(res);
     } catch (error: any) {
+      toast.error(error.message);
       if (error.statusCode === 403) {
-        try {
-          await handleRefreshToken(dispatch);
-          const res = await orderService.getById(orderId);
-
-          setOrder(res);
-        } catch (error: any) {
-          console.log(error.message);
-        }
+        dispatch(authActions.logout());
       }
     }
     setOpen(true);

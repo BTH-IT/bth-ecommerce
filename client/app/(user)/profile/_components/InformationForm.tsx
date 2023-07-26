@@ -60,20 +60,8 @@ const InformationForm = () => {
   useLayoutEffect(() => {
     async function fetchProfile() {
       try {
-        let res;
-        try {
-          res = await authService.getProfile(accessToken);
-        } catch (error: any) {
-          if (error.response.data.statusCode === 401) {
-            try {
-              await handleRefreshToken(dispatch);
-              res = await authService.getProfile(accessToken);
-            } catch (error: any) {
-              console.log(error.message);
-            }
-          }
-        }
-        if (!res) throw new Error('Error server');
+        await handleRefreshToken(dispatch);
+        const res = await authService.getProfile(accessToken);
 
         setData(res.data);
         setUrl(res.data.account?.picture);
@@ -85,7 +73,10 @@ const InformationForm = () => {
         setValue('address', res.data.user?.address);
         setValue('birthYear', res.data.user?.birthYear);
       } catch (error: any) {
-        console.log(error.message);
+        toast.error(error.response.data.message);
+        if (error.response.data.statusCode === 401) {
+          dispatch(authActions.logout());
+        }
       }
     }
 
