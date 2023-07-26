@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import '../../../css/layouts/sidebar.css';
+import '../../../css/layouts/sidebar-dashboard.css';
 import Link from 'next/link';
 import Image from 'next/image';
 import {
@@ -105,9 +105,9 @@ const Sidebar = () => {
   const params = usePathname();
 
   return (
-    <div className="sidebar">
-      <div className="sidebar-logo">
-        <Link href="/dashboard" className="sidebar-logo__link">
+    <div className="sidebar-dashboard">
+      <div className="sidebar-dashboard-logo">
+        <Link href="/dashboard" className="sidebar-dashboard-logo__link">
           <span className="logo-img">
             <Image src="/logo.svg" alt="logo" width={50} height={50}></Image>
           </span>
@@ -121,17 +121,24 @@ const Sidebar = () => {
           </span>
         </Link>
       </div>
-      <ul className="sidebar-actions">
+      <ul className="sidebar-dashboard-actions">
         {sidebarItemList.map((sidebar: any) => (
           <li
-            className={`sidebar-actions__item ${
+            className={`sidebar-dashboard-actions__item ${
               params == sidebar.href ? 'active' : ''
             }`}
             key={sidebar.title}
           >
-            <Link href={sidebar.href} className="sidebar-actions__link">
-              <span className="sidebar-actions__icon">{sidebar.icon}</span>
-              <span className="sidebar-actions__title">{sidebar.title}</span>
+            <Link
+              href={sidebar.href}
+              className="sidebar-dashboard-actions__link"
+            >
+              <span className="sidebar-dashboard-actions__icon">
+                {sidebar.icon}
+              </span>
+              <span className="sidebar-dashboard-actions__title">
+                {sidebar.title}
+              </span>
             </Link>
           </li>
         ))}

@@ -1,0 +1,107 @@
+.sidebar-dashboard {
+  transition: all 0.2s linear 0s;
+  width: 260px;
+  max-width: 260px;
+  height: calc(100vh - 32px);
+  padding-inline: 20px;
+  margin: 0px;
+  border-radius: 0px;
+  margin-inline-start: 16px;
+  margin-top: 16px;
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+
+.sidebar-dashboard-logo {
+  padding-top: 25px;
+  margin-bottom: 12px;
+  border-bottom: 1px solid #E2E8F0;
+  overflow-wrap: break-word;
+}
+
+.sidebar-dashboard-logo__link {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 30px;
+  justify-content: center;
+}
+
+.sidebar-dashboard-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow-y: auto;
+  height: calc(100vh - 32px - 106px);
+}
+
+.sidebar-dashboard-actions__item {
+  display: inline-flex;
+  appearance: none;
+  align-items: center;
+  justify-content: flex-start;
+  white-space: nowrap;
+  vertical-align: middle;
+  outline: transparent solid 2px;
+  outline-offset: 2px;
+  width: 100%;
+  line-height: 1.2;
+  border-radius: 14px;
+  font-weight: 600;
+  font-size: 1rem;
+  background-color: transparent;
+  padding: 16px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.sidebar-dashboard-actions__item:hover {
+  background-color: #E2E8F0;
+}
+
+.sidebar-dashboard-actions__item.active {
+  background-color: white;
+}
+
+.sidebar-dashboard-actions__link {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  width: 100%;
+}
+
+.sidebar-dashboard-actions__icon {
+  display: flex;
+  -webkit-box-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  justify-content: center;
+  border-radius: 12px;
+  background: white;
+  color: var(--primary);
+  height: 30px;
+  width: 30px;
+  margin-inline-end: 12px;
+  transition: all 0.2s ease;
+}
+
+.sidebar-dashboard-actions__item.active .sidebar-dashboard-actions__icon {
+  background: var(--primary);
+  color: white;
+}
+
+.sidebar-dashboard-actions__title {
+  display: block;
+  flex: 1;
+  opacity: 0.4;
+  transition: all 0.2s ease;
+}
+.sidebar-dashboard-actions__item.active .sidebar-dashboard-actions__title {
+  opacity: 1;
+}
+
+@media screen and (max-width: 1200px){
+  .sidebar-dashboard {
+    display: none;
+  }
+}
