@@ -17,6 +17,7 @@ import orderService from '@/services/orderService';
 import { usePagination } from '@/hooks/usePagination';
 import ActionCell from './ActionCell';
 import moment from 'moment';
+import { convertCurrency } from '@/utils/contains';
 
 const { Column, HeaderCell, Cell } = Table;
 
@@ -226,9 +227,15 @@ const HistoryContentPage = () => {
                 )}
               </Cell>
             </Column>
-            <Column sortable width={200}>
+            <Column sortable width={400}>
               <HeaderCell>Tổng tiền</HeaderCell>
-              <Cell dataKey="totalPay" />
+              <Cell dataKey="totalPay">
+                {(rowData) => (
+                  <span className="price-item">
+                    {convertCurrency(rowData.totalPay)}
+                  </span>
+                )}
+              </Cell>
             </Column>
             <Column fixed="right" width={100}>
               <HeaderCell>Hành động</HeaderCell>

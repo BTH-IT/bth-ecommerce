@@ -52,5 +52,8 @@ input, select {
     display: inline-block !important;
     padding-right: 32px !important;
     position: relative !important;
-    z-index: 5 !important;
+}
+
+.rs-table {
+    z-index: 1 !important;
 }
