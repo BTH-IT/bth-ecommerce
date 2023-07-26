@@ -19,6 +19,9 @@ export class ParamsOrderInput {
 
   @Field({ nullable: true })
   dateRange?: DateRangeInput;
+
+  @Field({ nullable: true })
+  isHidden?: boolean;
 }
 
 @InputType()

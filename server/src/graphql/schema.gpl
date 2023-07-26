@@ -297,6 +297,7 @@ input OrderDetailInput {
 
 input ParamsOrderInput {
   dateRange: DateRangeInput
+  isHidden: Boolean
   type: String
   userId: String
 }

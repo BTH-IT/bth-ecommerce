@@ -9,6 +9,7 @@ export class ParamsOrderDto {
   @IsNotEmpty() userId?: string;
   @IsNotEmpty() type?: string;
   @IsNotEmpty() dateRange?: DateRangeDto;
+  @IsNotEmpty() isHidden?: boolean;
 }
 
 export class CreateNewOrderDto {

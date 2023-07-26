@@ -11,6 +11,8 @@ import Button from '@/components/Button';
 import { handleRefreshToken } from '@/utils/clientActions';
 import { useAppDispatch } from '@/redux/hooks';
 import { authActions } from '@/redux/features/authSlice';
+import toast from 'react-hot-toast';
+import orderService from '@/services/orderService';
 
 const schema = yup
   .object({
@@ -40,7 +42,7 @@ const UpdateOrderForm = ({
   const {
     setValue,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, isLoading },
     control,
   } = useForm<OrderFormType>({
     defaultValues: {
@@ -57,7 +59,17 @@ const UpdateOrderForm = ({
 
     try {
       await handleRefreshToken(dispatch);
+
+      await orderService.update({
+        _id: order._id,
+        ...data,
+      });
+
+      handleClose();
+
+      toast.success('Update order successfully');
     } catch (error: any) {
+      toast.error(error.message);
       if (error.statusCode === 403) {
         dispatch(authActions.logout());
       }
@@ -87,7 +99,7 @@ const UpdateOrderForm = ({
         placeholder="Nhập fullname..."
         type="text"
       ></InputForm>
-      <Button type="submit" className="primary">
+      <Button type="submit" className="primary" disabled={isLoading}>
         Ok
       </Button>
     </form>

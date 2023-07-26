@@ -23,3 +23,34 @@ input, select {
   margin-bottom: 0px !important;
   outline: none;
 }
+
+.rs-btn {
+  vertical-align: auto !important;
+}
+
+.rs-btn-icon.rs-btn {
+    line-height: 0px !important;
+    padding: 4px !important;
+}
+
+.rs-picker-default .rs-btn, .rs-picker-default .rs-picker-toggle, .rs-picker-input .rs-btn, .rs-picker-input .rs-picker-toggle {
+  background-color: #fff !important;
+  background-color: var(--rs-input-bg) !important;
+}
+
+.rs-picker-default:not(.rs-picker-disabled) .rs-btn-active, .rs-picker-default:not(.rs-picker-disabled) .rs-btn:focus, .rs-picker-default:not(.rs-picker-disabled) .rs-btn:hover, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle-active, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle:focus, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle:hover {
+    border-color: #3498ff !important;
+    border-color: var(--rs-input-focus-border) !important;
+}
+
+.rs-picker-default .rs-picker-toggle {
+    border: 1px solid #e5e5ea !important;
+    border: 1px solid var(--rs-border-primary) !important;
+    color: #575757 !important;
+    color: var(--rs-text-primary) !important;
+    cursor: pointer !important;
+    display: inline-block !important;
+    padding-right: 32px !important;
+    position: relative !important;
+    z-index: 5 !important;
+}

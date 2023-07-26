@@ -18,9 +18,7 @@ export class OrdersService {
       ...params,
     };
 
-    const filter: any = {
-      isHidden: true,
-    };
+    const filter: any = {};
 
     for (const key in params) {
       if (key === 'type' && parameters[key] !== null) {

@@ -21,7 +21,7 @@ const SeeMoreOrder = ({ order }: { order: OrderType }) => {
       {order.boughtProducts.length > 0 && (
         <ul className="see-more_list">
           {order.boughtProducts.map((product) => (
-            <li className="see-more_item">
+            <li className="see-more_item" key={product.product._id}>
               <span className="see-more_item-id">
                 Id: {product.product._id}
               </span>

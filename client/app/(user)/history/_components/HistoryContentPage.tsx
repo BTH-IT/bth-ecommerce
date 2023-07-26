@@ -1,57 +1,121 @@
 'use client';
 
-import React, { useLayoutEffect, useState } from 'react';
-import HistoryTableContent from './HistoryTableContent';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { authActions, selectAuth } from '@/redux/features/authSlice';
 import Link from 'next/link';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
-import { Modal, Button, Placeholder } from 'rsuite';
+import { Modal, Button, Table, Pagination } from 'rsuite';
 import { OrderType } from '@/types/order';
-import { handleRefreshToken } from '@/utils/clientActions';
-import orderService from '@/services/orderService';
 import UpdateOrderForm from './UpdateOrderForm';
 import SeeMoreOrder from './SeeMoreOrder';
+import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
+import orderService from '@/services/orderService';
+import { usePagination } from '@/hooks/usePagination';
+import ActionCell from './ActionCell';
+import moment from 'moment';
+
+const { Column, HeaderCell, Cell } = Table;
 
 const HistoryContentPage = () => {
-  const dispatch = useAppDispatch();
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
+
   const params = useSearchParams();
   const type = params.get('type');
+
   const [dateRange, setDateRage] = useState<DateRange | null>(null);
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
-  const handleOpen = async (orderId: string) => {
-    try {
-      await handleRefreshToken(dispatch);
+  const [orderList, setOrderList] = useState<OrderType[]>([]);
 
-      const res = await orderService.getById(orderId);
-
-      setOrder(res);
-    } catch (error: any) {
-      toast.error(error.message);
-      if (error.statusCode === 403) {
-        dispatch(authActions.logout());
-      }
-    }
-    setOpen(true);
-  };
-  const handleClose = () => setOpen(false);
-
+  const user: any = useAppSelector(selectAuth).user;
+  const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
     title: 'Xem chi tiết',
     key: 'see-more',
   });
+
+  const handleOpen = async (order: OrderType) => {
+    setOrder(order);
+    setOpen(true);
+  };
+
+  const handleClose = () => setOpen(false);
+
+  const {
+    handleChangeLimit,
+    limit,
+    page,
+    setPage,
+    getDataSorted,
+    loading,
+    handleSortColumn,
+    sortColumn,
+    sortType,
+  } = usePagination(orderList);
 
   useLayoutEffect(() => {
     if (!loginSuccess) {
       router.push('/');
     }
   }, [loginSuccess]);
+
+  useEffect(() => {
+    let orderType: any = null;
+    let dateRangeFilter: any = null;
+
+    if (dateRange !== null) {
+      dateRangeFilter = {
+        from: dateRange[0],
+        to: dateRange[1],
+      };
+    }
+
+    if (type) {
+      switch (type) {
+        case 'waiting':
+          orderType = 'waiting';
+          break;
+        case 'shipping':
+          orderType = 'shipping';
+          break;
+        case 'wait-for-pay':
+          orderType = 'wait-for-pay';
+          break;
+        case 'done':
+          orderType = 'done';
+          break;
+        case 'canceled':
+          orderType = 'canceled';
+          break;
+      }
+    }
+
+    async function fetchOrderList() {
+      try {
+        await handleRefreshToken(dispatch);
+
+        const res = await orderService.getAll({
+          userId: user._id,
+          type: orderType,
+          dateRange: dateRangeFilter,
+        });
+
+        setOrderList(res);
+      } catch (error: any) {
+        toast.error(error.message);
+        if (error.statusCode === 403) {
+          dispatch(authActions.logout());
+        }
+      }
+    }
+
+    fetchOrderList();
+  }, [type, dateRange]);
 
   return (
     <>
@@ -121,28 +185,80 @@ const HistoryContentPage = () => {
         </ul>
       </div>
       <div className="history__table table-responsive-xxl text-nowrap">
-        <table className="table table-xxl table-borderless">
-          <thead className="mb-10 history__table-header">
-            <tr>
-              <th className="history__table-header-item">Mã đơn hàng</th>
-              <th className="history__table-header-item">
-                Hình thức thanh toán
-              </th>
-              <th className="history__table-header-item">Thời gian</th>
-              <th className="history__table-header-item">Tổng tiền</th>
-              <th className="history__table-header-item">Trạng thái</th>
-              <th className="history__table-header-item">Hành động</th>
-            </tr>
-          </thead>
-          <tbody className="history__table-body">
-            <HistoryTableContent
-              type={type}
-              dateRange={dateRange}
-              handleOpen={handleOpen}
-              handleModal={setModalData}
-            ></HistoryTableContent>
-          </tbody>
-        </table>
+        <div>
+          <Table
+            height={420}
+            data={getDataSorted()}
+            sortColumn={sortColumn}
+            sortType={sortType}
+            onSortColumn={handleSortColumn}
+            loading={loading}
+            autoHeight={true}
+          >
+            <Column sortable fixed flexGrow={1}>
+              <HeaderCell>Id</HeaderCell>
+              <Cell dataKey="_id" />
+            </Column>
+
+            <Column sortable width={200}>
+              <HeaderCell>Hình thức thanh toán</HeaderCell>
+              <Cell dataKey="purchaseForm">
+                {(rowData) => (
+                  <span className="paid-item">{rowData.purchaseForm}</span>
+                )}
+              </Cell>
+            </Column>
+
+            <Column sortable width={200}>
+              <HeaderCell>Thời gian</HeaderCell>
+              <Cell dataKey="createdAt">
+                {(rowData) => `${moment(rowData.createdAt).format('L')}`}
+              </Cell>
+            </Column>
+
+            <Column sortable width={200}>
+              <HeaderCell>Trạng thái</HeaderCell>
+              <Cell dataKey="status">
+                {(rowData) => (
+                  <span className={`status-item ${rowData.status}`}>
+                    {rowData.status}
+                  </span>
+                )}
+              </Cell>
+            </Column>
+            <Column sortable width={200}>
+              <HeaderCell>Tổng tiền</HeaderCell>
+              <Cell dataKey="totalPay" />
+            </Column>
+            <Column fixed="right" width={100}>
+              <HeaderCell>Hành động</HeaderCell>
+              <ActionCell
+                dataKey="_id"
+                handleOpen={handleOpen}
+                handleModal={setModalData}
+              />
+            </Column>
+          </Table>
+          <div style={{ padding: 20 }}>
+            <Pagination
+              prev
+              next
+              first
+              last
+              ellipsis
+              boundaryLinks
+              maxButtons={5}
+              size="xs"
+              layout={['total', '-', 'limit', '|', 'pager', 'skip']}
+              total={orderList.length}
+              limitOptions={[10, 30, 50]}
+              limit={limit}
+              activePage={page}
+              onChangePage={setPage}
+              onChangeLimit={handleChangeLimit}
+            />
+          </div>
+        </div>
       </div>
       <Modal overflow={true} open={open} onClose={handleClose}>
         <Modal.Header>
@@ -159,7 +275,7 @@ const HistoryContentPage = () => {
             ></UpdateOrderForm>
           )}
           {modalData.key === 'cancel-order' && order && (
-            <p className="text-center">Bạn thật sự muốn xóa chứ?</p>
+            <p className="text-center">Bạn thật sự muốn hủy đơn hàng chứ?</p>
           )}
         </Modal.Body>
         {modalData.key === 'see-more' ||
