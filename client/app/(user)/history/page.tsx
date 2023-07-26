@@ -5,8 +5,8 @@ import Link from 'next/link';
 import HistoryContentPage from './_components/HistoryContentPage';
 
 export const metadata: Metadata = {
-  title: 'BTH Ecommerce | Profile',
-  description: 'BTH Ecommerce | Profile',
+  title: 'BTH Ecommerce | History',
+  description: 'BTH Ecommerce | History',
   icons: {
     icon: '/logo.svg',
     apple: '/logo.svg',
