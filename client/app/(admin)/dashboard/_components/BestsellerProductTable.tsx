@@ -48,7 +48,7 @@ const BestsellerProductTable = ({
   } = usePagination(productList);
 
   return (
-    <div>
+    <div className="dashboard-bestseller_table">
       <Table
         height={420}
         data={getDataSorted()}
@@ -57,7 +57,6 @@ const BestsellerProductTable = ({
         onSortColumn={handleSortColumn}
         loading={loading}
         autoHeight={true}
-        bordered
       >
         <Column sortable fixed flexGrow={1}>
           <HeaderCell>Id</HeaderCell>

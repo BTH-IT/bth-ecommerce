@@ -127,3 +127,11 @@
 .dashboard-bestseller {
   margin-bottom: 60px;
 }
+
+.dashboard-resume__chart,
+.dashboard-bestseller_table {
+  background: white;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px;
+  border-radius: 15px;
+  padding: 12px;
+}

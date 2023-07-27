@@ -118,7 +118,7 @@ const BestsellerBrandTable = ({
   };
 
   return (
-    <div>
+    <div className="dashboard-bestseller_table">
       <Table
         height={420}
         data={getDataSorted()}
@@ -127,7 +127,6 @@ const BestsellerBrandTable = ({
         onSortColumn={handleSortColumn}
         loading={loading}
         autoHeight={true}
-        bordered
         rowKey={'_id'}
         expandedRowKeys={expandedRowKeys}
       >
