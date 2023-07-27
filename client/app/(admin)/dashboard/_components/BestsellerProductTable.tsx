@@ -51,55 +51,55 @@ const BestsellerProductTable = ({
 
   return (
     <div className="dashboard-bestseller_table">
-      <Table
-        height={420}
-        data={getDataSorted()}
-        sortColumn={sortColumn}
-        sortType={sortType}
-        onSortColumn={handleSortColumn}
-        loading={loading}
-        autoHeight={true}
-      >
-        <Column fixed width={300} align="center" flexGrow={1}>
-          <HeaderCell>Id</HeaderCell>
-          <Cell dataKey="_id" />
-        </Column>
+      <div>
+        <Table
+          height={420}
+          data={getDataSorted()}
+          sortColumn={sortColumn}
+          sortType={sortType}
+          onSortColumn={handleSortColumn}
+          loading={loading}
+          autoHeight={true}
+        >
+          <Column fixed width={300} align="center" flexGrow={1}>
+            <HeaderCell>Id</HeaderCell>
+            <Cell dataKey="_id" />
+          </Column>
 
-        <Column sortable width={600} align="center">
-          <HeaderCell>Tên sản phẩm</HeaderCell>
-          <Cell dataKey="productName"></Cell>
-        </Column>
+          <Column sortable width={600} align="center">
+            <HeaderCell>Tên sản phẩm</HeaderCell>
+            <Cell dataKey="productName"></Cell>
+          </Column>
 
-        <Column align="center" width={200}>
-          <HeaderCell>Hình ảnh</HeaderCell>
-          <ImageCell dataKey="imageUrlList" />
-        </Column>
+          <Column align="center" width={200}>
+            <HeaderCell>Hình ảnh</HeaderCell>
+            <ImageCell dataKey="imageUrlList" />
+          </Column>
 
-        <Column fixed={'right'} width={200} align="center">
-          <HeaderCell>Số lượng đã bán</HeaderCell>
-          <Cell dataKey="amount">
-            {(rowData) => <span>{rowData.amount} sản phẩm</span>}
-          </Cell>
-        </Column>
-      </Table>
-      <div style={{ padding: 20 }}>
-        <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          maxButtons={5}
-          size="xs"
-          layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={productList.length}
-          limitOptions={[10, 30, 50]}
-          limit={limit}
-          activePage={page}
-          onChangePage={setPage}
-          onChangeLimit={handleChangeLimit}
-        />
+          <Column fixed={'right'} width={200} align="center">
+            <HeaderCell>Số lượng đã bán</HeaderCell>
+            <Cell dataKey="amount">
+              {(rowData) => <span>{rowData.amount} sản phẩm</span>}
+            </Cell>
+          </Column>
+        </Table>
+        <div style={{ padding: 20 }}>
+          <Pagination
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            layout={['total', '-', 'pager', 'skip']}
+            maxButtons={5}
+            size="xs"
+            total={productList.length}
+            limit={limit}
+            activePage={page}
+            onChangePage={setPage}
+          />
+        </div>
       </div>
     </div>
   );

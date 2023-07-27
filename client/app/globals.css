@@ -39,19 +39,18 @@ input, select {
 }
 
 .rs-picker-default:not(.rs-picker-disabled) .rs-btn-active, .rs-picker-default:not(.rs-picker-disabled) .rs-btn:focus, .rs-picker-default:not(.rs-picker-disabled) .rs-btn:hover, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle-active, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle:focus, .rs-picker-default:not(.rs-picker-disabled) .rs-picker-toggle:hover {
-    border-color: #3498ff !important;
-    border-color: var(--rs-input-focus-border) !important;
+  border-color: #3498ff !important;
+  border-color: var(--rs-input-focus-border) !important;
 }
 
 .rs-picker-default .rs-picker-toggle {
-    border: 1px solid #e5e5ea !important;
-    border: 1px solid var(--rs-border-primary) !important;
-    color: #575757 !important;
-    color: var(--rs-text-primary) !important;
-    cursor: pointer !important;
-    display: inline-block !important;
-    padding-right: 32px !important;
-    position: relative !important;
+  border: 1px solid #e5e5ea !important;
+  color: #575757 !important;
+  color: var(--rs-text-primary) !important;
+  cursor: pointer !important;
+  display: inline-block !important;
+  padding-right: 32px !important;
+  position: relative !important;
 }
 
 .rs-table {

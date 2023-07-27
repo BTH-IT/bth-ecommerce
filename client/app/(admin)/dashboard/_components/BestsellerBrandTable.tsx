@@ -108,67 +108,67 @@ const BestsellerBrandTable = ({
 
   return (
     <div className="dashboard-bestseller_table">
-      <Table
-        height={420}
-        data={getDataSorted()}
-        sortColumn={sortColumn}
-        sortType={sortType}
-        onSortColumn={handleSortColumn}
-        loading={loading}
-        autoHeight={true}
-        rowKey={'_id'}
-        expandedRowKeys={expandedRowKeys}
-        renderRowExpanded={renderRowExpanded}
-      >
-        <Column width={70} align="center" fixed>
-          <HeaderCell>#</HeaderCell>
-          <ExpandCell
-            dataKey="_id"
-            expandedRowKeys={expandedRowKeys}
-            onChange={handleExpanded}
+      <div>
+        <Table
+          height={420}
+          data={getDataSorted()}
+          sortColumn={sortColumn}
+          sortType={sortType}
+          onSortColumn={handleSortColumn}
+          loading={loading}
+          autoHeight={true}
+          rowKey={'_id'}
+          expandedRowKeys={expandedRowKeys}
+          renderRowExpanded={renderRowExpanded}
+        >
+          <Column width={70} align="center" fixed>
+            <HeaderCell>#</HeaderCell>
+            <ExpandCell
+              dataKey="_id"
+              expandedRowKeys={expandedRowKeys}
+              onChange={handleExpanded}
+            />
+          </Column>
+
+          <Column fixed flexGrow={1} align="center">
+            <HeaderCell>Id</HeaderCell>
+            <Cell dataKey="_id" />
+          </Column>
+
+          <Column sortable width={200} align="center">
+            <HeaderCell>Tên thương hiệu</HeaderCell>
+            <Cell dataKey="name"></Cell>
+          </Column>
+
+          <Column width={200} align="center">
+            <HeaderCell>Hình ảnh</HeaderCell>
+            <ImageCell dataKey="thumbUrl" />
+          </Column>
+
+          <Column fixed width={200} align="center">
+            <HeaderCell>Số lượng đã bán</HeaderCell>
+            <Cell dataKey="amount">
+              {(rowData) => <span>{rowData.amount} sản phẩm</span>}
+            </Cell>
+          </Column>
+        </Table>
+        <div style={{ padding: 20 }}>
+          <Pagination
+            prev
+            next
+            first
+            last
+            ellipsis
+            boundaryLinks
+            maxButtons={5}
+            size="xs"
+            layout={['total', '-', 'pager', 'skip']}
+            total={brandList.length}
+            limit={limit}
+            activePage={page}
+            onChangePage={setPage}
           />
-        </Column>
-
-        <Column fixed flexGrow={1} align="center">
-          <HeaderCell>Id</HeaderCell>
-          <Cell dataKey="_id" />
-        </Column>
-
-        <Column sortable width={200} align="center">
-          <HeaderCell>Tên thương hiệu</HeaderCell>
-          <Cell dataKey="name"></Cell>
-        </Column>
-
-        <Column width={200} align="center">
-          <HeaderCell>Hình ảnh</HeaderCell>
-          <ImageCell dataKey="thumbUrl" />
-        </Column>
-
-        <Column fixed width={200} align="center">
-          <HeaderCell>Số lượng đã bán</HeaderCell>
-          <Cell dataKey="amount">
-            {(rowData) => <span>{rowData.amount} sản phẩm</span>}
-          </Cell>
-        </Column>
-      </Table>
-      <div style={{ padding: 20 }}>
-        <Pagination
-          prev
-          next
-          first
-          last
-          ellipsis
-          boundaryLinks
-          maxButtons={5}
-          size="xs"
-          layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={brandList.length}
-          limitOptions={[10, 30, 50]}
-          limit={limit}
-          activePage={page}
-          onChangePage={setPage}
-          onChangeLimit={handleChangeLimit}
-        />
+        </div>
       </div>
     </div>
   );
