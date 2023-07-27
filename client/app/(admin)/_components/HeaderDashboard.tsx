@@ -19,7 +19,10 @@ const HeaderDashboard = () => {
         <div className="header-dashboard__navigation">
           <Link href="/dashboard">Dashboard</Link>
           <span>/</span>
-          <span>{params.split('/')[1]}</span>
+          <span>
+            {params.split('/')[2].charAt(0).toUpperCase() +
+              params.split('/')[2].slice(1)}
+          </span>
         </div>
       ) : (
         <div className="header-dashboard__navigation">
