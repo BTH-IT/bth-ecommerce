@@ -1,10 +1,11 @@
 'use client';
 
+import React from 'react';
+import { ProductListType } from './DashboardBestsellerProduct';
+import { Table, Pagination } from 'rsuite';
 import { usePagination } from '@/hooks/usePagination';
 import Image from 'next/image';
-import React from 'react';
-import { Pagination, Table } from 'rsuite';
-import { ProductListType } from './DashboardBestsellerProduct';
+
 const { Column, HeaderCell, Cell } = Table;
 
 const ImageCell = ({ rowData, dataKey, ...props }: any) => {
@@ -32,10 +33,10 @@ const ImageCell = ({ rowData, dataKey, ...props }: any) => {
   );
 };
 
-const BestsellerProductTable = ({
-  productList,
+const RowExpandTable = ({
+  productBrandList,
 }: {
-  productList: ProductListType[];
+  productBrandList: ProductListType[];
 }) => {
   const {
     handleChangeLimit,
@@ -47,10 +48,10 @@ const BestsellerProductTable = ({
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(productList);
+  } = usePagination(productBrandList);
 
   return (
-    <div className="dashboard-bestseller_table">
+    <div>
       <Table
         height={420}
         data={getDataSorted()}
@@ -93,7 +94,7 @@ const BestsellerProductTable = ({
           maxButtons={5}
           size="xs"
           layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={productList.length}
+          total={productBrandList.length}
           limitOptions={[10, 30, 50]}
           limit={limit}
           activePage={page}
@@ -105,4 +106,4 @@ const BestsellerProductTable = ({
   );
 };
 
-export default BestsellerProductTable;
+export default RowExpandTable;

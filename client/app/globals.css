@@ -57,3 +57,7 @@ input, select {
 .rs-table {
   z-index: 1 !important;
 }
+
+.rs-table-row {
+  overflow: visible !important;
+}

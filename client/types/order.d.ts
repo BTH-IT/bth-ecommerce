@@ -1,3 +1,5 @@
+import { ProductType } from './product';
+
 export interface OrderType {
   _id: string;
   employee: {
@@ -7,10 +9,7 @@ export interface OrderType {
     _id: string;
   };
   boughtProducts: {
-    product: {
-      _id: string;
-      productName: string;
-    };
+    product: ProductType;
     amount: number;
     price: number;
   }[];

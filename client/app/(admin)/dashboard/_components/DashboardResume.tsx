@@ -1,16 +1,75 @@
 'use client';
 
+import { authActions } from '@/redux/features/authSlice';
+import { useAppDispatch } from '@/redux/hooks';
+import orderService from '@/services/orderService';
+import { OrderType } from '@/types/order';
+import { handleRefreshToken } from '@/utils/clientActions';
+import { convertCurrency } from '@/utils/contains';
 import {
   BanknotesIcon,
   QueueListIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/solid';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import toast from 'react-hot-toast';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 
 const DashboardResume = () => {
+  const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
+  const [resume, setResume] = useState<{
+    orderList: OrderType[];
+    totalMoney: number;
+    totalSoldProducts: number;
+  }>({
+    orderList: [],
+    totalMoney: 0,
+    totalSoldProducts: 0,
+  });
+
+  useEffect(() => {
+    async function fetchOrderList() {
+      try {
+        await handleRefreshToken(dispatch);
+
+        let res = [];
+
+        if (dateRange) {
+          res = await orderService.getAll({
+            dateRange: {
+              from: dateRange[0],
+              to: dateRange[1],
+            },
+          });
+        } else {
+          res = await orderService.getAll({});
+        }
+
+        const totalMoney = res.reduce((p, c) => {
+          return p + c.totalPay;
+        }, 0);
+
+        const totalSoldProducts = res.reduce((p, c) => {
+          return p + c.boughtProducts.reduce((acc, cur) => acc + cur.amount, 0);
+        }, 0);
+
+        setResume({
+          orderList: res,
+          totalMoney: totalMoney,
+          totalSoldProducts,
+        });
+      } catch (error: any) {
+        toast.error(error.message);
+        if (error.statusCode === 403) {
+          dispatch(authActions.logout());
+        }
+      }
+    }
+
+    fetchOrderList();
+  }, [dateRange]);
 
   return (
     <div className="dashboard-resume">
@@ -27,7 +86,7 @@ const DashboardResume = () => {
         <div className="dashboard-resume_item">
           <div className="dashboard-resume_info">
             <h4>Total Moneys</h4>
-            <p>5000000 VND</p>
+            <p>{convertCurrency(resume.totalMoney)}</p>
           </div>
           <div className="dashboard-resume_icon">
             <BanknotesIcon className="w-7 h-7"></BanknotesIcon>
@@ -36,7 +95,7 @@ const DashboardResume = () => {
         <div className="dashboard-resume_item">
           <div className="dashboard-resume_info">
             <h4>Total Sold Products</h4>
-            <p>5000000</p>
+            <p>{resume.totalSoldProducts}</p>
           </div>
           <div className="dashboard-resume_icon">
             <QueueListIcon className="w-7 h-7"></QueueListIcon>
@@ -45,7 +104,7 @@ const DashboardResume = () => {
         <div className="dashboard-resume_item">
           <div className="dashboard-resume_info">
             <h4>Total Orders</h4>
-            <p>10000</p>
+            <p>{resume.orderList.length}</p>
           </div>
           <div className="dashboard-resume_icon">
             <ShoppingCartIcon className="w-7 h-7"></ShoppingCartIcon>

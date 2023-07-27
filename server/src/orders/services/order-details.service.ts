@@ -7,11 +7,13 @@ import {
   UpdateOrderDetailDto,
 } from '@/dto/order-details.dto';
 import { ObjectId } from '@/utils/contains';
+import { ProductsRepository } from '@/products/repositories/products.repo';
 
 @Injectable()
 export class OrderDetailsService {
   constructor(
     private readonly orderDetailsRepository: OrderDetailsRepository,
+    private readonly productsRepository: ProductsRepository,
   ) {}
 
   async findAll(): Promise<OrderDetail[]> {
@@ -53,22 +55,33 @@ export class OrderDetailsService {
       },
     ]);
 
+    const productList = await this.productsRepository.findAll();
+
     const newList: any[] = [];
 
-    list.forEach((order) => {
-      if (order.amount === 1 || newList.length <= 0) {
-        newList.push(order);
+    list.forEach(async (order) => {
+      const product = productList.find(
+        (p) => p._id.toString() === order.product.toString(),
+      );
+
+      const newOrder = {
+        ...order,
+        product,
+      };
+
+      if (newOrder.amount === 1 || newList.length <= 0) {
+        newList.push(newOrder);
         return;
       }
 
       const isHad = Boolean(
         newList.find((ord) => {
-          return ord.product.toString() === order.product.toString();
+          return ord.product._id.toString() === newOrder.product._id.toString();
         }),
       );
 
       if (!isHad) {
-        newList.push(order);
+        newList.push(newOrder);
         return;
       }
     });

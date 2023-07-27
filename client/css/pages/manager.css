@@ -120,7 +120,7 @@
 }
 
 .dashboard-resume__chart > div {
-  width: 100%;
+  max-width: 1530px;
 }
 
 .dashboard-chart,

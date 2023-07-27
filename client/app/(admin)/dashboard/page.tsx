@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   },
 };
 
-const DashboardPage = () => {
+const DashboardPage = async () => {
   return (
     <div className="dashboard-page">
       <DashboardResume></DashboardResume>

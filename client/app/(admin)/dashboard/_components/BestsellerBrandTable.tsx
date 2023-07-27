@@ -8,14 +8,14 @@ import React from 'react';
 import { IconButton, Pagination, Table } from 'rsuite';
 import CollaspedOutlineIcon from '@rsuite/icons/CollaspedOutline';
 import ExpandOutlineIcon from '@rsuite/icons/ExpandOutline';
+import { BrandListType } from './DashboardBestsellerBrand';
+import RowExpandTable from './RowExpandTable';
 const { Column, HeaderCell, Cell } = Table;
 
 const ImageCell = ({ rowData, dataKey, ...props }: any) => (
   <Cell {...props} style={{ padding: 0 }}>
     <div
       style={{
-        width: 40,
-        height: 40,
         background: '#f5f5f5',
         borderRadius: 6,
         marginTop: 2,
@@ -23,12 +23,7 @@ const ImageCell = ({ rowData, dataKey, ...props }: any) => (
         display: 'inline-block',
       }}
     >
-      <Image
-        src={rowData.avatar}
-        width={40}
-        height={40}
-        alt={rowData.productName}
-      />
+      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
     </div>
   </Cell>
 );
@@ -40,7 +35,15 @@ const ExpandCell = ({
   onChange,
   ...props
 }: any) => (
-  <Cell {...props} style={{ padding: 5 }}>
+  <Cell
+    {...props}
+    style={{
+      padding: 5,
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+    }}
+  >
     <IconButton
       appearance="subtle"
       onClick={() => {
@@ -59,30 +62,16 @@ const ExpandCell = ({
 
 const renderRowExpanded = (rowData: any) => {
   return (
-    <div>
-      <div
-        style={{
-          width: 60,
-          height: 60,
-          float: 'left',
-          marginRight: 10,
-          background: '#eee',
-        }}
-      >
-        <img src={rowData.avatar} style={{ width: 60 }} />
-      </div>
-      <p>Email: {rowData.email}</p>
-      <p>Phone: {rowData.phone}</p>
-    </div>
+    <RowExpandTable
+      productBrandList={rowData.productBrandList}
+    ></RowExpandTable>
   );
 };
 
 const BestsellerBrandTable = ({
   brandList,
-  productList,
 }: {
-  brandList: BrandType[];
-  productList: ProductType[];
+  brandList: BrandListType[];
 }) => {
   const {
     handleChangeLimit,
@@ -94,7 +83,7 @@ const BestsellerBrandTable = ({
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(productList);
+  } = usePagination(brandList);
 
   const [expandedRowKeys, setExpandedRowKeys] = React.useState([]);
 
@@ -129,8 +118,9 @@ const BestsellerBrandTable = ({
         autoHeight={true}
         rowKey={'_id'}
         expandedRowKeys={expandedRowKeys}
+        renderRowExpanded={renderRowExpanded}
       >
-        <Column width={70} align="center">
+        <Column width={70} align="center" fixed>
           <HeaderCell>#</HeaderCell>
           <ExpandCell
             dataKey="_id"
@@ -139,25 +129,25 @@ const BestsellerBrandTable = ({
           />
         </Column>
 
-        <Column sortable fixed flexGrow={1}>
+        <Column fixed flexGrow={1} align="center">
           <HeaderCell>Id</HeaderCell>
           <Cell dataKey="_id" />
         </Column>
 
-        <Column sortable flexGrow={1}>
+        <Column sortable width={200} align="center">
           <HeaderCell>Tên thương hiệu</HeaderCell>
-          <Cell dataKey="productName"></Cell>
+          <Cell dataKey="name"></Cell>
         </Column>
 
-        <Column sortable width={200}>
+        <Column width={200} align="center">
           <HeaderCell>Hình ảnh</HeaderCell>
-          <ImageCell dataKey="imageList" />
+          <ImageCell dataKey="thumbUrl" />
         </Column>
 
-        <Column sortable fixed width={200}>
+        <Column fixed width={200} align="center">
           <HeaderCell>Số lượng đã bán</HeaderCell>
-          <Cell dataKey="soldNum">
-            {(rowData) => <span>{rowData.soldNum} sản phẩm</span>}
+          <Cell dataKey="amount">
+            {(rowData) => <span>{rowData.amount} sản phẩm</span>}
           </Cell>
         </Column>
       </Table>
@@ -172,7 +162,7 @@ const BestsellerBrandTable = ({
           maxButtons={5}
           size="xs"
           layout={['total', '-', 'limit', '|', 'pager', 'skip']}
-          total={productList.length}
+          total={brandList.length}
           limitOptions={[10, 30, 50]}
           limit={limit}
           activePage={page}

@@ -14,6 +14,48 @@ const orderService = {
               productDetail
               product {
                 _id
+                productName
+                imageUrlList
+                warranteeYear
+                originPrice
+                salePercent
+                description
+                generateCpu
+                cpu
+                seriesCpu
+                chip
+                ramName
+                ramSize
+                screen
+                storageName
+                storageSize
+                storagePortName
+                storagePortNum
+                storagePortMaximum
+                supportM2slotType
+                screenOutputPortName
+                screenOutputPortNum
+                bluetooth
+                keyboard
+                operationSystem
+                size
+                pin
+                weight
+                seriesLaptop
+                partNumber
+                color
+                accessoriesIncluded
+                led
+                touchScreen
+                soldNum
+                isHidden
+                remain
+                brand {
+                    _id
+                    name
+                    iconUrl
+                    thumbUrl
+                }
               }
               amount
             }
@@ -52,6 +94,48 @@ const orderService = {
               productDetail
               product {
                 _id
+                productName
+                imageUrlList
+                warranteeYear
+                originPrice
+                salePercent
+                description
+                generateCpu
+                cpu
+                seriesCpu
+                chip
+                ramName
+                ramSize
+                screen
+                storageName
+                storageSize
+                storagePortName
+                storagePortNum
+                storagePortMaximum
+                supportM2slotType
+                screenOutputPortName
+                screenOutputPortNum
+                bluetooth
+                keyboard
+                operationSystem
+                size
+                pin
+                weight
+                seriesLaptop
+                partNumber
+                color
+                accessoriesIncluded
+                led
+                touchScreen
+                soldNum
+                isHidden
+                remain
+                brand {
+                    _id
+                    name
+                    iconUrl
+                    thumbUrl
+                }
               }
               amount
             }
