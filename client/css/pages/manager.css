@@ -1,11 +1,9 @@
-.dashboard {
-  background-color: #F7FAFC;
-}
-
 .content {
   padding: 30px 15px;
-  min-height: calc(100vh - 123px);
+  height: 100vh;
+  min-height: 100vh;
   overflow-y: auto;
+  overflow-x: hidden;
 }
 
 .header-dashboard {
@@ -14,7 +12,8 @@
   align-items: center;
   padding: 8px 30px 8px 12px;
   width: 100%;
-  margin-bottom: 55px;
+  margin-bottom: 35px;
+  margin-top: 15px;
 }
 
 .header-dashboard__navigation {
@@ -54,4 +53,77 @@
 .header-dashboard__link span {
   font-size: 1.4rem;
   font-weight: 600;
+}
+
+.dashboard-resume {
+  margin-bottom: 70px;
+}
+
+.dashboard-resume__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-resume__header h3 {
+  font-size: 1.4rem;
+  font-weight: 600;
+}
+
+.dashboard-resume_content {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px
+}
+
+.dashboard-resume_item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background-color: white;
+  padding: 22px;
+  border-radius: 10px;
+  box-shadow: rgba(0, 0, 0, 0.02) 0px 3.5px 5.5px;
+  border-radius: 15px;
+  min-height: 83px;
+  min-width: 0px;
+  overflow-wrap: break-word;
+}
+
+.dashboard-resume_info {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.dashboard-resume_info h4 {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #A0aec0;
+}
+
+.dashboard-resume_info p {
+  font-weight: 600;
+  font-size: 1.3rem;
+}
+
+.dashboard-resume_icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  height: 45px;
+  width: 45px;
+  background: var(--primary);
+  color: white;
+}
+
+.dashboard-resume__chart > div {
+  width: 100%;
+}
+
+.dashboard-chart,
+.dashboard-bestseller {
+  margin-bottom: 60px;
 }

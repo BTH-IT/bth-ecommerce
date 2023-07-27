@@ -1,9 +1,9 @@
-import './globals.css';
 import { Inter } from 'next/font/google';
 import ProviderComponent from '@/components/Provider';
 import ToastComponent from '@/components/ToastComponent';
 import '../css/layouts/main-layout.css';
 import 'rsuite/dist/rsuite-no-reset.min.css';
+import './globals.css';
 
 const inter = Inter({ subsets: ['latin'] });
 

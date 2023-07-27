@@ -28,7 +28,7 @@ const HistoryContentPage = () => {
   const params = useSearchParams();
   const type = params.get('type');
 
-  const [dateRange, setDateRage] = useState<DateRange | null>(null);
+  const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
   const [orderList, setOrderList] = useState<OrderType[]>([]);
@@ -127,7 +127,7 @@ const HistoryContentPage = () => {
             showOneCalendar
             placeholder="Chọn khoảng thời gian"
             style={{ width: 300, zIndex: 1 }}
-            onChange={(value) => setDateRage(value)}
+            onChange={(value) => setDateRange(value)}
           />
         </div>
       </div>
