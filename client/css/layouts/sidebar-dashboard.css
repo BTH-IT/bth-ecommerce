@@ -35,8 +35,8 @@
   height: calc(100vh - 32px - 106px);
 }
 
-.sidebar-dashboard-actions__item {
-  display: inline-flex;
+.sidebar-dashboard-actions__item a {
+  display: flex;
   appearance: none;
   align-items: center;
   justify-content: flex-start;
@@ -55,19 +55,12 @@
   cursor: pointer;
 }
 
-.sidebar-dashboard-actions__item:hover {
+.sidebar-dashboard-actions__item a:hover {
   background-color: #E2E8F0;
 }
 
-.sidebar-dashboard-actions__item.active {
+.sidebar-dashboard-actions__item.active a {
   background-color: white;
-}
-
-.sidebar-dashboard-actions__link {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  width: 100%;
 }
 
 .sidebar-dashboard-actions__icon {

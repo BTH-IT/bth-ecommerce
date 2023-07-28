@@ -1,5 +1,7 @@
 import { Metadata } from 'next';
 import React from 'react';
+import OrderContainer from './_components/OrderContainer';
+import '../../../../css/pages/order.css';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Import Orders',
@@ -11,7 +13,7 @@ export const metadata: Metadata = {
 };
 
 const ImportOrderPage = () => {
-  return <div>ImportOrderPage</div>;
+  return <OrderContainer></OrderContainer>;
 };
 
 export default ImportOrderPage;
