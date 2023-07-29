@@ -67,10 +67,7 @@ export class UploadsController {
   }
 
   @Delete('multiple')
-  async deleteFiles(
-    @Param() uploadDeletes: DeleteUploadDto[],
-    @Response() res: any,
-  ) {
+  async deleteFiles(@Param() uploadDeletes: DeleteUploadDto[]) {
     try {
       await Promise.all(
         uploadDeletes.map(async (uploadDelete): Promise<any> => {
@@ -88,6 +85,7 @@ export class UploadsController {
   @Post('multiple')
   @UseInterceptors(FileInterceptor('file'))
   async uploadFiles(@UploadedFile() files: Express.Multer.File[]) {
+    console.log(files);
     const uploadMultiple = await Promise.all(
       files.map(async (file): Promise<any> => {
         const upload = await this.uploadFile(file);

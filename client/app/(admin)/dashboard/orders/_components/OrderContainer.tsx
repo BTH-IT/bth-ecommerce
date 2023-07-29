@@ -63,12 +63,6 @@ const OrderContainer = () => {
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
 
-  useEffect(() => {
-    if (!loginSuccess) {
-      router.replace('/login');
-    }
-  }, [loginSuccess]);
-
   const params = useSearchParams();
   const type = params.get('type') || '';
   const [search, setSearch] = useState<string>('');
@@ -78,12 +72,17 @@ const OrderContainer = () => {
   const [order, setOrder] = useState<OrderType | null>(null);
   const [orderList, setOrderList] = useState<OrderType[]>([]);
 
-  const user: any = useAppSelector(selectAuth).user;
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
     title: 'Xem chi tiết',
     key: 'see-more',
   });
+
+  useEffect(() => {
+    if (!loginSuccess) {
+      router.replace('/login');
+    }
+  }, [loginSuccess]);
 
   const handleOpen = async (order: OrderType) => {
     setOrder(order);
@@ -139,7 +138,6 @@ const OrderContainer = () => {
 
         if (success) {
           const res = await orderService.getAll({
-            userId: user._id,
             type: orderType,
             dateRange: dateRangeFilter,
             search: search.trim().toLowerCase(),

@@ -1,0 +1,57 @@
+@import "../components/select.css";
+
+.import-orders-header {
+  display: flex;
+}
+
+.import-orders-header_item {
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.import-orders-header_item a {
+  padding: 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.import-orders-header_item:hover{
+  background-color: var(--gray-200);
+}
+
+.import-orders-header_item:first-child {
+  border-top-left-radius: 12px;
+}
+
+.import-orders-header_item:last-child {
+  border-top-right-radius: 12px;
+}
+
+.import-orders-header_item.active {
+  background-color: white;
+  border-color: transparent;
+}
+
+.import-orders-header_title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.import-orders-table {
+  background-color: white;
+  min-height: calc(100vh - 32px - 128px);
+  height: calc(100vh - 32px - 128px);
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.import-orders-bg {
+  background-color: transparent;
+}
+
+.import-orders-table_filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+}

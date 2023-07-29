@@ -74,7 +74,6 @@ const BestsellerBrandTable = ({
   brandList: BrandListType[];
 }) => {
   const {
-    handleChangeLimit,
     limit,
     page,
     setPage,

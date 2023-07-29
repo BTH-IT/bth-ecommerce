@@ -10,8 +10,8 @@ export const metadata: Metadata = {
   },
 };
 
-const OrderPage = () => {
-  return <div>OrderPage</div>;
+const ProductPage = () => {
+  return <div>ProductPage</div>;
 };
 
-export default OrderPage;
+export default ProductPage;

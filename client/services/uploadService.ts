@@ -15,10 +15,11 @@ const uploadService = {
   uploadMultiple(data: File[]) {
     const url = `/upload/multiple`;
     const formData = new FormData();
+    console.log(data);
 
     data.forEach((file) => formData.append('file', file));
 
-    return axios.post('http://localhost:5000' + url, data, {
+    return axios.post('http://localhost:5000' + url, formData, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem('access_token')}`,
       },

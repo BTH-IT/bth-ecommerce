@@ -1,56 +1,20 @@
 'use client';
 
-import React, { useEffect, useLayoutEffect, useState } from 'react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { authActions, selectAuth } from '@/redux/features/authSlice';
-import Link from 'next/link';
-import { DateRangePicker } from 'rsuite';
-import { DateRange } from 'rsuite/esm/DateRangePicker';
+import { selectAuth } from '@/redux/features/authSlice';
 import { Modal, Button, Table, Pagination } from 'rsuite';
 import { OrderType } from '@/types/order';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
-import orderService from '@/services/orderService';
 import { usePagination } from '@/hooks/usePagination';
 import moment from 'moment';
 import { convertCurrency } from '@/utils/contains';
 import { DatePicker, Input, Space } from 'antd';
-import ActionCell from './ImportOrderActionCell';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
-
-const orderItemLinkList = [
-  {
-    href: '/dashboard/orders',
-    className: '',
-    title: 'All Orders',
-    param: '',
-  },
-  {
-    href: '/dashboard/orders?type=waiting',
-    className: 'waiting',
-    title: 'Waiting',
-    param: 'waiting',
-  },
-  {
-    href: '/dashboard/orders?type=shipping',
-    className: 'shipping',
-    title: 'Shipping',
-    param: 'shipping',
-  },
-  {
-    href: '/dashboard/orders?type=done',
-    className: 'done',
-    title: 'Done',
-    param: 'done',
-  },
-  {
-    href: '/dashboard/orders?type=canceled',
-    className: 'canceled',
-    title: 'Canceled',
-    param: 'canceled',
-  },
-];
+import importOrderService from '@/services/importOrderService';
+import ImportActionCell from './ImportOrderActionCell';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -61,18 +25,13 @@ export type RangeValue = Parameters<
 >[0];
 
 const ImportOrderContainer = () => {
-  const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
-
-  const params = useSearchParams();
-  const type = params.get('type') || '';
 
   const [dateRange, setDateRange] = useState<RangeValue | null>(null);
   const [open, setOpen] = useState(false);
   const [order, setOrder] = useState<OrderType | null>(null);
   const [orderList, setOrderList] = useState<OrderType[]>([]);
-
-  const user: any = useAppSelector(selectAuth).user;
+  const [search, setSearch] = useState<string>('');
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
     title: 'Xem chi tiết',
@@ -97,7 +56,6 @@ const ImportOrderContainer = () => {
   } = usePagination(orderList);
 
   useEffect(() => {
-    let orderType: any = null;
     let dateRangeFilter: any = null;
 
     if (dateRange !== null) {
@@ -107,34 +65,12 @@ const ImportOrderContainer = () => {
       };
     }
 
-    if (type) {
-      switch (type) {
-        case 'waiting':
-          orderType = 'waiting';
-          break;
-        case 'shipping':
-          orderType = 'shipping';
-          break;
-        case 'wait-for-pay':
-          orderType = 'wait-for-pay';
-          break;
-        case 'done':
-          orderType = 'done';
-          break;
-        case 'canceled':
-          orderType = 'canceled';
-          break;
-      }
-    }
-
     async function fetchOrderList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await orderService.getAll({
-            userId: user._id,
-            type: orderType,
+          const res = await importOrderService.getAll({
             dateRange: dateRangeFilter,
           });
 
@@ -148,30 +84,20 @@ const ImportOrderContainer = () => {
     }
 
     fetchOrderList();
-  }, [type, dateRange]);
+  }, [dateRange]);
+
+  const handleSearching = async (value: string) => {
+    if (!value) return;
+
+    setSearch(value);
+  };
 
   return (
-    <div className="orders">
-      <ul className="orders-header">
-        {orderItemLinkList.map((link) => (
-          <li
-            className={`orders-header_item ${
-              link.param === type ? 'active' : ''
-            }`}
-          >
-            <Link
-              href={link.href}
-              className={`orders-header_title ${link.className}`}
-            >
-              <span>{link.title}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="orders-table">
-        <div className="orders-table_filter">
+    <div className="import-orders">
+      <div className="import-orders-table">
+        <div className="import-orders-table_filter">
           <Space direction="vertical" size={12}>
-            <Search placeholder="search" />
+            <Search placeholder="search" onSearch={handleSearching} />
           </Space>
           <Space direction="vertical" size={12}>
             <RangePicker onChange={(value) => setDateRange(value)} />
@@ -191,13 +117,9 @@ const ImportOrderContainer = () => {
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Hình thức thanh toán</HeaderCell>
-              <Cell dataKey="purchaseForm">
-                {(rowData) => (
-                  <span className="paid-item">{rowData.purchaseForm}</span>
-                )}
-              </Cell>
+            <Column sortable width={250} align="center">
+              <HeaderCell>Employee Id</HeaderCell>
+              <Cell dataKey="employee"></Cell>
             </Column>
 
             <Column sortable width={200} align="center">
@@ -229,7 +151,7 @@ const ImportOrderContainer = () => {
             </Column>
             <Column fixed="right" width={250} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ActionCell
+              <ImportActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
