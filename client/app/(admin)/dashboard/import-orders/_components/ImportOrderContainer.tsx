@@ -84,7 +84,7 @@ const ImportOrderContainer = () => {
     }
 
     fetchOrderList();
-  }, [dateRange]);
+  }, [dateRange, search]);
 
   const handleSearching = async (value: string) => {
     if (!value) return;
@@ -123,22 +123,17 @@ const ImportOrderContainer = () => {
             </Column>
 
             <Column sortable width={200} align="center">
+              <HeaderCell>Supplier Id</HeaderCell>
+              <Cell dataKey="supplier"></Cell>
+            </Column>
+
+            <Column sortable width={200} align="center">
               <HeaderCell>Thời gian</HeaderCell>
               <Cell dataKey="createdAt">
                 {(rowData) => `${moment(rowData.createdAt).format('L')}`}
               </Cell>
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Trạng thái</HeaderCell>
-              <Cell dataKey="status">
-                {(rowData) => (
-                  <span className={`status-item ${rowData.status}`}>
-                    {rowData.status}
-                  </span>
-                )}
-              </Cell>
-            </Column>
             <Column sortable width={400} align="center">
               <HeaderCell>Tổng tiền</HeaderCell>
               <Cell dataKey="totalPay">
@@ -149,6 +144,7 @@ const ImportOrderContainer = () => {
                 )}
               </Cell>
             </Column>
+
             <Column fixed="right" width={250} align="center">
               <HeaderCell>Hành động</HeaderCell>
               <ImportActionCell
