@@ -10,6 +10,8 @@ export class ParamsOrderDto {
   @IsNotEmpty() type?: string;
   @IsNotEmpty() dateRange?: DateRangeDto;
   @IsNotEmpty() isHidden?: boolean;
+  @IsNotEmpty() search?: string;
+  @IsNotEmpty() report?: boolean;
 }
 
 export class CreateNewOrderDto {

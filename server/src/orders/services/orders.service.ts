@@ -45,6 +45,13 @@ export class OrdersService {
         filter['$or'] = [{ purchaseForm: re }, { status: re }];
         continue;
       }
+
+      if (key === 'report' && parameters[key] !== null) {
+        filter['status'] = 'done';
+        filter['isPaid'] = true;
+        continue;
+      }
+
       filter[key] = parameters[key];
     }
 

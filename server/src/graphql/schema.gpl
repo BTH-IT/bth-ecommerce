@@ -59,8 +59,9 @@ input CreateNewFeatureInput {
 
 input CreateNewImportOrderInput {
   employee: String!
-  importedProducts: [String!]!
+  importProducts: [ImportOrderDetailInput!]!
   supplier: String!
+  totalPay: Float!
 }
 
 input CreateNewOrderInput {
@@ -208,8 +209,9 @@ type ImportOrder {
   _id: String!
   createdAt: DateTime!
   employee: User!
-  importedProducts: [ImportOrderDetail!]!
+  importProducts: [ImportOrderDetail!]!
   supplier: Supplier!
+  totalPay: Float!
   updatedAt: DateTime!
 }
 
@@ -217,9 +219,16 @@ type ImportOrderDetail {
   _id: String!
   amount: Float!
   createdAt: DateTime!
-  importPrice: Float!
+  importOrder: ImportOrder!
+  price: Float!
   product: Product!
   updatedAt: DateTime!
+}
+
+input ImportOrderDetailInput {
+  amount: Float!
+  price: Float!
+  product: String!
 }
 
 type Mutation {
@@ -298,6 +307,7 @@ input OrderDetailInput {
 input ParamsOrderInput {
   dateRange: DateRangeInput
   isHidden: Boolean
+  report: Boolean
   search: String
   type: String
   userId: String
@@ -449,7 +459,7 @@ input UpdateFeatureInput {
 input UpdateImportOrderInput {
   _id: ID!
   employee: String
-  importedProducts: [String!]
+  importProducts: [String!]
   supplier: String
 }
 

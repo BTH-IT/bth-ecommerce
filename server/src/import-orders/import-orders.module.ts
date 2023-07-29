@@ -36,6 +36,7 @@ import {
   RoleAndFeatureSchema,
 } from '@/schemas/role-and-feature.schema';
 import { Role, RoleSchema } from '@/schemas/role.schema';
+import { ProductDetailsService } from '@/products/services/productDetails.service';
 
 @Module({
   imports: [
@@ -58,6 +59,7 @@ import { Role, RoleSchema } from '@/schemas/role.schema';
     ProductsService,
     ProductsRepository,
     ProductDetailsRepository,
+    ProductDetailsService,
     SuppliersRepository,
     SuppliersService,
     ImportOrderDetailsRepository,

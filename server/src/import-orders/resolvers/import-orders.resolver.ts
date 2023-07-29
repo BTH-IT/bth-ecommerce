@@ -24,12 +24,17 @@ import { ReadImportOrderGuard } from '../guards/read-import-order.guard';
 import { CreateImportOrderGuard } from '../guards/create-import-order.guard';
 import { UpdateImportOrderGuard } from '../guards/update-import-order.guard';
 import { DeleteImportOrderGuard } from '../guards/delete-import-order.guard';
+import { ProductDetailsService } from '@/products/services/productDetails.service';
+import { ProductsService } from '@/products/services/products.service';
+import { ObjectId } from '@/utils/contains';
 
 @Resolver(() => ImportOrder)
 export class ImportOrdersResolver {
   constructor(
     private readonly importOrdersService: ImportOrdersService,
     private readonly importOrderDetailsService: ImportOrderDetailsService,
+    private readonly productDetailsService: ProductDetailsService,
+    private readonly productsService: ProductsService,
     private readonly suppliersService: SuppliersService,
     private readonly usersService: UsersService,
   ) {}
@@ -51,7 +56,48 @@ export class ImportOrdersResolver {
   async createNewImportOrder(
     @Args('createNewImportOrder') data: CreateNewImportOrderInput,
   ) {
-    return this.importOrdersService.createNewImportOrder(data);
+    const { importProducts, ...importOrder } = data;
+
+    const newImportProducts = importProducts.map(
+      (importProduct) => importProduct.product,
+    );
+    const totalPay = importProducts.reduce((p, c) => p + c.amount * c.price, 0);
+
+    const newOrder = {
+      ...importOrder,
+      importProducts: newImportProducts,
+      totalPay,
+    };
+
+    const orderDoc = await this.importOrdersService.createNewImportOrder(
+      newOrder,
+    );
+
+    importProducts.forEach(async (p) => {
+      for (let i = 1; i <= p.amount; i++) {
+        await this.productDetailsService.createNewProductDetail({
+          product: p.product,
+        });
+      }
+
+      const data = {
+        price: p.price,
+        product: p.product,
+        amount: p.amount,
+      };
+
+      await this.importOrderDetailsService.createNewImportOrderDetail({
+        ...data,
+        importOrder: orderDoc._id.toString(),
+      });
+
+      await this.productsService.updateProduct({
+        _id: p.product,
+        originPrice: p.price,
+      });
+    });
+
+    return orderDoc;
   }
 
   @Mutation(() => ImportOrder)
@@ -70,10 +116,10 @@ export class ImportOrdersResolver {
     return this.importOrdersService.deleteImportOrder(data);
   }
 
-  @ResolveField('importedProducts', () => [ImportOrderDetail])
-  async getImportedProducts(@Parent() importOrder: ImportOrder) {
+  @ResolveField('importProducts', () => [ImportOrderDetail])
+  async getimportProducts(@Parent() importOrder: ImportOrder) {
     return await this.importOrderDetailsService.findManyByCondition(
-      importOrder.importedProducts,
+      importOrder.importProducts,
     );
   }
 

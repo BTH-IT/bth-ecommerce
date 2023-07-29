@@ -13,7 +13,7 @@ import { ImportOrderDetail } from './import-order-detail.schema';
 export class ImportOrder extends BaseSchema {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'ImportOrderDetail' })
   @Field(() => [ImportOrderDetail])
-  importedProducts: [ImportOrderDetail];
+  importProducts: [ImportOrderDetail];
 
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'Supplier' })
   @Field(() => Supplier)
@@ -22,6 +22,10 @@ export class ImportOrder extends BaseSchema {
   @Prop({ type: MongooseSchema.Types.ObjectId, ref: 'User' })
   @Field(() => User)
   employee: User;
+
+  @Prop()
+  @Field()
+  totalPay: number;
 }
 export type ImportOrderDocument = ImportOrder & Document;
 export const ImportOrderSchema = SchemaFactory.createForClass(ImportOrder);

@@ -16,6 +16,7 @@ import { convertCurrency } from '@/utils/contains';
 import { DatePicker, Input, Space } from 'antd';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
 import OrderActionCell from './OrderActionCell';
+import UpdateOrderStatusForm from './UpdateOrderStatusForm';
 
 const orderItemLinkList = [
   {
@@ -62,13 +63,11 @@ const OrderContainer = () => {
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
 
-  console.log(loginSuccess);
-
-  // useEffect(() => {
-  //   if (!loginSuccess) {
-  //     router.replace('/login');
-  //   }
-  // }, [loginSuccess]);
+  useEffect(() => {
+    if (!loginSuccess) {
+      router.replace('/login');
+    }
+  }, [loginSuccess]);
 
   const params = useSearchParams();
   const type = params.get('type') || '';
@@ -282,20 +281,22 @@ const OrderContainer = () => {
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
           {modalData.key === 'update-order' && order && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            <UpdateOrderStatusForm
+              order={order}
+              handleClose={handleClose}
+            ></UpdateOrderStatusForm>
           )}
         </Modal.Body>
-        {(modalData.key === 'see-more' || modalData.key === 'delete-order') &&
-          order && (
-            <Modal.Footer>
-              <Button onClick={handleClose} appearance="subtle">
-                Cancel
-              </Button>
-              <Button onClick={handleClose} appearance="primary">
-                Ok
-              </Button>
-            </Modal.Footer>
-          )}
+        {modalData.key === 'delete-order' && order && (
+          <Modal.Footer>
+            <Button onClick={handleClose} appearance="subtle">
+              Cancel
+            </Button>
+            <Button onClick={handleClose} appearance="primary">
+              Ok
+            </Button>
+          </Modal.Footer>
+        )}
       </Modal>
     </div>
   );

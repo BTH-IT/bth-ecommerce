@@ -25,6 +25,9 @@ export class ParamsOrderInput {
 
   @Field({ nullable: true })
   search?: string;
+
+  @Field({ nullable: true })
+  report?: boolean;
 }
 
 @InputType()

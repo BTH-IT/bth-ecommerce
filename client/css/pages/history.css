@@ -142,20 +142,6 @@ body {
     padding-inline: 31px;
 }
 
-.see-more,
-.see-more_list,
-.see-more_item {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.see-more_list {
-    margin-top: 10px;
-    gap: 12px;
-}
-
-
 .status-item.waiting {
     background-color: #fef9c3;
     border-color: #fde047;

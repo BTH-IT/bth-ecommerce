@@ -40,9 +40,10 @@ const DashboardBestsellerProduct = () => {
                 from: dateRange[0],
                 to: dateRange[1],
               },
+              report: true,
             });
           } else {
-            res = await orderService.getAll({});
+            res = await orderService.getAll({ report: true });
           }
 
           const productList: ProductListType[] = [];
@@ -54,6 +55,7 @@ const DashboardBestsellerProduct = () => {
                   ...boughtProduct.product,
                   amount: boughtProduct.amount,
                 });
+                return;
               }
 
               const isHave = productList.findIndex(

@@ -1,15 +1,30 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class ImportOrderDetailInput {
+  @Field()
+  product: string;
+
+  @Field()
+  amount: number;
+
+  @Field()
+  price: number;
+}
+
+@InputType()
 export class CreateNewImportOrderInput {
-  @Field(() => [String])
-  importedProducts: [string];
+  @Field(() => [ImportOrderDetailInput])
+  importProducts: [ImportOrderDetailInput];
 
   @Field()
   supplier: string;
 
   @Field()
   employee: string;
+
+  @Field()
+  totalPay: number;
 }
 
 @InputType()
@@ -18,7 +33,7 @@ export class UpdateImportOrderInput {
   _id: string;
 
   @Field(() => [String], { nullable: true })
-  importedProducts?: [string];
+  importProducts?: [string];
 
   @Field({ nullable: true })
   supplier?: string;

@@ -83,9 +83,10 @@ const DashboardChart = () => {
                 from: dateRange[0],
                 to: dateRange[1],
               },
+              report: true,
             });
           } else {
-            res = await orderService.getAll({});
+            res = await orderService.getAll({ report: true });
           }
 
           const totalMoneyList = monthList.map((month) => {

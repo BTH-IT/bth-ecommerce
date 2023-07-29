@@ -45,7 +45,7 @@ export class ImportOrderDetailsService {
     );
   }
 
-  async createNewImportOrderDetailDto(
+  async createNewImportOrderDetail(
     data: CreateNewImportOrderDetailDto,
   ): Promise<ImportOrderDetail> {
     return this.importOrderDetailsRepository.create(data);
