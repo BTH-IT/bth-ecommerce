@@ -16,7 +16,7 @@ import { usePagination } from '@/hooks/usePagination';
 import moment from 'moment';
 import { convertCurrency } from '@/utils/contains';
 import { DatePicker, Input, Space } from 'antd';
-import ActionCell from './ActionCell';
+import ActionCell from './ImportOrderActionCell';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
 
 const orderItemLinkList = [
@@ -60,7 +60,7 @@ export type RangeValue = Parameters<
   NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
 >[0];
 
-const OrderContainer = () => {
+const ImportOrderContainer = () => {
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
 
@@ -129,20 +129,21 @@ const OrderContainer = () => {
 
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        const res = await orderService.getAll({
-          userId: user._id,
-          type: orderType,
-          dateRange: dateRangeFilter,
-        });
+        if (success) {
+          const res = await orderService.getAll({
+            userId: user._id,
+            type: orderType,
+            dateRange: dateRangeFilter,
+          });
 
-        setOrderList(res);
+          setOrderList(res);
+        } else {
+          router.replace('/login');
+        }
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 
@@ -282,4 +283,4 @@ const OrderContainer = () => {
   );
 };
 
-export default OrderContainer;
+export default ImportOrderContainer;

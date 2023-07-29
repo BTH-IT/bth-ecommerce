@@ -1,5 +1,4 @@
 import axiosClient from '@/services/configService';
-import { Error403 } from '@/services/errorService';
 import subDays from 'date-fns/subDays';
 import startOfWeek from 'date-fns/startOfWeek';
 import endOfWeek from 'date-fns/endOfWeek';
@@ -102,7 +101,7 @@ export async function createAxiosGraphql(graphqlQuery: any) {
   );
 
   if (res.statusCode && res.statusCode !== 200) {
-    throw new Error403(res.message);
+    throw new Error(res.message);
   }
 
   return res.data;

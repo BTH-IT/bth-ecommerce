@@ -60,23 +60,25 @@ const InformationForm = () => {
   useLayoutEffect(() => {
     async function fetchProfile() {
       try {
-        await handleRefreshToken(dispatch);
-        const res = await authService.getProfile(accessToken);
+        const success = await handleRefreshToken(dispatch);
 
-        setData(res.data);
-        setUrl(res.data.account?.picture);
-        setFocus('email');
-        setValue('email', res.data.account?.email);
-        setValue('fullname', res.data.user?.fullname);
-        setValue('gender', res.data.user?.gender);
-        setValue('phone', res.data.user?.phone);
-        setValue('address', res.data.user?.address);
-        setValue('birthYear', res.data.user?.birthYear);
+        if (success) {
+          const res = await authService.getProfile(accessToken);
+
+          setData(res.data);
+          setUrl(res.data.account?.picture);
+          setFocus('email');
+          setValue('email', res.data.account?.email);
+          setValue('fullname', res.data.user?.fullname);
+          setValue('gender', res.data.user?.gender);
+          setValue('phone', res.data.user?.phone);
+          setValue('address', res.data.user?.address);
+          setValue('birthYear', res.data.user?.birthYear);
+        } else {
+          router.replace('/login');
+        }
       } catch (error: any) {
         toast.error(error.response.data.message);
-        if (error.response.data.statusCode === 401) {
-          dispatch(authActions.logout());
-        }
       }
     }
 
@@ -144,34 +146,42 @@ const InformationForm = () => {
     } catch (error: any) {
       if (error.statusCode === 403) {
         try {
-          await handleRefreshToken(dispatch);
-          const { avatar, email, ...restValues }: InformationFormType = values;
+          const success = await handleRefreshToken(dispatch);
 
-          const { data: avatarData } = await uploadService.uploadSingle(avatar);
+          if (success) {
+            const { avatar, email, ...restValues }: InformationFormType =
+              values;
 
-          const account = {
-            picture: avatarData.imageUrl || data.account.picture,
-            email,
-            _id: data.account._id,
-          };
+            const { data: avatarData } = await uploadService.uploadSingle(
+              avatar,
+            );
 
-          const user = {
-            ...restValues,
-            _id: data.user._id,
-          };
+            const account = {
+              picture: avatarData.imageUrl || data.account.picture,
+              email,
+              _id: data.account._id,
+            };
 
-          await userService.update(user);
-          await accountService.update(account);
+            const user = {
+              ...restValues,
+              _id: data.user._id,
+            };
 
-          const res = await authService.getProfile(accessToken);
+            await userService.update(user);
+            await accountService.update(account);
 
-          dispatch(authActions.updateAccount({ account: res.data.account }));
-          dispatch(authActions.updateUser({ user: res.data.user }));
+            const res = await authService.getProfile(accessToken);
 
-          localStorage.setItem('current_account', JSON.stringify(account));
-          localStorage.setItem('current_account', JSON.stringify(user));
+            dispatch(authActions.updateAccount({ account: res.data.account }));
+            dispatch(authActions.updateUser({ user: res.data.user }));
 
-          toast.success("Change user's information successfully!!");
+            localStorage.setItem('current_account', JSON.stringify(account));
+            localStorage.setItem('current_account', JSON.stringify(user));
+
+            toast.success("Change user's information successfully!!");
+          } else {
+            router.replace('/login');
+          }
         } catch (error: any) {
           toast.error("Change user's information failure!!");
         }

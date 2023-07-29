@@ -1,6 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react';
-import OrderContainer from './_components/OrderContainer';
+import OrderContainer from './_components/ImportOrderContainer';
 import '../../../../css/pages/order.css';
 
 export const metadata: Metadata = {

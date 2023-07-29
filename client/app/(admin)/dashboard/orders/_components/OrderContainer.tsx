@@ -5,8 +5,6 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { authActions, selectAuth } from '@/redux/features/authSlice';
 import Link from 'next/link';
-import { DateRangePicker } from 'rsuite';
-import { DateRange } from 'rsuite/esm/DateRangePicker';
 import { Modal, Button, Table, Pagination } from 'rsuite';
 import { OrderType } from '@/types/order';
 import { handleRefreshToken } from '@/utils/clientActions';
@@ -16,8 +14,8 @@ import { usePagination } from '@/hooks/usePagination';
 import moment from 'moment';
 import { convertCurrency } from '@/utils/contains';
 import { DatePicker, Input, Space } from 'antd';
-import ActionCell from './ActionCell';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
+import OrderActionCell from './OrderActionCell';
 
 const orderItemLinkList = [
   {
@@ -64,8 +62,17 @@ const OrderContainer = () => {
   const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
   const router = useRouter();
 
+  console.log(loginSuccess);
+
+  // useEffect(() => {
+  //   if (!loginSuccess) {
+  //     router.replace('/login');
+  //   }
+  // }, [loginSuccess]);
+
   const params = useSearchParams();
   const type = params.get('type') || '';
+  const [search, setSearch] = useState<string>('');
 
   const [dateRange, setDateRange] = useState<RangeValue | null>(null);
   const [open, setOpen] = useState(false);
@@ -129,31 +136,40 @@ const OrderContainer = () => {
 
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        const res = await orderService.getAll({
-          userId: user._id,
-          type: orderType,
-          dateRange: dateRangeFilter,
-        });
+        if (success) {
+          const res = await orderService.getAll({
+            userId: user._id,
+            type: orderType,
+            dateRange: dateRangeFilter,
+            search: search.trim().toLowerCase(),
+          });
 
-        setOrderList(res);
+          setOrderList(res);
+        } else {
+          router.replace('/login');
+        }
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 
     fetchOrderList();
-  }, [type, dateRange]);
+  }, [type, dateRange, search]);
+
+  const handleSearching = async (value: string) => {
+    if (!value) return;
+
+    setSearch(value);
+  };
 
   return (
     <div className="orders">
       <ul className="orders-header">
         {orderItemLinkList.map((link) => (
           <li
+            key={link.href}
             className={`orders-header_item ${
               link.param === type ? 'active' : ''
             }`}
@@ -170,7 +186,7 @@ const OrderContainer = () => {
       <div className="orders-table">
         <div className="orders-table_filter">
           <Space direction="vertical" size={12}>
-            <Search placeholder="search" />
+            <Search placeholder="search" onSearch={handleSearching} />
           </Space>
           <Space direction="vertical" size={12}>
             <RangePicker onChange={(value) => setDateRange(value)} />
@@ -228,7 +244,7 @@ const OrderContainer = () => {
             </Column>
             <Column fixed="right" width={250} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ActionCell
+              <OrderActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
@@ -265,9 +281,12 @@ const OrderContainer = () => {
           {modalData.key === 'delete-order' && order && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
+          {modalData.key === 'update-order' && order && (
+            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+          )}
         </Modal.Body>
-        {modalData.key === 'see-more' ||
-          (modalData.key === 'delete-order' && order && (
+        {(modalData.key === 'see-more' || modalData.key === 'delete-order') &&
+          order && (
             <Modal.Footer>
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
@@ -276,7 +295,7 @@ const OrderContainer = () => {
                 Ok
               </Button>
             </Modal.Footer>
-          ))}
+          )}
       </Modal>
     </div>
   );

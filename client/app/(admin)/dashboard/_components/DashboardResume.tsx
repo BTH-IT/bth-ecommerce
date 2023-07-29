@@ -11,12 +11,14 @@ import {
   QueueListIcon,
   ShoppingCartIcon,
 } from '@heroicons/react/24/solid';
+import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 
 const DashboardResume = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [resume, setResume] = useState<{
@@ -32,39 +34,42 @@ const DashboardResume = () => {
   useEffect(() => {
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        let res = [];
+        if (success) {
+          let res = [];
 
-        if (dateRange) {
-          res = await orderService.getAll({
-            dateRange: {
-              from: dateRange[0],
-              to: dateRange[1],
-            },
+          if (dateRange) {
+            res = await orderService.getAll({
+              dateRange: {
+                from: dateRange[0],
+                to: dateRange[1],
+              },
+            });
+          } else {
+            res = await orderService.getAll({});
+          }
+
+          const totalMoney = res.reduce((p, c) => {
+            return p + c.totalPay;
+          }, 0);
+
+          const totalSoldProducts = res.reduce((p, c) => {
+            return (
+              p + c.boughtProducts.reduce((acc, cur) => acc + cur.amount, 0)
+            );
+          }, 0);
+
+          setResume({
+            orderList: res,
+            totalMoney: totalMoney,
+            totalSoldProducts,
           });
         } else {
-          res = await orderService.getAll({});
+          router.replace('/login');
         }
-
-        const totalMoney = res.reduce((p, c) => {
-          return p + c.totalPay;
-        }, 0);
-
-        const totalSoldProducts = res.reduce((p, c) => {
-          return p + c.boughtProducts.reduce((acc, cur) => acc + cur.amount, 0);
-        }, 0);
-
-        setResume({
-          orderList: res,
-          totalMoney: totalMoney,
-          totalSoldProducts,
-        });
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 

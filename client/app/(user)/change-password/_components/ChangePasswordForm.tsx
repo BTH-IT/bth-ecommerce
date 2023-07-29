@@ -67,18 +67,19 @@ const ChangePasswordForm = () => {
     };
 
     try {
-      await handleRefreshToken(dispatch);
+      const success = await handleRefreshToken(dispatch);
 
-      await authService.changePassword(newData);
+      if (success) {
+        await authService.changePassword(newData);
 
-      toast.success('Change password successfully!!');
+        toast.success('Change password successfully!!');
 
-      reset();
+        reset();
+      } else {
+        router.replace('/login');
+      }
     } catch (error: any) {
       toast.error(error.response.data.message);
-      if (error.response.data.statusCode === 401) {
-        dispatch(authActions.logout());
-      }
     }
   };
   return (

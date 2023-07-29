@@ -98,20 +98,21 @@ const HistoryContentPage = () => {
 
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        const res = await orderService.getAll({
-          userId: user._id,
-          type: orderType,
-          dateRange: dateRangeFilter,
-        });
+        if (success) {
+          const res = await orderService.getAll({
+            userId: user._id,
+            type: orderType,
+            dateRange: dateRangeFilter,
+          });
 
-        setOrderList(res);
+          setOrderList(res);
+        } else {
+          router.replace('/login');
+        }
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 

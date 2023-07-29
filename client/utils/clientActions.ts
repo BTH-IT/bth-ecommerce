@@ -49,8 +49,10 @@ async function updateAccessToken(refreshToken: string, dispatch: any) {
         accessToken: res.data.accessToken,
       }),
     );
+    return true;
   } catch (error) {
     dispatch(authActions.logout());
+    return false;
   }
 }
 
@@ -63,6 +65,7 @@ export async function handleRefreshToken(dispatch: any) {
 
     if (now > refreshTokenDecode.exp && refreshTokenDecode) {
       dispatch(authActions.logout());
+      return false;
     } else {
       const accessToken = localStorage.getItem('access_token') || '';
 
@@ -71,8 +74,10 @@ export async function handleRefreshToken(dispatch: any) {
       if (now > accessTokenDecode.exp && accessTokenDecode) {
         await updateAccessToken(refreshToken, dispatch);
       }
+      return true;
     }
-  } else {
-    dispatch(authActions.logout());
   }
+
+  dispatch(authActions.logout());
+  return false;
 }

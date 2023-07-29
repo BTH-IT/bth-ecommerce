@@ -13,6 +13,7 @@ import orderService from '@/services/orderService';
 import { ProductListType } from './DashboardBestsellerProduct';
 import brandService from '@/services/brandService';
 import { BrandType } from '@/types/brand';
+import { useRouter } from 'next/navigation';
 
 export type BrandListType = BrandType & {
   productBrandList: ProductListType[];
@@ -20,6 +21,7 @@ export type BrandListType = BrandType & {
 };
 
 const DashboardBestsellerBrand = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [brandList, setBrandList] = useState<BrandListType[]>([]);
@@ -27,70 +29,71 @@ const DashboardBestsellerBrand = () => {
   useEffect(() => {
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        let res: OrderType[] = [];
-        const resBrand: BrandType[] = await brandService.getAll({});
+        if (success) {
+          let res: OrderType[] = [];
+          const resBrand: BrandType[] = await brandService.getAll({});
 
-        if (dateRange) {
-          res = await orderService.getAll({
-            dateRange: {
-              from: dateRange[0],
-              to: dateRange[1],
-            },
+          if (dateRange) {
+            res = await orderService.getAll({
+              dateRange: {
+                from: dateRange[0],
+                to: dateRange[1],
+              },
+            });
+          } else {
+            res = await orderService.getAll({});
+          }
+
+          const productList: ProductListType[] = [];
+
+          res.forEach((order) => {
+            order.boughtProducts.forEach((boughtProduct) => {
+              if (productList.length <= 0) {
+                productList.push({
+                  ...boughtProduct.product,
+                  amount: boughtProduct.amount,
+                });
+              }
+
+              const isHave = productList.findIndex(
+                (product) => product._id === boughtProduct.product._id,
+              );
+
+              if (isHave !== -1) {
+                productList[isHave].amount += boughtProduct.amount;
+              } else {
+                productList.push({
+                  ...boughtProduct.product,
+                  amount: boughtProduct.amount,
+                });
+              }
+            });
           });
-        } else {
-          res = await orderService.getAll({});
-        }
 
-        const productList: ProductListType[] = [];
-
-        res.forEach((order) => {
-          order.boughtProducts.forEach((boughtProduct) => {
-            if (productList.length <= 0) {
-              productList.push({
-                ...boughtProduct.product,
-                amount: boughtProduct.amount,
-              });
-            }
-
-            const isHave = productList.findIndex(
-              (product) => product._id === boughtProduct.product._id,
+          const newBrandList: BrandListType[] = resBrand.map((brand) => {
+            const productBrandList: ProductListType[] = productList.filter(
+              (product) => product.brand._id === brand._id,
             );
 
-            if (isHave !== -1) {
-              productList[isHave].amount += boughtProduct.amount;
-            } else {
-              productList.push({
-                ...boughtProduct.product,
-                amount: boughtProduct.amount,
-              });
-            }
+            const amount = productBrandList.reduce((p, c) => p + c.amount, 0);
+
+            return {
+              ...brand,
+              productBrandList,
+              amount,
+            };
           });
-        });
 
-        const newBrandList: BrandListType[] = resBrand.map((brand) => {
-          const productBrandList: ProductListType[] = productList.filter(
-            (product) => product.brand._id === brand._id,
-          );
+          newBrandList.sort((a, b) => b.amount - a.amount);
 
-          const amount = productBrandList.reduce((p, c) => p + c.amount, 0);
-
-          return {
-            ...brand,
-            productBrandList,
-            amount,
-          };
-        });
-
-        newBrandList.sort((a, b) => b.amount - a.amount);
-
-        setBrandList(newBrandList);
+          setBrandList(newBrandList);
+        } else {
+          router.replace('/login');
+        }
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 

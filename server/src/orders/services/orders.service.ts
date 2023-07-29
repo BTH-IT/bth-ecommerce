@@ -38,6 +38,13 @@ export class OrdersService {
         };
         continue;
       }
+
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['$or'] = [{ purchaseForm: re }, { status: re }];
+        continue;
+      }
       filter[key] = parameters[key];
     }
 

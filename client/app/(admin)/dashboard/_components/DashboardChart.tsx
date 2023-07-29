@@ -10,6 +10,7 @@ import orderService from '@/services/orderService';
 import { handleRefreshToken } from '@/utils/clientActions';
 import { useAppDispatch } from '@/redux/hooks';
 import { OrderType } from '@/types/order';
+import { useRouter } from 'next/navigation';
 
 const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const options: any = {
@@ -55,6 +56,7 @@ const options: any = {
 };
 
 const DashboardChart = () => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [chartData, setChartData] = useState<{
@@ -70,53 +72,54 @@ const DashboardChart = () => {
   useEffect(() => {
     async function fetchOrderList() {
       try {
-        await handleRefreshToken(dispatch);
+        const success = await handleRefreshToken(dispatch);
 
-        let res: OrderType[] = [];
+        if (success) {
+          let res: OrderType[] = [];
 
-        if (dateRange) {
-          res = await orderService.getAll({
-            dateRange: {
-              from: dateRange[0],
-              to: dateRange[1],
-            },
+          if (dateRange) {
+            res = await orderService.getAll({
+              dateRange: {
+                from: dateRange[0],
+                to: dateRange[1],
+              },
+            });
+          } else {
+            res = await orderService.getAll({});
+          }
+
+          const totalMoneyList = monthList.map((month) => {
+            const orderList = res.filter((order) => {
+              const monthOrder = new Date(order.createdAt).getMonth() + 1;
+              return month === monthOrder;
+            });
+
+            return orderList.reduce((p, c) => p + c.totalPay, 0);
+          });
+
+          const totalSoldProductsList = monthList.map((month) => {
+            const orderList = res.filter((order) => {
+              const monthOrder = new Date(order.createdAt).getMonth() + 1;
+              return month === monthOrder;
+            });
+
+            return orderList.reduce((p, c) => {
+              return (
+                p + c.boughtProducts.reduce((acc, cur) => acc + cur.amount, 0)
+              );
+            }, 0);
+          });
+
+          setChartData({
+            orderList: res,
+            totalMoneyList,
+            totalSoldProductsList,
           });
         } else {
-          res = await orderService.getAll({});
+          router.replace('/login');
         }
-
-        const totalMoneyList = monthList.map((month) => {
-          const orderList = res.filter((order) => {
-            const monthOrder = new Date(order.createdAt).getMonth() + 1;
-            return month === monthOrder;
-          });
-
-          return orderList.reduce((p, c) => p + c.totalPay, 0);
-        });
-
-        const totalSoldProductsList = monthList.map((month) => {
-          const orderList = res.filter((order) => {
-            const monthOrder = new Date(order.createdAt).getMonth() + 1;
-            return month === monthOrder;
-          });
-
-          return orderList.reduce((p, c) => {
-            return (
-              p + c.boughtProducts.reduce((acc, cur) => acc + cur.amount, 0)
-            );
-          }, 0);
-        });
-
-        setChartData({
-          orderList: res,
-          totalMoneyList,
-          totalSoldProductsList,
-        });
       } catch (error: any) {
         toast.error(error.message);
-        if (error.statusCode === 403) {
-          dispatch(authActions.logout());
-        }
       }
     }
 

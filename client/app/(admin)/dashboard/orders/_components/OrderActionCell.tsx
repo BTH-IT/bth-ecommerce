@@ -5,7 +5,12 @@ import MoreIcon from '@rsuite/icons/legacy/More';
 
 const { Cell } = Table;
 
-const ActionCell = ({ rowData, handleOpen, handleModal, ...props }: any) => {
+const OrderActionCell = ({
+  rowData,
+  handleOpen,
+  handleModal,
+  ...props
+}: any) => {
   const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
     const handleSelect = async (eventKey: any) => {
       onClose();
@@ -24,6 +29,16 @@ const ActionCell = ({ rowData, handleOpen, handleModal, ...props }: any) => {
           >
             Xem chi tiết
           </Dropdown.Item>
+          {rowData.status !== 'done' && (
+            <Dropdown.Item
+              eventKey={{
+                title: 'Sửa trạng thái đơn hàng',
+                key: 'update-order',
+              }}
+            >
+              Sửa trạng thái
+            </Dropdown.Item>
+          )}
           <Dropdown.Item
             eventKey={{
               title: 'Xóa đơn hàng',
@@ -50,4 +65,4 @@ const ActionCell = ({ rowData, handleOpen, handleModal, ...props }: any) => {
   );
 };
 
-export default ActionCell;
+export default OrderActionCell;

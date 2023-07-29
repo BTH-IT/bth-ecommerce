@@ -13,6 +13,7 @@ import { useAppDispatch } from '@/redux/hooks';
 import { authActions } from '@/redux/features/authSlice';
 import toast from 'react-hot-toast';
 import orderService from '@/services/orderService';
+import { useRouter } from 'next/navigation';
 
 const schema = yup
   .object({
@@ -32,6 +33,7 @@ const UpdateOrderForm = ({
   order: OrderType;
   handleClose: () => void;
 }) => {
+  const router = useRouter();
   const dispatch = useAppDispatch();
   useEffect(() => {
     setValue('phone', order.phone);
@@ -58,21 +60,21 @@ const UpdateOrderForm = ({
     if (!isValid) return;
 
     try {
-      await handleRefreshToken(dispatch);
+      const success = await handleRefreshToken(dispatch);
 
-      await orderService.update({
-        _id: order._id,
-        ...data,
-      });
+      if (success) {
+        await orderService.update({
+          _id: order._id,
+          ...data,
+        });
 
+        toast.success('Update order successfully');
+      } else {
+        router.replace('/login');
+      }
       handleClose();
-
-      toast.success('Update order successfully');
     } catch (error: any) {
       toast.error(error.message);
-      if (error.statusCode === 403) {
-        dispatch(authActions.logout());
-      }
     }
   };
 

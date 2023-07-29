@@ -22,6 +22,9 @@ export class ParamsOrderInput {
 
   @Field({ nullable: true })
   isHidden?: boolean;
+
+  @Field({ nullable: true })
+  search?: string;
 }
 
 @InputType()
