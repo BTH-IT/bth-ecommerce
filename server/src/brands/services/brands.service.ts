@@ -4,6 +4,7 @@ import { Brand } from '@/schemas/brand.schema';
 import {
   CreateNewBrandDto,
   DeleteBrandDto,
+  ParamsBrandDto,
   UpdateBrandDto,
 } from '@/dto/brand.dto';
 
@@ -11,7 +12,12 @@ import {
 export class BrandsService {
   constructor(private readonly brandsRepository: BrandsRepository) {}
 
-  async findAll(): Promise<Brand[]> {
+  async findAll(params?: ParamsBrandDto): Promise<Brand[]> {
+    if (params && params.search) {
+      const re = new RegExp(`${params.search}`, 'i');
+      return this.brandsRepository.getByCondition({ isActive: true, name: re });
+    }
+
     return this.brandsRepository.getByCondition({ isActive: true });
   }
 

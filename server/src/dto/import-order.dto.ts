@@ -1,5 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
+import { DateRangeDto } from './order.dto';
 
+export class ParamsImportOrderDto {
+  @IsNotEmpty() search?: string;
+  @IsNotEmpty() dateRange?: DateRangeDto;
+}
 export class CreateNewImportOrderDto {
   @IsNotEmpty() importProducts: string[];
   @IsNotEmpty() supplier: string;

@@ -4,6 +4,7 @@ import { ImportOrder } from '@/schemas/import-order.schema';
 import {
   CreateNewImportOrderDto,
   DeleteImportOrderDto,
+  ParamsImportOrderDto,
   UpdateImportOrderDto,
 } from '@/dto/import-order.dto';
 
@@ -13,8 +14,33 @@ export class ImportOrdersService {
     private readonly importOrdersRepository: ImportOrdersRepository,
   ) {}
 
-  async findAll(): Promise<ImportOrder[]> {
-    return this.importOrdersRepository.getByCondition({ isActive: true });
+  async findAll(params: ParamsImportOrderDto): Promise<ImportOrder[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {};
+
+    for (const key in params) {
+      if (key === 'dateRange' && parameters[key] !== null) {
+        filter['createdAt'] = {
+          $gte: parameters[key].from,
+          $lt: parameters[key].to,
+        };
+        continue;
+      }
+
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['_id'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+
+    return this.importOrdersRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<ImportOrder | null> {

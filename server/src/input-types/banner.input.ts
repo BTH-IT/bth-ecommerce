@@ -1,6 +1,12 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class ParamsBannerInput {
+  @Field({ nullable: true })
+  search?: string;
+}
+
+@InputType()
 export class CreateNewBannerInput {
   @Field()
   name: string;

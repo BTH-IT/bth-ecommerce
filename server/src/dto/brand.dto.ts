@@ -1,5 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsBrandDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewBrandDto {
   @IsNotEmpty() name: string;
   @IsNotEmpty() thumbUrl: string;

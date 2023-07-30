@@ -3,7 +3,6 @@ import React from 'react';
 import Sidebar from '../_components/Sidebar';
 import '../../../css/pages/manager.css';
 import HeaderDashboard from '../_components/HeaderDashboard';
-import Footer from '@/components/Footer';
 
 export default function DashboardLayout({
   children,

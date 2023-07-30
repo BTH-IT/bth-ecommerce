@@ -99,7 +99,16 @@ const sidebarItemList: any = [
     icon: <Squares2X2Icon className="w-5 h-5" />,
     title: 'Features',
   },
+  {
+    href: '/dashboard/banners',
+    icon: <Squares2X2Icon className="w-5 h-5" />,
+    title: 'Banners',
+  },
 ];
+
+sidebarItemList.sort(function (a: any, b: any) {
+  return ('' + a.title).localeCompare(b.title);
+});
 
 const Sidebar = () => {
   const params = usePathname();

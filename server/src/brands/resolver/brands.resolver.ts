@@ -4,6 +4,7 @@ import { Brand } from '@/schemas/brand.schema';
 import {
   CreateNewBrandInput,
   DeleteBrandInput,
+  ParamsBrandInput,
   UpdateBrandInput,
 } from '@/input-types/brand.input';
 import { UseGuards } from '@nestjs/common';
@@ -17,8 +18,8 @@ export class BrandsResolver {
   constructor(private brandsService: BrandsService) {}
 
   @Query(() => [Brand])
-  async getAllBrands() {
-    return await this.brandsService.findAll();
+  async getAllBrands(@Args('params') params: ParamsBrandInput) {
+    return await this.brandsService.findAll(params);
   }
 
   @Query(() => Brand)

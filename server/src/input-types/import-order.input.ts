@@ -1,4 +1,14 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
+import { DateRangeInput } from './order.input';
+
+@InputType()
+export class ParamsImportOrderInput {
+  @Field({ nullable: true })
+  dateRange?: DateRangeInput;
+
+  @Field({ nullable: true })
+  search?: string;
+}
 
 @InputType()
 export class ImportOrderDetailInput {

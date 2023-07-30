@@ -11,6 +11,7 @@ import { ImportOrder } from '@/schemas/import-order.schema';
 import {
   CreateNewImportOrderInput,
   DeleteImportOrderInput,
+  ParamsImportOrderInput,
   UpdateImportOrderInput,
 } from '@/input-types/import-order.input';
 import { User } from '@/schemas/user.schema';
@@ -41,8 +42,8 @@ export class ImportOrdersResolver {
 
   @Query(() => [ImportOrder])
   @UseGuards(ReadImportOrderGuard)
-  getAllImportOrders() {
-    return this.importOrdersService.findAll();
+  getAllImportOrders(@Args('params') params: ParamsImportOrderInput) {
+    return this.importOrdersService.findAll(params);
   }
 
   @Query(() => ImportOrder)
