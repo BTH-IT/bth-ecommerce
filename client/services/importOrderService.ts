@@ -5,8 +5,8 @@ const importOrderService = {
   async getAll(params?: any): Promise<OrderType[]> {
     const graphqlQuery = {
       query: `
-        query getAllImportOrders {
-          getAllImportOrders {
+        query getAllImportOrders($params: ParamsImportOrderInput!) {
+          getAllImportOrders(params: $params) {
             _id
             importProducts {
               _id
@@ -69,7 +69,11 @@ const importOrderService = {
             updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params: {
+          ...params,
+        },
+      },
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);

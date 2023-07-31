@@ -304,6 +304,15 @@ input OrderDetailInput {
   product: String!
 }
 
+input ParamsBrandInput {
+  search: String
+}
+
+input ParamsImportOrderInput {
+  dateRange: DateRangeInput
+  search: String
+}
+
 input ParamsOrderInput {
   dateRange: DateRangeInput
   isHidden: Boolean
@@ -366,9 +375,9 @@ type Query {
   getAccount(id: String!): Account!
   getAllAccounts: [Account!]!
   getAllBanners: [Banner!]!
-  getAllBrands: [Brand!]!
+  getAllBrands(params: ParamsBrandInput!): [Brand!]!
   getAllFeatures: [Feature!]!
-  getAllImportOrders: [ImportOrder!]!
+  getAllImportOrders(params: ParamsImportOrderInput!): [ImportOrder!]!
   getAllOrders(params: ParamsOrderInput!): [Order!]!
   getAllProducts(params: ProductParamsInput!): [Product!]!
   getAllRoles: [Role!]!

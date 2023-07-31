@@ -96,7 +96,7 @@ export function numberWithCommas(value: number) {
 
 export async function createAxiosGraphql(graphqlQuery: any) {
   const res: any = await axiosClient.post(
-    process.env.NEST_SERVER_URL || '',
+    process.env.NEST_SERVER_URL || 'http://localhost:5000/graphql',
     graphqlQuery,
   );
 

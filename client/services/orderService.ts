@@ -74,7 +74,9 @@ const orderService = {
           }
         }`,
       variables: {
-        params,
+        params: {
+          ...params,
+        },
       },
     };
 

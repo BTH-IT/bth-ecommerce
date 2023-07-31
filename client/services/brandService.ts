@@ -5,8 +5,8 @@ const brandService = {
   async getAll(params?: any): Promise<BrandType[]> {
     const graphqlQuery = {
       query: `
-        query {
-          getAllBrands {
+        query getAllBrands($params: ParamsBrandInput!) {
+          getAllBrands(params: $params) {
             _id
             name
             thumbUrl
@@ -16,7 +16,11 @@ const brandService = {
             updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params: {
+          ...params,
+        },
+      },
     };
 
     const response = await createAxiosGraphql(graphqlQuery);
