@@ -1,6 +1,27 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class ParamsAccountInput {
+  @Field({ nullable: true })
+  search?: string;
+}
+
+@InputType()
+export class CreateNewAccountWithAvailableUserInput {
+  @Field()
+  email: string;
+
+  @Field()
+  password: string;
+
+  @Field()
+  role: string;
+
+  @Field()
+  user: string;
+}
+
+@InputType()
 export class CreateNewAccountInput {
   @Field()
   email: string;

@@ -10,10 +10,12 @@ import { usePagination } from '@/hooks/usePagination';
 import { DatePicker, Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
-import ProductActionCell from './AccountActionCell';
-import ProductForm from './AccountForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import accountService from '@/services/accountService';
+import AccountActionCell from './AccountActionCell';
+import { AccountType } from '@/types/account';
+import CreateAccountForm from './CreateAccountForm';
+import UpdateAccountForm from './UpdateAccountForm';
+import CreateAccountWithAvailableUserForm from './CreateAccountWithAvailableUserForm';
 
 const { Search } = Input;
 
@@ -22,7 +24,7 @@ export type RangeValue = Parameters<
   NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
 >[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
+const ImageCell = ({ rowData, dataKey, ...props }: any) => (
   <Cell {...props} style={{ padding: 0 }}>
     <div
       style={{
@@ -33,33 +35,31 @@ const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
         display: 'inline-block',
       }}
     >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
+      <Image src={rowData.picture} width={44} height={44} alt={rowData.email} />
     </div>
   </Cell>
 );
 
-const ProductContainer = () => {
+const AccountContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [account, setAccount] = useState<AccountType | null>(null);
+  const [accountList, setAccountList] = useState<AccountType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
+    title: 'Sửa tài khoản',
+    key: 'update-account',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (account: AccountType) => {
+    setAccount(account);
     setOpen(true);
   };
 
   const handleClose = () => {
-    setAdd(false);
     setOpen(false);
   };
 
@@ -71,19 +71,19 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(accountList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchAccountList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await accountService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setAccountList(res);
         } else {
           router.replace('/login');
         }
@@ -92,36 +92,54 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchAccountList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
+      title: 'Thêm tài khoản',
+      key: 'add-account',
     });
-    setProduct(null);
-    setAdd(true);
+    setAccount(null);
+    setOpen(true);
+  };
+  const handleAddingWithAvailableUser = () => {
+    setModalData({
+      title: 'Thêm tài khoản với người dùng có sẳn',
+      key: 'add-account-with-available-user',
+    });
+    setAccount(null);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
-          <Space direction="vertical" size={12}>
+    <div className="accounts-table">
+      <div className="accounts-table_header">
+        <div className="p-4">
+          <div className="flex justify-between gap-5">
+            <div className="accounts-table_add-btn" onClick={handleAdding}>
+              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+              <span className="font-semibold">
+                Add New Account With New User
+              </span>
+            </div>
+            <div
+              className="accounts-table_add-btn"
+              onClick={handleAddingWithAvailableUser}
+            >
+              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+              <span className="font-semibold">
+                Add New Account With Available User
+              </span>
+            </div>
+          </div>
+          <Space direction="vertical" size={12} className="w-full my-5">
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
-          </div>
         </div>
         <div>
           <Table
@@ -133,39 +151,31 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={400} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+            <Column sortable width={400} align="center">
+              <HeaderCell>Email</HeaderCell>
+              <Cell dataKey="email"></Cell>
             </Column>
 
             <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+              <HeaderCell>Picture</HeaderCell>
+              <ImageCell dataKey="picture"></ImageCell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+            <Column sortable width={300} align="center">
+              <HeaderCell>Role</HeaderCell>
+              <Cell dataKey="role">
+                {(rowData) => <span>{rowData.role.name}</span>}
+              </Cell>
             </Column>
 
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
-            </Column>
-
-            <Column fixed="right" width={300} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
+              <AccountActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
@@ -183,7 +193,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={accountList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +206,25 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-account' && account && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
-              add={add}
+          {modalData.key === 'add-account' && (
+            <CreateAccountForm handleClose={handleClose}></CreateAccountForm>
+          )}
+          {modalData.key === 'add-account-with-available-user' && (
+            <CreateAccountWithAvailableUserForm
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+            ></CreateAccountWithAvailableUserForm>
+          )}
+          {modalData.key === 'update-account' && account && (
+            <UpdateAccountForm
+              handleClose={handleClose}
+              account={account}
+            ></UpdateAccountForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-product' && account && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +239,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default AccountContainer;

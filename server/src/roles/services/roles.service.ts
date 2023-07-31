@@ -1,9 +1,14 @@
 import { Injectable } from '@nestjs/common';
-import { RolesRepository } from './roles.repo';
-import { CreateNewRoleDto, DeleteRoleDto, UpdateRoleDto } from '@/dto/role.dto';
+import {
+  CreateNewRoleDto,
+  DeleteRoleDto,
+  ParamsRoleDto,
+  UpdateRoleDto,
+} from '@/dto/role.dto';
 import { Role } from '@/schemas/role.schema';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
+import { RolesRepository } from '../repositories/roles.repo';
 
 @Injectable()
 export class RolesService {
@@ -13,8 +18,27 @@ export class RolesService {
     private readonly roleAndFeatureRepository: RoleAndFeatureRepository,
   ) {}
 
-  async findAll(): Promise<Role[]> {
-    return this.rolesRepository.getByCondition({ isActive: true });
+  async findAll(params: ParamsRoleDto): Promise<Role[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {
+      isActive: true,
+    };
+
+    for (const key in params) {
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['name'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+
+    return this.rolesRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<Role | null> {

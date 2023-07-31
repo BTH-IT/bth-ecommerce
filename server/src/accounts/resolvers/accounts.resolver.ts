@@ -10,11 +10,13 @@ import { AccountsService } from '../services/accounts.service';
 import { Account } from '@/schemas/account.schema';
 import {
   CreateNewAccountInput,
+  CreateNewAccountWithAvailableUserInput,
   DeleteAccountInput,
+  ParamsAccountInput,
   UpdateAccountInput,
 } from '@/input-types/account.input';
 import { Role } from '@/schemas/role.schema';
-import { RolesService } from '@/roles/roles.service';
+import { RolesService } from '@/roles/services/roles.service';
 import { UseGuards } from '@nestjs/common';
 import { ReadAccountGuard } from '../guards/read-account.guard';
 import { CreateAccountGuard } from '../guards/create-account.guard';
@@ -30,8 +32,8 @@ export class AccountsResolver {
 
   @Query(() => [Account])
   @UseGuards(ReadAccountGuard)
-  async getAllAccounts() {
-    return await this.accountsService.findAll();
+  async getAllAccounts(@Args('params') params: ParamsAccountInput) {
+    return await this.accountsService.findAll(params);
   }
 
   @Query(() => Account)
@@ -46,6 +48,15 @@ export class AccountsResolver {
     @Args('createNewAccount') data: CreateNewAccountInput,
   ) {
     return this.accountsService.createNewAccount(data);
+  }
+
+  @Mutation(() => Account)
+  @UseGuards(CreateAccountGuard)
+  async createNewAccountWithAvailableUser(
+    @Args('createNewAccountWithAvailableUser')
+    data: CreateNewAccountWithAvailableUserInput,
+  ) {
+    return this.accountsService.createNewAccountWithAvailableUser(data);
   }
 
   @Mutation(() => Account)

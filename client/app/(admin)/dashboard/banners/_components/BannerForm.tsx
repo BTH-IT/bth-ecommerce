@@ -10,7 +10,6 @@ import * as yup from 'yup';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
-import brandService from '@/services/brandService';
 import uploadService from '@/services/uploadService';
 import ImageForm from '../../brands/_components/ImageForm';
 import { BannerType } from '@/types/banner';
@@ -80,7 +79,7 @@ const BannerForm = ({
             data.thumbUrl,
           );
 
-          await brandService.add({
+          await bannerService.add({
             ...data,
             thumbUrl: thumbUrlData.secureUrl,
           });
@@ -94,6 +93,7 @@ const BannerForm = ({
           }
 
           await bannerService.update({
+            _id: banner?._id,
             ...data,
             thumbUrl: thumbUrlData ? thumbUrlData.secureUrl : banner?.thumbUrl,
           });

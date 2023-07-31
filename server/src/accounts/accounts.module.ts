@@ -4,7 +4,6 @@ import { Account, AccountSchema } from '@/schemas/account.schema';
 import { AccountsRepository } from './repositories/accounts.repo';
 import { AccountsService } from './services/accounts.service';
 import { AccountsResolver } from './resolvers/accounts.resolver';
-import { RolesModule } from '@/roles/roles.module';
 import { Role, RoleSchema } from '@/schemas/role.schema';
 import { Feature, FeatureSchema } from '@/schemas/feature.schema';
 import {
@@ -14,8 +13,11 @@ import {
 import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
-import { RolesService } from '@/roles/roles.service';
-import { RolesRepository } from '@/roles/roles.repo';
+import { RolesService } from '@/roles/services/roles.service';
+import { RolesRepository } from '@/roles/repositories/roles.repo';
+import { User, UserSchema } from '@/schemas/user.schema';
+import { UsersService } from '@/users/users.service';
+import { UsersRepository } from '@/users/users.repo';
 
 @Module({
   imports: [
@@ -24,6 +26,7 @@ import { RolesRepository } from '@/roles/roles.repo';
       { name: Role.name, schema: RoleSchema },
       { name: Feature.name, schema: FeatureSchema },
       { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
+      { name: User.name, schema: UserSchema },
     ]),
   ],
   providers: [
@@ -35,6 +38,8 @@ import { RolesRepository } from '@/roles/roles.repo';
     FeaturesRepository,
     RolesService,
     RolesRepository,
+    UsersService,
+    UsersRepository,
   ],
   exports: [AccountsService],
 })

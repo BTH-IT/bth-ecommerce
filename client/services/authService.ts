@@ -1,3 +1,4 @@
+import { AccountFormType } from '@/app/(admin)/dashboard/accounts/_components/CreateAccountForm';
 import { RegisterFormType, ChangePasswordFormType } from './../types/form.d';
 import { LoginFormType } from '@/types/form';
 import axios from 'axios';
@@ -7,7 +8,7 @@ const authService = {
     const url = '/auth/login';
     return axios.post('http://localhost:5000' + url, data);
   },
-  register(data: RegisterFormType) {
+  register(data: RegisterFormType | AccountFormType) {
     const url = `/auth/register`;
     return axios.post('http://localhost:5000' + url, data);
   },

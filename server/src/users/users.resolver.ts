@@ -63,10 +63,10 @@ export class UsersResolver {
 
   @ResolveField('account', () => Account)
   async getAccount(@Parent() user: User) {
-    return this.accountsService.findOne(user.account._id.toString());
+    return this.accountsService.findOneById(user.account.toString());
   }
   @ResolveField('type', () => Type)
   async getType(@Parent() user: User) {
-    return this.typesService.findOne(user.type._id.toString());
+    return this.typesService.findOne(user.type.toString());
   }
 }

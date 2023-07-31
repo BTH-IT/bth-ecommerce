@@ -11,8 +11,8 @@ import { FeaturesRepository } from './repositories/features.repo';
 import { RoleAndFeatureRepository } from './repositories/role-and-feature.repo';
 import { Role, RoleSchema } from '@/schemas/role.schema';
 import { RoleAndFeatureService } from './services/role-and-feature.service';
-import { RolesService } from '@/roles/roles.service';
-import { RolesRepository } from '@/roles/roles.repo';
+import { RolesService } from '@/roles/services/roles.service';
+import { RolesRepository } from '@/roles/repositories/roles.repo';
 
 @Module({
   imports: [

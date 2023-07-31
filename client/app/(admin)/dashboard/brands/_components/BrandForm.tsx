@@ -104,6 +104,7 @@ const BrandForm = ({
           }
 
           await brandService.update({
+            _id: brand?._id,
             ...data,
             thumbUrl: thumbUrlData ? thumbUrlData.secureUrl : brand?.thumbUrl,
             iconUrl: iconUrlData ? iconUrlData.secureUrl : brand?.iconUrl,

@@ -7,8 +7,8 @@ import { Brand, BrandSchema } from '@/schemas/brand.schema';
 import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
-import { RolesService } from '@/roles/roles.service';
-import { RolesRepository } from '@/roles/roles.repo';
+import { RolesService } from '@/roles/services/roles.service';
+import { RolesRepository } from '@/roles/repositories/roles.repo';
 import { Feature, FeatureSchema } from '@/schemas/feature.schema';
 import {
   RoleAndFeature,

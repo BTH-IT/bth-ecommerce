@@ -1,14 +1,18 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsRoleDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewRoleDto {
   @IsNotEmpty() name: string;
-  description?: string;
+  @IsNotEmpty() description?: string;
 }
 
 export class UpdateRoleDto {
   @IsNotEmpty() _id: string;
   @IsNotEmpty() name?: string;
-  description?: string;
+  @IsNotEmpty() description?: string;
 }
 
 export class DeleteRoleDto {

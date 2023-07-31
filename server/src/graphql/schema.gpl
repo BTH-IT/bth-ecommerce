@@ -41,6 +41,13 @@ input CreateNewAccountInput {
   type: String! = "default"
 }
 
+input CreateNewAccountWithAvailableUserInput {
+  email: String!
+  password: String!
+  role: String!
+  user: String!
+}
+
 input CreateNewBannerInput {
   description: String! = ""
   name: String!
@@ -233,6 +240,7 @@ input ImportOrderDetailInput {
 
 type Mutation {
   createNewAccount(createNewAccount: CreateNewAccountInput!): Account!
+  createNewAccountWithAvailableUser(createNewAccountWithAvailableUser: CreateNewAccountWithAvailableUserInput!): Account!
   createNewBanner(createNewBanner: CreateNewBannerInput!): Banner!
   createNewBrand(createNewBrand: CreateNewBrandInput!): Brand!
   createNewFeature(createNewFeature: CreateNewFeatureInput!): Feature!
@@ -304,6 +312,10 @@ input OrderDetailInput {
   product: String!
 }
 
+input ParamsAccountInput {
+  search: String
+}
+
 input ParamsBannerInput {
   isShow: Boolean
   search: String
@@ -325,6 +337,10 @@ input ParamsOrderInput {
   search: String
   type: String
   userId: String
+}
+
+input ParamsRoleInput {
+  search: String
 }
 
 type Product {
@@ -378,14 +394,14 @@ input ProductParamsInput {
 
 type Query {
   getAccount(id: String!): Account!
-  getAllAccounts: [Account!]!
+  getAllAccounts(params: ParamsAccountInput!): [Account!]!
   getAllBanners(params: ParamsBannerInput!): [Banner!]!
   getAllBrands(params: ParamsBrandInput!): [Brand!]!
   getAllFeatures: [Feature!]!
   getAllImportOrders(params: ParamsImportOrderInput!): [ImportOrder!]!
   getAllOrders(params: ParamsOrderInput!): [Order!]!
   getAllProducts(params: ProductParamsInput!): [Product!]!
-  getAllRoles: [Role!]!
+  getAllRoles(params: ParamsRoleInput!): [Role!]!
   getAllSuppliers: [Supplier!]!
   getAllTypes: [Type!]!
   getAllUsers: [User!]!

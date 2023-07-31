@@ -5,8 +5,8 @@ const accountService = {
   async getAll(params?: any): Promise<AccountType[]> {
     const graphqlQuery = {
       query: `
-        query getAllAccounts {
-          getAllAccounts {
+        query getAllAccounts($params: ParamsAccountInput!) {
+          getAllAccounts(params: $params) {
             _id
             email
             picture
@@ -29,7 +29,11 @@ const accountService = {
             updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params: {
+          ...params,
+        },
+      },
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);
@@ -72,6 +76,43 @@ const accountService = {
     const response = await createAxiosGraphql(graphqlQuery);
 
     return response.getAccount;
+  },
+  async addAccountWithAvailableUser(data: any) {
+    const graphqlQuery = {
+      query: `
+        mutation createNewAccountWithAvailableUser($createNewAccountWithAvailableUser: CreateNewAccountWithAvailableUserInput!) {
+          createNewAccountWithAvailableUser(createNewAccountWithAvailableUser: $createNewAccountWithAvailableUser) {
+            _id
+            email
+            password
+            picture
+            role {
+              _id
+              name
+              description
+              features {
+                feature {
+                  _id
+                  name
+                  isActive
+                }
+                actions
+              }
+              isActive
+            }
+            isActive
+            createdAt
+            updatedAt
+          }
+      }`,
+      variables: {
+        createNewAccountWithAvailableUser: data,
+      },
+    };
+
+    const response = await createAxiosGraphql(graphqlQuery);
+
+    return response.createNewAccountWithAvailableUser;
   },
   async add(data: any) {
     const graphqlQuery = {

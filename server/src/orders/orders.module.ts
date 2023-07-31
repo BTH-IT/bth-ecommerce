@@ -28,8 +28,8 @@ import { Role, RoleSchema } from '@/schemas/role.schema';
 import { RoleAndFeatureService } from '@/features/services/role-and-feature.service';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
-import { RolesService } from '@/roles/roles.service';
-import { RolesRepository } from '@/roles/roles.repo';
+import { RolesService } from '@/roles/services/roles.service';
+import { RolesRepository } from '@/roles/repositories/roles.repo';
 import { ProductDetailsService } from '@/products/services/productDetails.service';
 
 @Module({

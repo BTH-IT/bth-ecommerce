@@ -23,7 +23,7 @@ const AvatarInput = ({
 
   const {
     field: { name: id, value },
-    fieldState: { error, isDirty },
+    fieldState: { error },
   } = useController({
     control,
     name,
@@ -36,7 +36,7 @@ const AvatarInput = ({
     }
 
     setValue(name, '');
-    setImage('https://server.bthung313.site/images/avatar.jpg');
+    setImage('');
   };
 
   return (
@@ -53,19 +53,19 @@ const AvatarInput = ({
             type="file"
           />
           <label htmlFor="avatar">
-            <Image
-              src={
-                image
-                  ? image
-                  : 'https://server.bthung313.site/images/avatar.jpg'
-              }
-              alt="avatar"
-              width={10000}
-              height={10000}
-            />
+            {image ? (
+              <Image src={image} alt="avatar" width={10000} height={10000} />
+            ) : (
+              <Image
+                src="https://server.bthung313.site/images/avatar.jpg"
+                alt="avatar"
+                width={10000}
+                height={10000}
+              />
+            )}
           </label>
           <svg
-            className={isDirty ? 'active' : ''}
+            className={image ? 'active' : ''}
             fill="none"
             stroke="currentColor"
             strokeWidth={1.5}

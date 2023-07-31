@@ -1,11 +1,10 @@
 import { Module } from '@nestjs/common';
-import { RolesService } from './roles.service';
-import { RolesResolver } from './roles.resolver';
+import { RolesService } from './services/roles.service';
+import { RolesResolver } from './resolvers/roles.resolver';
 import { MongooseModule } from '@nestjs/mongoose';
-import { RolesRepository } from './roles.repo';
+import { RolesRepository } from './repositories/roles.repo';
 import { Role, RoleSchema } from '@/schemas/role.schema';
 import { UsersModule } from '@/users/users.module';
-import { FeaturesModule } from '@/features/features.module';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 import {

@@ -30,8 +30,15 @@ axiosClient.interceptors.response.use(
   function (response) {
     // Any status code that lie within the range of 2xx cause this function to trigger
     // Do something with response data
+
     if (response.data.errors) {
-      return response.data.errors[0].extensions.originalError || 400;
+      return (
+        response.data.errors[0].extensions.originalError || {
+          data: [],
+          statusCode: 500,
+          message: 'Error Server',
+        }
+      );
     }
 
     return {
