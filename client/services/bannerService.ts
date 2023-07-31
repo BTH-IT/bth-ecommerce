@@ -5,18 +5,20 @@ const bannerService = {
   async getAll(params?: any): Promise<BannerType[]> {
     const graphqlQuery = {
       query: `
-        query {
-          getAllBanners {
+        query getAllBanners($params: ParamsBannerInput!) {
+          getAllBanners(params: $params) {
             _id
             name
             thumbUrl
             description
             isShow
-            createdAt
-            updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params: {
+          ...params,
+        },
+      },
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);

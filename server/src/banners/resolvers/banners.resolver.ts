@@ -1,12 +1,13 @@
 import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import { BannersService } from '../services/banners.service';
 import { Banner } from '@/schemas/banner.schema';
-import { UseFilters, UseGuards } from '@nestjs/common';
+import { UseGuards } from '@nestjs/common';
 import { ReadBannerGuard } from '../guards/read-banner.guard';
 import { CreateBannerGuard } from '../guards/create-banner.guard';
 import {
   CreateNewBannerInput,
   DeleteBannerInput,
+  ParamsBannerInput,
   UpdateBannerInput,
 } from '@/input-types/banner.input';
 import { UpdateBannerGuard } from '../guards/update-banner.guard';
@@ -17,8 +18,8 @@ export class BannersResolver {
   constructor(private bannersService: BannersService) {}
 
   @Query(() => [Banner])
-  async getAllBanners() {
-    return await this.bannersService.findAll();
+  async getAllBanners(@Args('params') params: ParamsBannerInput) {
+    return await this.bannersService.findAll(params);
   }
 
   @Query(() => Banner)

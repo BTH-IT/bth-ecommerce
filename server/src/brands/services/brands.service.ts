@@ -30,7 +30,6 @@ export class BrandsService {
 
   async createNewBrand(brand: CreateNewBrandDto): Promise<Brand> {
     const newBrand = await this.brandsRepository.create(brand);
-
     return newBrand;
   }
 

@@ -2,18 +2,18 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
+import { useAppDispatch } from '@/redux/hooks';
 import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
 import { DatePicker, Input, Space } from 'antd';
-import BrandActionCell from './BannerActionCell';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
-import brandService from '@/services/brandService';
-import { BrandType } from '@/types/brand';
-import BrandForm from './BannerForm';
+import { BannerType } from '@/types/banner';
+import BannerForm from './BannerForm';
+import BannerActionCell from './BannerActionCell';
+import bannerService from '@/services/bannerService';
 
 const { Search } = Input;
 
@@ -54,23 +54,23 @@ const ImageIconCell = ({ rowData, dataKey, ...props }: any) => (
   </Cell>
 );
 
-const BrandContainer = () => {
+const BannerContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [brand, setBrand] = useState<BrandType | null>(null);
-  const [brandList, setBrandList] = useState<BrandType[]>([]);
+  const [banner, setBanner] = useState<BannerType | null>(null);
+  const [bannerList, setBannerList] = useState<BannerType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa thương hiệu',
-    key: 'update-brand',
+    title: 'Sửa banner',
+    key: 'update-banner',
   });
 
-  const handleOpen = async (brand: BrandType) => {
-    setBrand(brand);
+  const handleOpen = async (banner: BannerType) => {
+    setBanner(banner);
     setOpen(true);
   };
 
@@ -87,19 +87,19 @@ const BrandContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(bannerList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchbannerList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await brandService.getAll({
+          const res = await bannerService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setBannerList(res);
         } else {
           router.replace('/login');
         }
@@ -108,35 +108,33 @@ const BrandContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchbannerList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm thương hiệu',
-      key: 'add-brand',
+      title: 'Thêm banner',
+      key: 'add-banner',
     });
-    setBrand(null);
+    setBanner(null);
     setAdd(true);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="banners-table">
+      <div className="banners-table_header">
+        <div className="banners-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="banners-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Brand</span>
+            <span className="font-semibold">Add New banner</span>
           </div>
         </div>
         <div>
@@ -159,19 +157,21 @@ const BrandContainer = () => {
               <Cell dataKey="name"></Cell>
             </Column>
 
-            <Column sortable width={300} align="center">
+            <Column sortable width={200} align="center">
               <HeaderCell>Thumbnail</HeaderCell>
               <ImageThumbCell dataKey="thumbUrl"></ImageThumbCell>
             </Column>
 
-            <Column sortable width={300} align="center">
-              <HeaderCell>Icon</HeaderCell>
-              <ImageIconCell dataKey="iconUrl"></ImageIconCell>
+            <Column width={200} align="center">
+              <HeaderCell>Active</HeaderCell>
+              <Cell dataKey="isShow">
+                {(rowData) => <span>{rowData.isShow ? 'Yes' : 'No'}</span>}
+              </Cell>
             </Column>
 
             <Column fixed="right" width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <BrandActionCell
+              <BannerActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
@@ -189,7 +189,7 @@ const BrandContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={bannerList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -202,19 +202,19 @@ const BrandContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-brand' && brand && (
+          {modalData.key === 'delete-banner' && banner && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-brand' ||
-            modalData.key === 'update-brand') && (
-            <BrandForm
+          {(modalData.key === 'add-banner' ||
+            modalData.key === 'update-banner') && (
+            <BannerForm
               add={add}
               handleClose={handleClose}
-              brand={brand}
-            ></BrandForm>
+              banner={banner}
+            ></BannerForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-brand' && brand && (
+        {modalData.key === 'delete-banner' && banner && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -229,4 +229,4 @@ const BrandContainer = () => {
   );
 };
 
-export default BrandContainer;
+export default BannerContainer;

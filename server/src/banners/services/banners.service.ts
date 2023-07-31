@@ -1,6 +1,7 @@
 import {
   CreateNewBannerDto,
   DeleteBannerDto,
+  ParamsBannerDto,
   UpdateBannerDto,
 } from '@/dto/banner.dto';
 import { Injectable } from '@nestjs/common';
@@ -11,8 +12,30 @@ import { Banner } from '@/schemas/banner.schema';
 export class BannersService {
   constructor(private readonly bannersRepository: BannersRepository) {}
 
-  async findAll(): Promise<Banner[]> {
-    return this.bannersRepository.findAll();
+  async findAll(params: ParamsBannerDto): Promise<Banner[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {};
+
+    for (const key in params) {
+      if (key === 'isShow' && parameters[key] !== null) {
+        filter['isShow'] = true;
+        continue;
+      }
+
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['name'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+
+    return this.bannersRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<Banner | null> {

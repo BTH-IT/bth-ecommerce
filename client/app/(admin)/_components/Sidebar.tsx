@@ -9,6 +9,7 @@ import {
   CreditCardIcon,
   HomeIcon,
   KeyIcon,
+  PhotoIcon,
   QueueListIcon,
   RectangleGroupIcon,
   ShieldCheckIcon,
@@ -101,7 +102,7 @@ const sidebarItemList: any = [
   },
   {
     href: '/dashboard/banners',
-    icon: <Squares2X2Icon className="w-5 h-5" />,
+    icon: <PhotoIcon className="w-5 h-5" />,
     title: 'Banners',
   },
 ];

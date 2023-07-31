@@ -1,0 +1,69 @@
+@import "../components/select.css";
+
+.banners-header {
+  display: flex;
+}
+
+.banners-header_item {
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.banners-header_item a {
+  padding: 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.banners-header_item:hover{
+  background-color: var(--gray-200);
+}
+
+.banners-header_item:first-child {
+  border-top-left-radius: 12px;
+}
+
+.banners-header_item:last-child {
+  border-top-right-radius: 12px;
+}
+
+.banners-header_item.active {
+  background-color: white;
+  border-color: transparent;
+}
+
+.banners-header_title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.banners-table {
+  background-color: white;
+  min-height: calc(100vh - 32px - 128px);
+  height: calc(100vh - 32px - 128px);
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.banners-bg {
+  background-color: transparent;
+}
+
+.banners-table_filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  align-items: center;
+}
+
+.banners-table_add-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  background-color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 18px;
+  cursor: pointer;
+}

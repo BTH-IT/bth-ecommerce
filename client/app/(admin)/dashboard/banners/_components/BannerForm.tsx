@@ -7,51 +7,50 @@ import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
-import { BrandType } from '@/types/brand';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import brandService from '@/services/brandService';
 import uploadService from '@/services/uploadService';
 import ImageForm from '../../brands/_components/ImageForm';
+import { BannerType } from '@/types/banner';
+import bannerService from '@/services/bannerService';
 
-type BrandFormType = {
+type BannerFormType = {
   name: string;
   thumbUrl: any;
-  iconUrl: any;
+  description?: any;
 };
 
 const schema = yup
   .object({
     name: yup.string().required('This field is required'),
     thumbUrl: yup.mixed().required('This field is required'),
-    iconUrl: yup.mixed().required('This field is required'),
   })
   .required();
 
-const BrandForm = ({
+const BannerForm = ({
   add,
-  brand = null,
+  banner = null,
   handleClose,
 }: {
   add: boolean;
-  brand?: BrandType | null;
+  banner?: BannerType | null;
   handleClose: () => void;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [thumbUrl, setThumbUrl] = useState<any>(null);
-  const [iconUrl, setIconUrl] = useState<any>('');
 
   useEffect(() => {
     if (add) {
       reset();
-    } else if (brand) {
-      setValue('name', brand.name);
-      setThumbUrl(brand.thumbUrl);
-      setIconUrl(brand.iconUrl);
+    } else if (banner) {
+      setValue('name', banner.name);
+      setValue('description', banner.description);
+      setThumbUrl(banner.thumbUrl);
     }
-  }, [add, brand]);
+  }, [add, banner]);
 
   const {
     reset,
@@ -59,17 +58,17 @@ const BrandForm = ({
     handleSubmit,
     formState: { isValid, isLoading },
     control,
-  } = useForm<BrandFormType>({
+  } = useForm<BannerFormType>({
     defaultValues: {
       name: '',
       thumbUrl: '',
-      iconUrl: '',
+      description: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
 
-  const onSubmit = async (data: BrandFormType) => {
+  const onSubmit = async (data: BannerFormType) => {
     if (!isValid) return;
 
     try {
@@ -80,36 +79,26 @@ const BrandForm = ({
           const { data: thumbUrlData } = await uploadService.uploadSingle(
             data.thumbUrl,
           );
-          const { data: iconUrlData } = await uploadService.uploadSingle(
-            data.iconUrl,
-          );
 
           await brandService.add({
             ...data,
             thumbUrl: thumbUrlData.secureUrl,
-            iconUrl: iconUrlData.secureUrl,
           });
 
           toast.success('Add brand successfully');
         } else {
           let thumbUrlData: any = null;
-          let iconUrlData: any = null;
 
           if (typeof data.thumbUrl === 'object') {
             thumbUrlData = await uploadService.uploadSingle(data.thumbUrl);
           }
 
-          if (typeof data.iconUrl === 'object') {
-            iconUrlData = await uploadService.uploadSingle(data.iconUrl);
-          }
-
-          await brandService.update({
+          await bannerService.update({
             ...data,
-            thumbUrl: thumbUrlData ? thumbUrlData.secureUrl : brand?.thumbUrl,
-            iconUrl: iconUrlData ? iconUrlData.secureUrl : brand?.iconUrl,
+            thumbUrl: thumbUrlData ? thumbUrlData.secureUrl : banner?.thumbUrl,
           });
 
-          toast.success('Update brand successfully');
+          toast.success('Update banner successfully');
         }
       } else {
         router.replace('/login');
@@ -129,6 +118,13 @@ const BrandForm = ({
         placeholder="Nhập name..."
         type="text"
       ></InputForm>
+      <InputForm
+        control={control}
+        name="description"
+        title="Description"
+        placeholder="Nhập description..."
+        type="text"
+      ></InputForm>
       <ImageForm
         name="thumbUrl"
         setValue={setValue}
@@ -140,17 +136,6 @@ const BrandForm = ({
         accept="image/*"
         hidden
       ></ImageForm>
-      <ImageForm
-        name="iconUrl"
-        title="Icon"
-        setValue={setValue}
-        control={control}
-        url={iconUrl}
-        image={iconUrl}
-        setImage={setIconUrl}
-        accept="image/*"
-        hidden
-      ></ImageForm>
       <Button type="submit" className="primary" disabled={isLoading}>
         Ok
       </Button>
@@ -158,4 +143,4 @@ const BrandForm = ({
   );
 };
 
-export default BrandForm;
+export default BannerForm;

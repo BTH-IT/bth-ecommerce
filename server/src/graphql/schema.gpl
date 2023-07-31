@@ -304,6 +304,11 @@ input OrderDetailInput {
   product: String!
 }
 
+input ParamsBannerInput {
+  isShow: Boolean
+  search: String
+}
+
 input ParamsBrandInput {
   search: String
 }
@@ -374,7 +379,7 @@ input ProductParamsInput {
 type Query {
   getAccount(id: String!): Account!
   getAllAccounts: [Account!]!
-  getAllBanners: [Banner!]!
+  getAllBanners(params: ParamsBannerInput!): [Banner!]!
   getAllBrands(params: ParamsBrandInput!): [Brand!]!
   getAllFeatures: [Feature!]!
   getAllImportOrders(params: ParamsImportOrderInput!): [ImportOrder!]!

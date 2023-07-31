@@ -1,5 +1,10 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsBannerDto {
+  @IsNotEmpty() search?: string;
+  @IsNotEmpty() isShow?: boolean;
+}
+
 export class CreateNewBannerDto {
   @IsNotEmpty() name: string;
   @IsNotEmpty() description?: string;

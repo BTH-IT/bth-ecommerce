@@ -60,3 +60,9 @@ input, select {
 .rs-table-row {
   overflow: visible !important;
 }
+
+.rs-table-cell-content {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

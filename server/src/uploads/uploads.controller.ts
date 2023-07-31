@@ -33,7 +33,7 @@ export class UploadsController {
     if (upload) {
       return {
         filename: upload.filename,
-        imageUrl: upload.imageUrl,
+        secureUrl: upload.imageUrl,
         publicId: upload.publicId,
       };
     }

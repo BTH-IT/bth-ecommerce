@@ -1,4 +1,3 @@
-import { Inter } from 'next/font/google';
 import React from 'react';
 import Sidebar from '../_components/Sidebar';
 import '../../../css/pages/manager.css';

@@ -108,12 +108,12 @@ const BrandContainer = () => {
       }
     }
 
-    fetchBrandList();
-  }, [search]);
+    if (!add) {
+      fetchBrandList();
+    }
+  }, [search, add]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 

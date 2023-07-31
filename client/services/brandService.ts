@@ -71,7 +71,7 @@ const brandService = {
 
     const response = await createAxiosGraphql(graphqlQuery);
 
-    return response;
+    return response.createNewBrand;
   },
   async update(data: any) {
     const graphqlQuery = {
