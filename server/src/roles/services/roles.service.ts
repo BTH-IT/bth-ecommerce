@@ -70,6 +70,20 @@ export class RolesService {
   }
 
   async updateRole(data: UpdateRoleDto) {
+    if (data.features && data.features.length > 0) {
+      data.features.forEach(async (feature) => {
+        await this.roleAndFeatureRepository.findByConditionAndUpdate(
+          {
+            feature: feature.feature._id,
+            role: data._id,
+          },
+          {
+            actions: feature.actions,
+          },
+        );
+      });
+    }
+
     return this.rolesRepository.findByIdAndUpdate(data._id, {
       name: data.name,
       description: data.description,

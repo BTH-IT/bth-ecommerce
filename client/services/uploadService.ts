@@ -15,7 +15,6 @@ const uploadService = {
   uploadMultiple(data: File[]) {
     const url = `/upload/multiple`;
     const formData = new FormData();
-    console.log(data);
 
     data.forEach((file) => formData.append('file', file));
 

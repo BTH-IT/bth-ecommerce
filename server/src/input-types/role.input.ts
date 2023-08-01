@@ -16,6 +16,27 @@ export class CreateNewRoleInput {
 }
 
 @InputType()
+export class FeatureInput {
+  @Field()
+  _id: string;
+
+  @Field()
+  name: string;
+}
+
+@InputType()
+export class RoleAndFeatureInput {
+  @Field()
+  feature: FeatureInput;
+
+  @Field(() => [String])
+  actions: [string];
+
+  @Field()
+  isActive: boolean;
+}
+
+@InputType()
 export class UpdateRoleInput {
   @Field(() => ID)
   _id: string;
@@ -25,6 +46,9 @@ export class UpdateRoleInput {
 
   @Field({ nullable: true })
   description?: string;
+
+  @Field(() => [RoleAndFeatureInput], { nullable: true })
+  features?: [RoleAndFeatureInput];
 }
 
 @InputType()

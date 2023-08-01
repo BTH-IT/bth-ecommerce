@@ -3,63 +3,37 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
-import { Modal, Button, Table, Pagination } from 'rsuite';
+import { Modal, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
-import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
-import ProductActionCell from './AuthorizationActionCell';
-import ProductForm from './AuthorizationForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import { Input, Space } from 'antd';
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/24/solid';
+import roleService from '@/services/roleService';
+import { RoleType } from '@/types/role';
+import AuthorizationForm from './AuthorizationForm';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const AuthorizationContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [role, setRole] = useState<RoleType | null>(null);
+  const [update, setUpdate] = useState<boolean>(false);
+  const [roleList, setRoleList] = useState<RoleType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
-  });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (role: RoleType) => {
+    setRole(role);
     setOpen(true);
   };
 
   const handleClose = () => {
-    setAdd(false);
     setOpen(false);
   };
 
@@ -71,19 +45,19 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(roleList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchRoleList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await roleService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setRoleList(res);
         } else {
           router.replace('/login');
         }
@@ -92,36 +66,20 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
-  }, [search]);
+    fetchRoleList();
+  }, [search, update]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
-    });
-    setProduct(null);
-    setAdd(true);
-    setOpen(true);
-  };
-
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="roles-table">
+      <div className="roles-table_header">
+        <div className="roles-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
-          </div>
         </div>
         <div>
           <Table
@@ -133,43 +91,33 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column fixed width={400} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+            <Column sortable width={400} align="center">
+              <HeaderCell>Name</HeaderCell>
+              <Cell dataKey="name"></Cell>
             </Column>
 
-            <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
+            <Column width={400} align="center">
+              <HeaderCell>Description</HeaderCell>
+              <Cell dataKey="description"></Cell>
             </Column>
 
             <Column fixed="right" width={300} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
-              />
+              <HeaderCell>Thay đổi quyền hạng</HeaderCell>
+              <Cell dataKey="">
+                {(rowData) => (
+                  <ArrowTopRightOnSquareIcon
+                    className="h-6 w-6 text-gray-500 cursor-pointer"
+                    onClick={() => {
+                      handleOpen(rowData as RoleType);
+                    }}
+                  ></ArrowTopRightOnSquareIcon>
+                )}
+              </Cell>
             </Column>
           </Table>
           <div style={{ padding: 20 }}>
@@ -183,7 +131,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={roleList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -191,36 +139,25 @@ const ProductContainer = () => {
           </div>
         </div>
       </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
+      <Modal
+        overflow={true}
+        open={open}
+        onClose={handleClose}
+        className="max-w-[1000px] w-full"
+      >
         <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
+          <Modal.Title>Thay đổi quyền hạng</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
-          )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
-              add={add}
-              handleClose={handleClose}
-              product={product}
-            ></ProductForm>
-          )}
+          <AuthorizationForm
+            role={role}
+            handleClose={handleClose}
+            handleUpdate={setUpdate}
+          ></AuthorizationForm>
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
       </Modal>
     </div>
   );
 };
 
-export default ProductContainer;
+export default AuthorizationContainer;

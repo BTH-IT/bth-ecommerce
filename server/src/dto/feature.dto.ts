@@ -6,7 +6,7 @@ export class CreateNewFeatureDto {
 
 export class UpdateFeatureDto {
   @IsNotEmpty() _id: string;
-  name?: string;
+  @IsNotEmpty() name?: string;
 }
 
 export class DeleteFeatureDto {

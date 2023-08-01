@@ -212,6 +212,11 @@ type Feature {
   updatedAt: DateTime!
 }
 
+input FeatureInput {
+  _id: String!
+  name: String!
+}
+
 type ImportOrder {
   _id: String!
   createdAt: DateTime!
@@ -436,6 +441,12 @@ type RoleAndFeature {
   role: Role!
 }
 
+input RoleAndFeatureInput {
+  actions: [String!]!
+  feature: FeatureInput!
+  isActive: Boolean!
+}
+
 input SearchInput {
   key: String! = ""
 }
@@ -547,6 +558,7 @@ input UpdateProductInput {
 input UpdateRoleInput {
   _id: ID!
   description: String
+  features: [RoleAndFeatureInput!]
   name: String
 }
 

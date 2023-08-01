@@ -1,0 +1,109 @@
+@import "../components/select.css";
+@import "../layouts/toggle.css";
+.roles-header {
+  display: flex;
+}
+
+.roles-header_item {
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.roles-header_item a {
+  padding: 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.roles-header_item:hover{
+  background-color: var(--gray-200);
+}
+
+.roles-header_item:first-child {
+  border-top-left-radius: 12px;
+}
+
+.roles-header_item:last-child {
+  border-top-right-radius: 12px;
+}
+
+.roles-header_item.active {
+  background-color: white;
+  border-color: transparent;
+}
+
+.roles-header_title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.roles-table {
+  background-color: white;
+  min-height: calc(100vh - 32px - 128px);
+  height: calc(100vh - 32px - 128px);
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.roles-bg {
+  background-color: transparent;
+}
+
+.roles-table_filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  align-items: center;
+}
+
+.roles-table_add-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  background-color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 18px;
+  cursor: pointer;
+}
+
+.roles-modal {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  padding: 10px;
+}
+
+.roles-cell {
+  padding: 20px;
+  box-shadow: rgba(99, 99, 99, 0.2) 0px 2px 8px 0px;
+  border-radius: 16px;
+}
+
+.roles-cell_header {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.roles-cell_title {
+  font-size: 1.2rem;
+}
+
+.roles-cell_toggle {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-shrink: 0;
+  min-width: 75px;
+}
+
+.roles-cell_list {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
