@@ -7,54 +7,35 @@ import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
+import { Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
 import ProductActionCell from './FeatureActionCell';
-import ProductForm from './FeatureForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import { FeatureType } from '@/types/feature';
+import featureService from '@/services/featureService';
+import FeatureForm from './FeatureForm';
+import moment from 'moment';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const FeatureContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [feature, setFeature] = useState<FeatureType | null>(null);
+  const [featureList, setFeatureList] = useState<FeatureType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
     title: 'Sửa sản phẩm',
-    key: 'update-product',
+    key: 'update-feature',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (feature: FeatureType) => {
+    setFeature(feature);
     setOpen(true);
   };
 
@@ -71,7 +52,7 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(featureList);
 
   useEffect(() => {
     async function fetchBrandList() {
@@ -79,11 +60,11 @@ const ProductContainer = () => {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await featureService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setFeatureList(res);
         } else {
           router.replace('/login');
         }
@@ -96,31 +77,29 @@ const ProductContainer = () => {
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
+      title: 'Thêm chức năng',
+      key: 'add-feature',
     });
-    setProduct(null);
+    setFeature(null);
     setAdd(true);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="features-table">
+      <div className="features-table_header">
+        <div className="features-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="features-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
+            <span className="font-semibold">Add New Feature</span>
           </div>
         </div>
         <div>
@@ -133,37 +112,26 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={400} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+            <Column sortable width={400} align="center">
+              <HeaderCell>Name</HeaderCell>
+              <Cell dataKey="name"></Cell>
             </Column>
 
-            <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+            <Column width={400} align="center">
+              <HeaderCell>Created At</HeaderCell>
+              <Cell dataKey="createdAt">
+                {(rowData) => (
+                  <span>{moment(rowData.createdAt).format('L')}</span>
+                )}
+              </Cell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
-            </Column>
-
-            <Column fixed="right" width={300} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
               <ProductActionCell
                 dataKey="_id"
@@ -183,7 +151,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={featureList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +164,19 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-feature' && feature && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
+          {(modalData.key === 'add-feature' ||
+            modalData.key === 'update-feature') && (
+            <FeatureForm
               add={add}
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+              feature={feature}
+            ></FeatureForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-feature' && feature && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +191,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default FeatureContainer;

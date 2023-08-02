@@ -54,7 +54,6 @@ const productService = {
         }`,
       variables: {
         params: {
-          sort: '',
           ...params,
         },
       },

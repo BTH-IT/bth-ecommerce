@@ -1,5 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsFeatureDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewFeatureDto {
   @IsNotEmpty() name: string;
 }

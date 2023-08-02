@@ -33,7 +33,10 @@ export class ImportOrdersService {
       if (key === 'search' && parameters[key] !== null) {
         const search = parameters[key];
         const re = new RegExp(`${search}`, 'i');
-        filter['_id'] = re;
+
+        filter['$text'] = {
+          $search: re,
+        };
         continue;
       }
 

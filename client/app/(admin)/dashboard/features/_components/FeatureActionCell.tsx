@@ -23,19 +23,19 @@ const ProductActionCell = ({
         <Dropdown.Menu onSelect={handleSelect}>
           <Dropdown.Item
             eventKey={{
-              title: 'Sửa thương hiệu',
-              key: 'update-brand',
+              title: 'Sửa tính năng',
+              key: 'update-feature',
             }}
           >
-            Sửa thương hiệu
+            Sửa tính năng
           </Dropdown.Item>
           <Dropdown.Item
             eventKey={{
-              title: 'Xóa thương hiệu',
-              key: 'delete-brand',
+              title: 'Xóa tính năng',
+              key: 'delete-feature',
             }}
           >
-            Xóa thương hiệu
+            Xóa tính năng
           </Dropdown.Item>
         </Dropdown.Menu>
       </Popover>

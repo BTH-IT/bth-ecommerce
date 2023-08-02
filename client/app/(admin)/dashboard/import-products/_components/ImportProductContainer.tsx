@@ -3,26 +3,23 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
-import { Modal, Button, Table, Pagination } from 'rsuite';
+import { Modal, Table, Pagination, Checkbox } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
 import { DatePicker, Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
-import ProductActionCell from './ImportProductActionCell';
-import ProductForm from './ImportProductForm';
 import { ProductType } from '@/types/product';
 import productService from '@/services/productService';
+import { useCheckBoxTable } from '@/hooks/useCheckBoxTable';
+import ImportProductForm from './ImportProductForm';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
+const ImageCell = ({ rowData, dataKey, ...props }: any) => (
   <Cell {...props} style={{ padding: 0 }}>
     <div
       style={{
@@ -33,33 +30,47 @@ const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
         display: 'inline-block',
       }}
     >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
+      <Image
+        src={rowData.imageUrlList[0]}
+        width={44}
+        height={44}
+        alt={rowData.name}
+      />
     </div>
   </Cell>
 );
 
-const ProductContainer = () => {
+const CheckCell = ({
+  rowData,
+  onChange,
+  checkedKeys,
+  dataKey,
+  ...props
+}: any) => (
+  <Cell {...props} style={{ padding: 0 }}>
+    <div style={{ lineHeight: '46px' }}>
+      <Checkbox
+        value={rowData}
+        inline
+        onChange={onChange}
+        checked={checkedKeys.some((item: any) => item._id === rowData._id)}
+      />
+    </div>
+  </Cell>
+);
+
+const ImportProductContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [productList, setProductList] = useState<ProductType[]>([]);
   const [search, setSearch] = useState<string>('');
+  const { handleCheckAll, handleCheck, checkedKeys, checked, indeterminate } =
+    useCheckBoxTable(productList);
 
   const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
-  });
-
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
-    setOpen(true);
-  };
 
   const handleClose = () => {
-    setAdd(false);
     setOpen(false);
   };
 
@@ -71,19 +82,21 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(productList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchProductList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
           const res = await productService.getAll({
-            search,
+            search: {
+              key: search,
+            },
           });
 
-          setBrandList(res);
+          setProductList(res);
         } else {
           router.replace('/login');
         }
@@ -92,35 +105,30 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchProductList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
-    });
-    setProduct(null);
-    setAdd(true);
+  const handleImportProduct = () => {
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="import-products-table">
+      <div className="import-products-table_header">
+        <div className="import-products-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div
+            className="import-products-table_add-btn"
+            onClick={handleImportProduct}
+          >
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
+            <span className="font-semibold">Import Products</span>
           </div>
         </div>
         <div>
@@ -133,43 +141,38 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
+            <Column sortable width={400} align="center">
               <HeaderCell>Product Name</HeaderCell>
               <Cell dataKey="productName"></Cell>
             </Column>
 
-            <Column width={150} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+              <ImageCell dataKey="imageUrlList"></ImageCell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
+            <Column sortable width={300} align="center">
               <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
+              <Cell dataKey="remain"></Cell>
             </Column>
 
-            <Column fixed="right" width={300} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
-              />
+            <Column width={250} align="center" flexGrow={1} fixed="right">
+              <HeaderCell style={{ padding: 0 }}>
+                <div style={{ lineHeight: '40px' }}>
+                  <Checkbox
+                    inline
+                    checked={checked}
+                    indeterminate={indeterminate}
+                    onChange={handleCheckAll}
+                  />
+                </div>
+              </HeaderCell>
+              <CheckCell checkedKeys={checkedKeys} onChange={handleCheck} />
             </Column>
           </Table>
           <div style={{ padding: 20 }}>
@@ -183,7 +186,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={productList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -193,34 +196,17 @@ const ProductContainer = () => {
       </div>
       <Modal overflow={true} open={open} onClose={handleClose}>
         <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
+          <Modal.Title>Nhập sản phẩm</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
-          )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
-              add={add}
-              handleClose={handleClose}
-              product={product}
-            ></ProductForm>
-          )}
+          <ImportProductForm
+            checkedKeys={checkedKeys}
+            handleClose={handleClose}
+          ></ImportProductForm>
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
       </Modal>
     </div>
   );
 };
 
-export default ProductContainer;
+export default ImportProductContainer;

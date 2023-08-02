@@ -1,0 +1,69 @@
+@import "../components/select.css";
+
+.features-header {
+  display: flex;
+}
+
+.features-header_item {
+  border: 1px solid var(--gray-200);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.features-header_item a {
+  padding: 8px;
+  display: block;
+  transition: all 0.2s ease;
+}
+
+.features-header_item:hover{
+  background-color: var(--gray-200);
+}
+
+.features-header_item:first-child {
+  border-top-left-radius: 12px;
+}
+
+.features-header_item:last-child {
+  border-top-right-radius: 12px;
+}
+
+.features-header_item.active {
+  background-color: white;
+  border-color: transparent;
+}
+
+.features-header_title {
+  font-weight: 600;
+  font-size: 1rem;
+}
+
+.features-table {
+  background-color: white;
+  min-height: calc(100vh - 32px - 128px);
+  height: calc(100vh - 32px - 128px);
+  overflow-y: auto;
+  border-radius: 12px;
+}
+
+.features-bg {
+  background-color: transparent;
+}
+
+.features-table_filter {
+  display: flex;
+  justify-content: space-between;
+  padding: 16px;
+  align-items: center;
+}
+
+.features-table_add-btn {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: white;
+  background-color: var(--primary);
+  padding: 8px 12px;
+  border-radius: 18px;
+  cursor: pointer;
+}

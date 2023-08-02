@@ -24,11 +24,6 @@ import { usePathname } from 'next/navigation';
 
 const sidebarItemList: any = [
   {
-    href: '/dashboard',
-    icon: <HomeIcon className="w-5 h-5" />,
-    title: 'Dashboard',
-  },
-  {
     href: '/dashboard/orders',
     icon: <CreditCardIcon className="w-5 h-5" />,
     title: 'Orders',
@@ -109,6 +104,12 @@ const sidebarItemList: any = [
 
 sidebarItemList.sort(function (a: any, b: any) {
   return ('' + a.title).localeCompare(b.title);
+});
+
+sidebarItemList.unshift({
+  href: '/dashboard',
+  icon: <HomeIcon className="w-5 h-5" />,
+  title: 'Dashboard',
 });
 
 const Sidebar = () => {

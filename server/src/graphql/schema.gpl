@@ -330,6 +330,10 @@ input ParamsBrandInput {
   search: String
 }
 
+input ParamsFeatureInput {
+  search: String
+}
+
 input ParamsImportOrderInput {
   dateRange: DateRangeInput
   search: String
@@ -402,7 +406,7 @@ type Query {
   getAllAccounts(params: ParamsAccountInput!): [Account!]!
   getAllBanners(params: ParamsBannerInput!): [Banner!]!
   getAllBrands(params: ParamsBrandInput!): [Brand!]!
-  getAllFeatures: [Feature!]!
+  getAllFeatures(params: ParamsFeatureInput!): [Feature!]!
   getAllImportOrders(params: ParamsImportOrderInput!): [ImportOrder!]!
   getAllOrders(params: ParamsOrderInput!): [Order!]!
   getAllProducts(params: ProductParamsInput!): [Product!]!

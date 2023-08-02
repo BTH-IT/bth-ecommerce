@@ -3,6 +3,7 @@ import { Feature } from '@/schemas/feature.schema';
 import {
   CreateNewFeatureDto,
   DeleteFeatureDto,
+  ParamsFeatureDto,
   UpdateFeatureDto,
 } from '@/dto/feature.dto';
 import { ObjectId } from '@/utils/contains';
@@ -16,8 +17,24 @@ export class FeaturesService {
     private readonly roleAndFeatureRepository: RoleAndFeatureRepository,
   ) {}
 
-  async findAll(): Promise<Feature[]> {
-    return this.featuresRepository.getByCondition({ isActive: true });
+  async findAll(params: ParamsFeatureDto): Promise<Feature[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = { isActive: true };
+
+    for (const key in params) {
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['name'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+    return this.featuresRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<Feature | null> {

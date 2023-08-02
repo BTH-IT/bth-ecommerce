@@ -4,6 +4,7 @@ import { Args, Mutation, Query, Resolver } from '@nestjs/graphql';
 import {
   CreateNewFeatureInput,
   DeleteFeatureInput,
+  ParamsFeatureInput,
   UpdateFeatureInput,
 } from '@/input-types/feature.input';
 import { UseGuards } from '@nestjs/common';
@@ -18,8 +19,8 @@ export class FeaturesResolver {
 
   @Query(() => [Feature])
   @UseGuards(ReadFeatureGuard)
-  getAllFeatures() {
-    return this.featuresService.findAll();
+  getAllFeatures(@Args('params') params: ParamsFeatureInput) {
+    return this.featuresService.findAll(params);
   }
 
   @Query(() => Feature)

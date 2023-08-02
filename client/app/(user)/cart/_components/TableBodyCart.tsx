@@ -1,15 +1,10 @@
 'use client';
 
-import { authActions, selectAuth } from '@/redux/features/authSlice';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import productService from '@/services/productService';
 import { CartType } from '@/types/cart';
 import { convertCurrency } from '@/utils/contains';
-import debounce from 'lodash.debounce';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
-import toast from 'react-hot-toast';
+import React from 'react';
 import AmountAction from './AmountAction';
 
 const TableBodyCart = ({ cartList }: { cartList: CartType[] }) => {
