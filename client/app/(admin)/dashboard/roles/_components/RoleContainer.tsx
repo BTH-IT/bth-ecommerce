@@ -72,8 +72,10 @@ const RoleContainer = () => {
       }
     }
 
-    fetchRoleList();
-  }, [search]);
+    if (!add) {
+      fetchRoleList();
+    }
+  }, [search, add]);
 
   const handleSearching = async (value: string) => {
     setSearch(value);
@@ -171,7 +173,7 @@ const RoleContainer = () => {
             ></RoleForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && role && (
+        {modalData.key === 'delete-role' && role && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel

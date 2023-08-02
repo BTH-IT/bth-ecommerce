@@ -72,8 +72,10 @@ const SupplierContainer = () => {
       }
     }
 
-    fetchSupplierList();
-  }, [search]);
+    if (!add) {
+      fetchSupplierList();
+    }
+  }, [search, add]);
 
   const handleSearching = async (value: string) => {
     setSearch(value);

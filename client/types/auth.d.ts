@@ -1,3 +1,6 @@
+import { AccountType } from './account';
+import { UserGenreType } from './user-type';
+
 export interface LoginResponseType {
   newAccount:
     | {
@@ -36,27 +39,10 @@ export interface UserType {
   fullname: string;
   birthYear: number;
   gender: string;
-  account: {
-    _id: string;
-    email: string;
-    picture: string;
-    role: {
-      _id: string;
-      name: string;
-      description: string;
-      features: {
-        feature: {
-          _id: string;
-          name: string;
-        };
-        actions: [string];
-      };
-    };
-  };
-  type: {
-    _id: string;
-    name: string;
-  };
+  phone: string;
+  address: string;
+  account: AccountType;
+  type: UserGenreType;
   createdAt: Date;
   updatedAt: Date;
 }

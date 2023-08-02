@@ -1,7 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { UsersRepository } from './users.repo';
 import { User } from '@/schemas/user.schema';
-import { CreateNewUserDto, DeleteUserDto, UpdateUserDto } from '@/dto/user.dto';
+import {
+  CreateNewUserDto,
+  DeleteUserDto,
+  ParamsUserDto,
+  UpdateUserDto,
+} from '@/dto/user.dto';
 
 @Injectable()
 export class UsersService {
@@ -17,8 +22,29 @@ export class UsersService {
     });
   }
 
-  async findAll(): Promise<User[]> {
-    return this.usersRepository.getByCondition({ isActive: true });
+  async findAll(params: ParamsUserDto): Promise<User[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {
+      isActive: true,
+    };
+
+    for (const key in params) {
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['fullname'] = re;
+        filter['gender'] = re;
+        filter['phone'] = re;
+        filter['address'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+    return this.usersRepository.getByCondition(filter);
   }
 
   async createNewUser(user: CreateNewUserDto): Promise<User> {

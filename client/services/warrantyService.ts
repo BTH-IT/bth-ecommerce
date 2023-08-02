@@ -10,8 +10,80 @@ const warrantyService = {
             _id
             productDetail
             product {
+              _id
+              productName
+              imageUrlList
+              warranteeYear
+              originPrice
+              salePercent
+              description
+              generateCpu
+              cpu
+              seriesCpu
+              chip
+              ramName
+              ramSize
+              screen
+              storageName
+              storageSize
+              storagePortName
+              storagePortNum
+              storagePortMaximum
+              supportM2slotType
+              screenOutputPortName
+              screenOutputPortNum
+              bluetooth
+              keyboard
+              operationSystem
+              size
+              pin
+              weight
+              seriesLaptop
+              partNumber
+              color
+              accessoriesIncluded
+              led
+              touchScreen
+              soldNum
+              isHidden
+              remain
+              brand {
+                  _id
+                  name
+                  iconUrl
+                  thumbUrl
+              }
+            }
+            user {
+              _id
+              fullname
+              birthYear
+              gender
+              address
+              phone
+              account {
                 _id
-                productName
+                email
+                picture
+                role {
+                  _id
+                  name
+                  description
+                  features {
+                    feature {
+                      _id
+                      name
+                    }
+                    actions
+                  }
+                }
+              }
+              type {
+                _id
+                name
+              }
+              createdAt
+              updatedAt
             }
             warrantyYear
             createdAt
@@ -35,8 +107,84 @@ const warrantyService = {
         query getWarranty($id: String!) {
           getWarranty(id: $id) {
             _id
-            name
-            isActive
+            productDetail
+            product {
+              _id
+              productName
+              imageUrlList
+              warranteeYear
+              originPrice
+              salePercent
+              description
+              generateCpu
+              cpu
+              seriesCpu
+              chip
+              ramName
+              ramSize
+              screen
+              storageName
+              storageSize
+              storagePortName
+              storagePortNum
+              storagePortMaximum
+              supportM2slotType
+              screenOutputPortName
+              screenOutputPortNum
+              bluetooth
+              keyboard
+              operationSystem
+              size
+              pin
+              weight
+              seriesLaptop
+              partNumber
+              color
+              accessoriesIncluded
+              led
+              touchScreen
+              soldNum
+              isHidden
+              remain
+              brand {
+                  _id
+                  name
+                  iconUrl
+                  thumbUrl
+              }
+            }
+            user {
+              _id
+              fullname
+              birthYear
+              gender
+              address
+              phone
+              account {
+                _id
+                email
+                picture
+                role {
+                  _id
+                  name
+                  description
+                  features {
+                    feature {
+                      _id
+                      name
+                    }
+                    actions
+                  }
+                }
+              }
+              type {
+                _id
+                name
+              }
+              createdAt
+              updatedAt
+            }
+            warrantyYear
             createdAt
             updatedAt
           }
@@ -56,8 +204,84 @@ const warrantyService = {
         mutation createNewWarranty($createNewWarranty: CreateNewWarrantyInput!){
           createNewWarranty(createNewWarranty: $createNewWarranty) {
             _id
-            name
-            isActive
+            productDetail
+            product {
+              _id
+              productName
+              imageUrlList
+              warranteeYear
+              originPrice
+              salePercent
+              description
+              generateCpu
+              cpu
+              seriesCpu
+              chip
+              ramName
+              ramSize
+              screen
+              storageName
+              storageSize
+              storagePortName
+              storagePortNum
+              storagePortMaximum
+              supportM2slotType
+              screenOutputPortName
+              screenOutputPortNum
+              bluetooth
+              keyboard
+              operationSystem
+              size
+              pin
+              weight
+              seriesLaptop
+              partNumber
+              color
+              accessoriesIncluded
+              led
+              touchScreen
+              soldNum
+              isHidden
+              remain
+              brand {
+                  _id
+                  name
+                  iconUrl
+                  thumbUrl
+              }
+            }
+            user {
+              _id
+              fullname
+              birthYear
+              gender
+              address
+              phone
+              account {
+                _id
+                email
+                picture
+                role {
+                  _id
+                  name
+                  description
+                  features {
+                    feature {
+                      _id
+                      name
+                    }
+                    actions
+                  }
+                }
+              }
+              type {
+                _id
+                name
+              }
+              createdAt
+              updatedAt
+            }
+            warrantyYear
             createdAt
             updatedAt
           }

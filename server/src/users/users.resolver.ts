@@ -11,6 +11,7 @@ import { User } from '@/schemas/user.schema';
 import {
   CreateNewUserInput,
   DeleteUserInput,
+  ParamsUserInput,
   UpdateUserInput,
 } from '@/input-types/user.input';
 import { Account } from '@/schemas/account.schema';
@@ -33,8 +34,8 @@ export class UsersResolver {
 
   @Query(() => [User])
   @UseGuards(ReadUserGuard)
-  async getAllUsers() {
-    return await this.usersService.findAll();
+  async getAllUsers(@Args('params') params: ParamsUserInput) {
+    return await this.usersService.findAll(params);
   }
 
   @Query(() => User)

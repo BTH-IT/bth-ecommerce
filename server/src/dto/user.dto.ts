@@ -1,5 +1,9 @@
 import { IsNotEmpty, IsPositive } from 'class-validator';
 
+export class ParamsUserDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewUserDto {
   @IsNotEmpty() fullname: string;
   gender?: string;

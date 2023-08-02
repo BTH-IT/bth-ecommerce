@@ -38,7 +38,6 @@ const BestsellerProductTable = ({
   productList: ProductListType[];
 }) => {
   const {
-    handleChangeLimit,
     limit,
     page,
     setPage,

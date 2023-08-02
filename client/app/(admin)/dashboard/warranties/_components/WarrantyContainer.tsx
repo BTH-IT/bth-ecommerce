@@ -12,16 +12,42 @@ import ProductActionCell from './WarrantyActionCell';
 import WarrantyForm from './WarrantyForm';
 import { WarrantyType } from '@/types/warranty';
 import warrantyService from '@/services/warrantyService';
+import Image from 'next/image';
+import WarrantyActionCell from './WarrantyActionCell';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
 
+const ImageCell = ({ rowData, dataKey, ...props }: any) => {
+  return (
+    <Cell {...props} style={{ padding: 0 }}>
+      <div
+        style={{
+          width: 40,
+          height: 40,
+          background: '#f5f5f5',
+          borderRadius: 6,
+          marginTop: 2,
+          overflow: 'hidden',
+          display: 'inline-block',
+        }}
+      >
+        <Image
+          src={rowData.product.imageUrlList[0]}
+          width={40}
+          height={40}
+          alt={rowData.product.productName}
+        />
+      </div>
+    </Cell>
+  );
+};
+
 const WarrantyContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
   const [warranty, setWarranty] = useState<WarrantyType | null>(null);
   const [warrantyList, setWarrantyList] = useState<WarrantyType[]>([]);
   const [search, setSearch] = useState<string>('');
@@ -38,7 +64,6 @@ const WarrantyContainer = () => {
   };
 
   const handleClose = () => {
-    setAdd(false);
     setOpen(false);
   };
 
@@ -96,19 +121,36 @@ const WarrantyContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
+            <Column align="center" width={200}>
+              <HeaderCell>Hình ảnh</HeaderCell>
+              <ImageCell dataKey="imageUrlList" />
             </Column>
 
-            <Column sortable width={200} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+              <Cell>
+                {(rowData) => <span>{rowData.product.productName}</span>}
+              </Cell>
             </Column>
 
-            <Column fixed="right" width={300} align="center">
+            <Column width={300} align="center">
+              <HeaderCell>User</HeaderCell>
+              <Cell>{(rowData) => <span>{rowData.user.fullname}</span>}</Cell>
+            </Column>
+
+            <Column width={350} align="center">
+              <HeaderCell>Product Id</HeaderCell>
+              <Cell dataKey="productDetail"></Cell>
+            </Column>
+
+            <Column width={125} align="center">
+              <HeaderCell>Warranty Year</HeaderCell>
+              <Cell dataKey="warrantyYear"></Cell>
+            </Column>
+
+            <Column width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
+              <WarrantyActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}

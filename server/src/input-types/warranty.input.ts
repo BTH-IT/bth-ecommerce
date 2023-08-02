@@ -1,12 +1,21 @@
 import { Field, ID, InputType } from '@nestjs/graphql';
 
 @InputType()
+export class ParamsWarrantyInput {
+  @Field({ nullable: true })
+  search?: string;
+}
+
+@InputType()
 export class CreateNewWarrantyInput {
   @Field()
   productDetail: string;
 
   @Field()
   product: string;
+
+  @Field()
+  user: string;
 
   @Field()
   warrantyYear: number;
@@ -22,6 +31,9 @@ export class UpdateWarrantyInput {
 
   @Field({ nullable: true })
   product?: string;
+
+  @Field({ nullable: true })
+  user?: string;
 
   @Field({ nullable: true })
   warrantyYear?: number;

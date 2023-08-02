@@ -30,16 +30,6 @@ export class ImportOrdersService {
         continue;
       }
 
-      if (key === 'search' && parameters[key] !== null) {
-        const search = parameters[key];
-        const re = new RegExp(`${search}`, 'i');
-
-        filter['$text'] = {
-          $search: re,
-        };
-        continue;
-      }
-
       filter[key] = parameters[key];
     }
 

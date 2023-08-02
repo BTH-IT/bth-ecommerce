@@ -11,6 +11,7 @@ import { WarrantiesService } from './warranties.service';
 import {
   CreateNewWarrantyInput,
   DeleteWarrantyInput,
+  ParamsWarrantyInput,
   UpdateWarrantyInput,
 } from '@/input-types/warranty.input';
 import { Product } from '@/schemas/product.schema';
@@ -20,18 +21,21 @@ import { ReadWarrantyGuard } from './guards/read-warranty.guard';
 import { CreateWarrantyGuard } from './guards/create-warranty.guard';
 import { UpdateWarrantyGuard } from './guards/update-warranty.guard';
 import { DeleteWarrantyGuard } from './guards/delete-warranty.guard';
+import { User } from '@/schemas/user.schema';
+import { UsersService } from '@/users/users.service';
 
 @Resolver(() => Warranty)
 export class WarrantiesResolver {
   constructor(
     private warrantiesService: WarrantiesService,
     private productsService: ProductsService,
+    private usersService: UsersService,
   ) {}
 
   @Query(() => [Warranty])
   @UseGuards(ReadWarrantyGuard)
-  async getAllWarranties() {
-    return await this.warrantiesService.findAll();
+  async getAllWarranties(@Args('params') params: ParamsWarrantyInput) {
+    return await this.warrantiesService.findAll(params);
   }
 
   @Query(() => Warranty)
@@ -61,7 +65,12 @@ export class WarrantiesResolver {
   }
 
   @ResolveField('product', () => Product)
-  async getAccount(@Parent() warranty: Warranty) {
-    return this.productsService.findOne(warranty.product._id.toString());
+  async getProduct(@Parent() warranty: Warranty) {
+    return this.productsService.findOne(warranty.product.toString());
+  }
+
+  @ResolveField('user', () => User)
+  async getUser(@Parent() warranty: Warranty) {
+    return this.usersService.findOne(warranty.user.toString());
   }
 }

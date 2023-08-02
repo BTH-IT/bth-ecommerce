@@ -5,8 +5,8 @@ const userService = {
   async getAll(params?: any): Promise<UserType[]> {
     const graphqlQuery = {
       query: `
-        query {
-          getAllUsers {
+        query getAllUsers($params: ParamsUserInput!) {
+          getAllUsers(params: $params) {
             _id
             fullname
             birthYear
@@ -38,7 +38,11 @@ const userService = {
             updatedAt
           }
         }`,
-      variables: {},
+      variables: {
+        params: {
+          ...params,
+        },
+      },
     };
 
     const response: any = await createAxiosGraphql(graphqlQuery);

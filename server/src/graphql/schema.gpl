@@ -144,6 +144,7 @@ input CreateNewUserInput {
 input CreateNewWarrantyInput {
   product: String!
   productDetail: String!
+  user: String!
   warrantyYear: Float!
 }
 
@@ -362,6 +363,14 @@ input ParamsTypeInput {
   search: String
 }
 
+input ParamsUserInput {
+  search: String
+}
+
+input ParamsWarrantyInput {
+  search: String
+}
+
 type Product {
   _id: String!
   accessoriesIncluded: String!
@@ -423,8 +432,8 @@ type Query {
   getAllRoles(params: ParamsRoleInput!): [Role!]!
   getAllSuppliers(params: ParamsSupplierInput!): [Supplier!]!
   getAllTypes(params: ParamsTypeInput!): [Type!]!
-  getAllUsers: [User!]!
-  getAllWarranties: [Warranty!]!
+  getAllUsers(params: ParamsUserInput!): [User!]!
+  getAllWarranties(params: ParamsWarrantyInput!): [Warranty!]!
   getBanner(id: String!): Banner!
   getBrand(id: String!): Brand!
   getFeature(id: String!): Feature!
@@ -603,6 +612,7 @@ input UpdateWarrantyInput {
   _id: ID!
   product: String
   productDetail: String
+  user: String
   warrantyYear: Float
 }
 
@@ -626,5 +636,6 @@ type Warranty {
   product: Product!
   productDetail: String!
   updatedAt: DateTime!
+  user: User!
   warrantyYear: Float!
 }

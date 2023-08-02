@@ -4,6 +4,7 @@ import { Warranty } from '@/schemas/warranty.schema';
 import {
   CreateNewWarrantyDto,
   DeleteWarrantyDto,
+  ParamsWarrantyDto,
   UpdateWarrantyDto,
 } from '@/dto/warranty.dto';
 
@@ -15,8 +16,22 @@ export class WarrantiesService {
     return this.warrantiesRepository.findById(id);
   }
 
-  async findAll(): Promise<Warranty[]> {
-    return this.warrantiesRepository.findAll();
+  async findAll(params: ParamsWarrantyDto): Promise<Warranty[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {};
+
+    for (const key in params) {
+      if (key === 'search' && !parameters[key]) {
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+
+    return this.warrantiesRepository.getByCondition(filter);
   }
 
   async createNewWarranty(warranty: CreateNewWarrantyDto): Promise<Warranty> {

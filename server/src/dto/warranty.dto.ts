@@ -1,5 +1,9 @@
 import { IsNotEmpty, IsPositive } from 'class-validator';
 
+export class ParamsWarrantyDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewWarrantyDto {
   @IsNotEmpty()
   @IsPositive()
@@ -8,6 +12,9 @@ export class CreateNewWarrantyDto {
   @IsNotEmpty() productDetail: string;
 
   @IsNotEmpty() product: string;
+
+  @IsNotEmpty()
+  user: string;
 }
 
 export class UpdateWarrantyDto {

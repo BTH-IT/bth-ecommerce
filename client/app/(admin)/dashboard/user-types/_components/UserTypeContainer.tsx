@@ -55,7 +55,7 @@ const UserTypeContainer = () => {
   } = usePagination(userTypeList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchUserTypeList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
@@ -73,8 +73,10 @@ const UserTypeContainer = () => {
       }
     }
 
-    fetchBrandList();
-  }, [search]);
+    if (!add) {
+      fetchUserTypeList();
+    }
+  }, [search, add]);
 
   const handleSearching = async (value: string) => {
     if (!value) return;
