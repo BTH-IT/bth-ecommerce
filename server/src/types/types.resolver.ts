@@ -2,6 +2,7 @@ import { TypesService } from './types.service';
 import {
   CreateNewTypeInput,
   DeleteTypeInput,
+  ParamsTypeInput,
   UpdateTypeInput,
 } from '@/input-types/type.input';
 import { Type } from '@/schemas/type.schema';
@@ -18,8 +19,8 @@ export class TypesResolver {
 
   @Query(() => [Type])
   @UseGuards(ReadTypeGuard)
-  async getAllTypes() {
-    return await this.typesService.findAll();
+  async getAllTypes(@Args('params') params: ParamsTypeInput) {
+    return await this.typesService.findAll(params);
   }
 
   @Query(() => Type)

@@ -76,6 +76,11 @@
   margin-bottom: 30px;
 }
 
+.import-products_list h1 {
+  font-size: 1.4rem;
+  font-weight: 500;
+}
+
 .import-products_info {
   display: flex;
   flex-direction: column;

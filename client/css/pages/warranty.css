@@ -1,44 +1,44 @@
 @import "../components/select.css";
 
-.products-header {
+.warranties-header {
   display: flex;
 }
 
-.products-header_item {
+.warranties-header_item {
   border: 1px solid var(--gray-200);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 
-.products-header_item a {
+.warranties-header_item a {
   padding: 8px;
   display: block;
   transition: all 0.2s ease;
 }
 
-.products-header_item:hover{
+.warranties-header_item:hover{
   background-color: var(--gray-200);
 }
 
-.products-header_item:first-child {
+.warranties-header_item:first-child {
   border-top-left-radius: 12px;
 }
 
-.products-header_item:last-child {
+.warranties-header_item:last-child {
   border-top-right-radius: 12px;
 }
 
-.products-header_item.active {
+.warranties-header_item.active {
   background-color: white;
   border-color: transparent;
 }
 
-.products-header_title {
+.warranties-header_title {
   font-weight: 600;
   font-size: 1rem;
 }
 
-.products-table {
+.warranties-table {
   background-color: white;
   min-height: calc(100vh - 32px - 128px);
   height: calc(100vh - 32px - 128px);
@@ -46,18 +46,18 @@
   border-radius: 12px;
 }
 
-.products-bg {
+.warranties-bg {
   background-color: transparent;
 }
 
-.products-table_filter {
+.warranties-table_filter {
   display: flex;
   justify-content: space-between;
   padding: 16px;
   align-items: center;
 }
 
-.products-table_add-btn {
+.warranties-table_add-btn {
   display: flex;
   align-items: center;
   gap: 10px;

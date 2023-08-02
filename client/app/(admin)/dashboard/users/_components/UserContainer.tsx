@@ -14,47 +14,32 @@ import ProductActionCell from './UserActionCell';
 import ProductForm from './UserForm';
 import { ProductType } from '@/types/product';
 import productService from '@/services/productService';
+import { UserType } from '@/types/auth';
+import userService from '@/services/userService';
+import UserActionCell from './UserActionCell';
+import UserForm from './UserForm';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const UserContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [user, setUser] = useState<UserType | null>(null);
+  const [userList, setUserList] = useState<UserType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
+    title: 'Sửa người dùng',
+    key: 'update-user',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (user: UserType) => {
+    setUser(user);
     setOpen(true);
   };
 
@@ -71,19 +56,19 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(userList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchUserList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await userService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setUserList(res);
         } else {
           router.replace('/login');
         }
@@ -92,35 +77,33 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchUserList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
+      title: 'Thêm người dùng',
+      key: 'add-user',
     });
-    setProduct(null);
+    setUser(null);
     setAdd(true);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="users-table">
+      <div className="users-table_header">
+        <div className="users-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="users-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
+            <span className="font-semibold">Add New User</span>
           </div>
         </div>
         <div>
@@ -133,39 +116,53 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
             <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+              <HeaderCell>Fullname</HeaderCell>
+              <Cell dataKey="fullname"></Cell>
             </Column>
 
             <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+              <HeaderCell>Gender</HeaderCell>
+              <Cell dataKey="gender"></Cell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+            <Column width={150} align="center">
+              <HeaderCell>Birth Year</HeaderCell>
+              <Cell dataKey="birthYear"></Cell>
             </Column>
 
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
+            <Column sortable width={200} align="center">
+              <HeaderCell>Phone Number</HeaderCell>
+              <Cell dataKey="phone"></Cell>
             </Column>
 
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
+            <Column sortable width={200} align="center">
+              <HeaderCell>Address</HeaderCell>
+              <Cell dataKey="address"></Cell>
             </Column>
 
-            <Column fixed="right" width={300} align="center">
+            <Column sortable width={300} align="center">
+              <HeaderCell>Account Id</HeaderCell>
+              <Cell dataKey="account">
+                {(rowData) => <span>{rowData.account._id}</span>}
+              </Cell>
+            </Column>
+
+            <Column sortable width={200} align="center">
+              <HeaderCell>Type</HeaderCell>
+              <Cell dataKey="typo">
+                {(rowData) => <span>{rowData.type.name}</span>}
+              </Cell>
+            </Column>
+
+            <Column width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
+              <UserActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
@@ -183,7 +180,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={userList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +193,19 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-user' && user && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
+          {(modalData.key === 'add-user' ||
+            modalData.key === 'update-user') && (
+            <UserForm
               add={add}
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+              user={user}
+            ></UserForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-user' && user && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +220,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default UserContainer;

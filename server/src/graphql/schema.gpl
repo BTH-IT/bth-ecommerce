@@ -358,6 +358,10 @@ input ParamsSupplierInput {
   search: String
 }
 
+input ParamsTypeInput {
+  search: String
+}
+
 type Product {
   _id: String!
   accessoriesIncluded: String!
@@ -418,7 +422,7 @@ type Query {
   getAllProducts(params: ProductParamsInput!): [Product!]!
   getAllRoles(params: ParamsRoleInput!): [Role!]!
   getAllSuppliers(params: ParamsSupplierInput!): [Supplier!]!
-  getAllTypes: [Type!]!
+  getAllTypes(params: ParamsTypeInput!): [Type!]!
   getAllUsers: [User!]!
   getAllWarranties: [Warranty!]!
   getBanner(id: String!): Banner!

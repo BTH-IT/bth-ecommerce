@@ -7,20 +7,18 @@ import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
+import { Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
 import Image from 'next/image';
 import ProductActionCell from './ProductActionCell';
 import ProductForm from './ProductForm';
 import { ProductType } from '@/types/product';
 import productService from '@/services/productService';
+import { convertCurrency, numberWithCommas } from '@/utils/contains';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
 const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
   <Cell {...props} style={{ padding: 0 }}>
@@ -33,7 +31,12 @@ const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
         display: 'inline-block',
       }}
     >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
+      <Image
+        src={rowData.imageUrlList[0]}
+        width={44}
+        height={44}
+        alt={rowData.productName}
+      />
     </div>
   </Cell>
 );
@@ -44,7 +47,7 @@ const ProductContainer = () => {
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
   const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [productList, setProductList] = useState<ProductType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
@@ -71,19 +74,21 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(productList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchProductList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
           const res = await productService.getAll({
-            search,
+            search: {
+              key: search,
+            },
           });
 
-          setBrandList(res);
+          setProductList(res);
         } else {
           router.replace('/login');
         }
@@ -92,7 +97,7 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchProductList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
@@ -112,13 +117,13 @@ const ProductContainer = () => {
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="products-table">
+      <div className="products-table_header">
+        <div className="products-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="products-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
             <span className="font-semibold">Add New Product</span>
           </div>
@@ -133,37 +138,45 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
+            <Column sortable width={300} align="center">
               <HeaderCell>Product Name</HeaderCell>
               <Cell dataKey="productName"></Cell>
             </Column>
 
             <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
+              <HeaderCell>Image Primary</HeaderCell>
               <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
             </Column>
 
-            <Column width={200} align="center">
+            <Column width={250} align="center">
               <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+              <Cell dataKey="originPrice">
+                {(rowData) => (
+                  <span>{convertCurrency(rowData.originPrice)}</span>
+                )}
+              </Cell>
             </Column>
 
-            <Column sortable width={100} align="center">
+            <Column sortable width={150} align="center">
               <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
+              <Cell dataKey="salePercent">
+                {(rowData) => <span>{rowData.salePercent}%</span>}
+              </Cell>
             </Column>
 
-            <Column sortable width={100} align="center">
+            <Column sortable width={125} align="center">
               <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
+              <Cell dataKey="remain">
+                {(rowData) => <span>{numberWithCommas(rowData.remain)}</span>}
+              </Cell>
             </Column>
 
-            <Column fixed="right" width={300} align="center">
+            <Column width={300} align="center">
               <HeaderCell>Hành động</HeaderCell>
               <ProductActionCell
                 dataKey="_id"
@@ -183,7 +196,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={productList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}

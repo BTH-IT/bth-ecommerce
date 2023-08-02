@@ -7,54 +7,34 @@ import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
+import { Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
 import ProductActionCell from './RoleActionCell';
-import ProductForm from './RoleForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import { RoleType } from '@/types/role';
+import roleService from '@/services/roleService';
+import RoleForm from './RoleForm';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const RoleContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [role, setRole] = useState<RoleType | null>(null);
+  const [roleList, setRoleList] = useState<RoleType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
+    title: 'Sửa vai trò',
+    key: 'update-role',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (role: RoleType) => {
+    setRole(role);
     setOpen(true);
   };
 
@@ -71,19 +51,19 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(roleList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchRoleList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await roleService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setRoleList(res);
         } else {
           router.replace('/login');
         }
@@ -92,35 +72,33 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchRoleList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
+      title: 'Thêm vai trò',
+      key: 'add-role',
     });
-    setProduct(null);
+    setRole(null);
     setAdd(true);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="roles-table">
+      <div className="roles-table_header">
+        <div className="roles-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="roles-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
+            <span className="font-semibold">Add New Role</span>
           </div>
         </div>
         <div>
@@ -133,37 +111,22 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={400} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+            <Column sortable width={400} align="center">
+              <HeaderCell>Name</HeaderCell>
+              <Cell dataKey="name"></Cell>
             </Column>
 
-            <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+            <Column width={425} align="center">
+              <HeaderCell>Description</HeaderCell>
+              <Cell dataKey="description"></Cell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
-            </Column>
-
-            <Column fixed="right" width={300} align="center">
+            <Column fixed="right" width={350} align="center">
               <HeaderCell>Hành động</HeaderCell>
               <ProductActionCell
                 dataKey="_id"
@@ -183,7 +146,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={roleList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +159,19 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-role' && role && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
+          {(modalData.key === 'add-role' ||
+            modalData.key === 'update-role') && (
+            <RoleForm
               add={add}
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+              role={role}
+            ></RoleForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-product' && role && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +186,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default RoleContainer;

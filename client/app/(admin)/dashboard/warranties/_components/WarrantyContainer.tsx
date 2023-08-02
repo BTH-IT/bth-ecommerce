@@ -7,54 +7,33 @@ import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
-import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
+import { Input, Space } from 'antd';
 import ProductActionCell from './WarrantyActionCell';
-import ProductForm from './WarrantyForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import WarrantyForm from './WarrantyForm';
+import { WarrantyType } from '@/types/warranty';
+import warrantyService from '@/services/warrantyService';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const WarrantyContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [warranty, setWarranty] = useState<WarrantyType | null>(null);
+  const [warrantyList, setWarrantyList] = useState<WarrantyType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
+    title: 'Sửa bảo hành',
+    key: 'update-warranty',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (warranty: WarrantyType) => {
+    setWarranty(warranty);
     setOpen(true);
   };
 
@@ -71,19 +50,19 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(warrantyList);
 
   useEffect(() => {
-    async function fetchBrandList() {
+    async function fetchWarrantyList() {
       try {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await warrantyService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setWarrantyList(res);
         } else {
           router.replace('/login');
         }
@@ -92,36 +71,20 @@ const ProductContainer = () => {
       }
     }
 
-    fetchBrandList();
+    fetchWarrantyList();
   }, [search]);
 
   const handleSearching = async (value: string) => {
-    if (!value) return;
-
     setSearch(value);
   };
 
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
-    });
-    setProduct(null);
-    setAdd(true);
-    setOpen(true);
-  };
-
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="warranties-table">
+      <div className="warranties-table_header">
+        <div className="warranties-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
-          </div>
         </div>
         <div>
           <Table
@@ -141,26 +104,6 @@ const ProductContainer = () => {
             <Column sortable width={200} align="center">
               <HeaderCell>Product Name</HeaderCell>
               <Cell dataKey="productName"></Cell>
-            </Column>
-
-            <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
             </Column>
 
             <Column fixed="right" width={300} align="center">
@@ -183,7 +126,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={warrantyList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +139,17 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-warranty' && warranty && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
-              add={add}
+          {modalData.key === 'update-warranty' && (
+            <WarrantyForm
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+              warranty={warranty}
+            ></WarrantyForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-warranty' && warranty && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +164,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default WarrantyContainer;

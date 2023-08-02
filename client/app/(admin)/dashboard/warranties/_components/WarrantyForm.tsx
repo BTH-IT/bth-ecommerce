@@ -1,16 +1,15 @@
 import { ProductType } from '@/types/product';
+import { WarrantyType } from '@/types/warranty';
 import React from 'react';
 
-const ProductForm = ({
-  add,
+const WarrantyForm = ({
   handleClose,
-  product = null,
+  warranty = null,
 }: {
-  add: boolean;
   handleClose: () => void;
-  product?: ProductType | null;
+  warranty?: WarrantyType | null;
 }) => {
   return <div>ProductForm</div>;
 };
 
-export default ProductForm;
+export default WarrantyForm;

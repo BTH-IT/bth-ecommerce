@@ -7,54 +7,35 @@ import { Modal, Button, Table, Pagination } from 'rsuite';
 import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import { usePagination } from '@/hooks/usePagination';
-import { DatePicker, Input, Space } from 'antd';
+import { Input, Space } from 'antd';
 import { PlusCircleIcon } from '@heroicons/react/24/solid';
-import Image from 'next/image';
-import ProductActionCell from './UserTypeActionCell';
-import ProductForm from './UserTypeForm';
-import { ProductType } from '@/types/product';
-import productService from '@/services/productService';
+import { UserGenreType } from '@/types/user-type';
+import userTypeService from '@/services/userTypeService';
+import moment from 'moment';
+import UserTypeActionCell from './UserTypeActionCell';
+import UserTypeForm from './UserTypeForm';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
-export type RangeValue = Parameters<
-  NonNullable<React.ComponentProps<typeof DatePicker.RangePicker>['onChange']>
->[0];
 
-const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ProductContainer = () => {
+const UserTypeContainer = () => {
   const router = useRouter();
 
   const [open, setOpen] = useState(false);
   const [add, setAdd] = useState(false);
-  const [product, setProduct] = useState<ProductType | null>(null);
-  const [brandList, setBrandList] = useState<ProductType[]>([]);
+  const [userType, setUserType] = useState<UserGenreType | null>(null);
+  const [userTypeList, setUserTypeList] = useState<UserGenreType[]>([]);
   const [search, setSearch] = useState<string>('');
 
   const dispatch = useAppDispatch();
   const [modalData, setModalData] = useState({
-    title: 'Sửa sản phẩm',
-    key: 'update-product',
+    title: 'Sửa loại người dùng',
+    key: 'update-user-type',
   });
 
-  const handleOpen = async (product: ProductType) => {
-    setProduct(product);
+  const handleOpen = async (userType: UserGenreType) => {
+    setUserType(userType);
     setOpen(true);
   };
 
@@ -71,7 +52,7 @@ const ProductContainer = () => {
     handleSortColumn,
     sortColumn,
     sortType,
-  } = usePagination(brandList);
+  } = usePagination(userTypeList);
 
   useEffect(() => {
     async function fetchBrandList() {
@@ -79,11 +60,11 @@ const ProductContainer = () => {
         const success = await handleRefreshToken(dispatch);
 
         if (success) {
-          const res = await productService.getAll({
+          const res = await userTypeService.getAll({
             search,
           });
 
-          setBrandList(res);
+          setUserTypeList(res);
         } else {
           router.replace('/login');
         }
@@ -103,24 +84,24 @@ const ProductContainer = () => {
 
   const handleAdding = () => {
     setModalData({
-      title: 'Thêm sản phẩm',
-      key: 'add-product',
+      title: 'Thêm loại người dùng',
+      key: 'add-user-type',
     });
-    setProduct(null);
+    setUserType(null);
     setAdd(true);
     setOpen(true);
   };
 
   return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
+    <div className="user-types-table">
+      <div className="user-types-table_header">
+        <div className="user-types-table_filter">
           <Space direction="vertical" size={12}>
             <Search placeholder="search" onSearch={handleSearching} />
           </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
+          <div className="user-types-table_add-btn" onClick={handleAdding}>
             <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Product</span>
+            <span className="font-semibold">Add New User Type</span>
           </div>
         </div>
         <div>
@@ -133,39 +114,26 @@ const ProductContainer = () => {
             autoHeight={true}
             bordered
           >
-            <Column fixed width={200} align="center">
+            <Column width={400} align="center">
               <HeaderCell>Id</HeaderCell>
               <Cell dataKey="_id" />
             </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
+            <Column sortable width={325} align="center">
+              <HeaderCell>Name</HeaderCell>
+              <Cell dataKey="name"></Cell>
             </Column>
 
-            <Column width={150} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
+            <Column width={350} align="center">
+              <HeaderCell>Created At</HeaderCell>
+              <Cell dataKey="createdAt">
+                {(rowData) => `${moment(rowData.createdAt).format('L')}`}
+              </Cell>
             </Column>
 
-            <Column width={200} align="center">
-              <HeaderCell>Origin Price</HeaderCell>
-              <ImageThumbCell dataKey="imageUrlList"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Sale Percent</HeaderCell>
-              <ImageThumbCell dataKey="salePercent"></ImageThumbCell>
-            </Column>
-
-            <Column sortable width={100} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <ImageThumbCell dataKey="remain"></ImageThumbCell>
-            </Column>
-
-            <Column fixed="right" width={300} align="center">
+            <Column width={500} align="center">
               <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
+              <UserTypeActionCell
                 dataKey="_id"
                 handleOpen={handleOpen}
                 handleModal={setModalData}
@@ -183,7 +151,7 @@ const ProductContainer = () => {
               maxButtons={5}
               size="xs"
               layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
+              total={userTypeList.length}
               limit={50}
               activePage={page}
               onChangePage={setPage}
@@ -196,19 +164,19 @@ const ProductContainer = () => {
           <Modal.Title>{modalData.title}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          {modalData.key === 'delete-product' && product && (
+          {modalData.key === 'delete-user-type' && userType && (
             <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
           )}
-          {(modalData.key === 'add-product' ||
-            modalData.key === 'update-product') && (
-            <ProductForm
+          {(modalData.key === 'add-user-type' ||
+            modalData.key === 'update-user-type') && (
+            <UserTypeForm
               add={add}
               handleClose={handleClose}
-              product={product}
-            ></ProductForm>
+              userType={userType}
+            ></UserTypeForm>
           )}
         </Modal.Body>
-        {modalData.key === 'delete-product' && product && (
+        {modalData.key === 'delete-user-type' && userType && (
           <Modal.Footer>
             <Button onClick={handleClose} appearance="subtle">
               Cancel
@@ -223,4 +191,4 @@ const ProductContainer = () => {
   );
 };
 
-export default ProductContainer;
+export default UserTypeContainer;

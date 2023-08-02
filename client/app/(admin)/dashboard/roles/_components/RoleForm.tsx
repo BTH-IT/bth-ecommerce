@@ -1,16 +1,17 @@
 import { ProductType } from '@/types/product';
+import { RoleType } from '@/types/role';
 import React from 'react';
 
-const ProductForm = ({
+const RoleForm = ({
   add,
   handleClose,
-  product = null,
+  role = null,
 }: {
   add: boolean;
   handleClose: () => void;
-  product?: ProductType | null;
+  role: RoleType | null;
 }) => {
   return <div>ProductForm</div>;
 };
 
-export default ProductForm;
+export default RoleForm;

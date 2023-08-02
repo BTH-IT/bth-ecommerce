@@ -5,7 +5,7 @@ import MoreIcon from '@rsuite/icons/legacy/More';
 
 const { Cell } = Table;
 
-const ProductActionCell = ({
+const UserActionCell = ({
   rowData,
   handleOpen,
   handleModal,
@@ -23,19 +23,19 @@ const ProductActionCell = ({
         <Dropdown.Menu onSelect={handleSelect}>
           <Dropdown.Item
             eventKey={{
-              title: 'Sửa thương hiệu',
-              key: 'update-brand',
+              title: 'Sửa người dùng',
+              key: 'update-user',
             }}
           >
-            Sửa thương hiệu
+            Sửa người dùng
           </Dropdown.Item>
           <Dropdown.Item
             eventKey={{
-              title: 'Xóa thương hiệu',
-              key: 'delete-brand',
+              title: 'Xóa người dùng',
+              key: 'delete-user',
             }}
           >
-            Xóa thương hiệu
+            Xóa người dùng
           </Dropdown.Item>
         </Dropdown.Menu>
       </Popover>
@@ -55,4 +55,4 @@ const ProductActionCell = ({
   );
 };
 
-export default ProductActionCell;
+export default UserActionCell;

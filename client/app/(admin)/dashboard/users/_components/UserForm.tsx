@@ -1,16 +1,16 @@
-import { ProductType } from '@/types/product';
+import { UserType } from '@/types/auth';
 import React from 'react';
 
-const ProductForm = ({
+const UserForm = ({
   add,
   handleClose,
-  product = null,
+  user = null,
 }: {
   add: boolean;
   handleClose: () => void;
-  product?: ProductType | null;
+  user?: UserType | null;
 }) => {
   return <div>ProductForm</div>;
 };
 
-export default ProductForm;
+export default UserForm;

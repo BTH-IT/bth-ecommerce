@@ -1,16 +1,17 @@
 import { ProductType } from '@/types/product';
+import { SupplierType } from '@/types/supplier';
 import React from 'react';
 
-const ProductForm = ({
+const SupplierForm = ({
   add,
   handleClose,
-  product = null,
+  supplier = null,
 }: {
   add: boolean;
   handleClose: () => void;
-  product?: ProductType | null;
+  supplier?: SupplierType | null;
 }) => {
   return <div>ProductForm</div>;
 };
 
-export default ProductForm;
+export default SupplierForm;
