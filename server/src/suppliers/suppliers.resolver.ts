@@ -4,6 +4,7 @@ import { SuppliersService } from './suppliers.service';
 import {
   CreateNewSupplierInput,
   DeleteSupplierInput,
+  ParamsSupplierInput,
   UpdateSupplierInput,
 } from '@/input-types/supplier.input';
 import { UseGuards } from '@nestjs/common';
@@ -18,8 +19,8 @@ export class SuppliersResolver {
 
   @Query(() => [Supplier])
   @UseGuards(ReadSupplierGuard)
-  async getAllSuppliers() {
-    return await this.suppliersService.findAll();
+  async getAllSuppliers(@Args('params') params: ParamsSupplierInput) {
+    return await this.suppliersService.findAll(params);
   }
 
   @Query(() => Supplier)

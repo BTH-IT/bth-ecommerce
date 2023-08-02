@@ -65,6 +65,7 @@ const importOrderService = {
               _id
             }
             totalPay
+            benefitPercent
             createdAt
             updatedAt
           }
@@ -83,13 +84,12 @@ const importOrderService = {
   async getById(id: string) {
     const graphqlQuery = {
       query: `
-        query getOrder($id: String!) {
-          getOrder(id: $id) {
+        query getImportOrder($id: String!) {
+          getImportOrder(id: $id) {
             _id
-            boughtProducts {
+            importProducts {
               _id
               price
-              productDetail
               product {
                 _id
                 productName
@@ -137,16 +137,14 @@ const importOrderService = {
               }
               amount
             }
-            purchaseForm
-            user {
+            employee {
               _id
             }
-            status
+            supplier {
+              _id
+            }
             totalPay
-            isPaid
-            fullname
-            phone
-            address
+            benefitPercent
             createdAt
             updatedAt
           }
@@ -163,32 +161,71 @@ const importOrderService = {
   async add(data: any) {
     const graphqlQuery = {
       query: `
-        mutation createNewOrder($createNewOrder: CreateNewOrderInput!) {
-          createNewOrder(createNewOrder: $createNewOrder) {
+        mutation createNewImportOrder($createNewImportOrder: CreateNewImportOrderInput!) {
+          createNewImportOrder(createNewImportOrder: $createNewImportOrder) {
             _id
-            boughtProducts {
+            importProducts {
               _id
               price
-              productDetail
               product {
                 _id
+                productName
+                imageUrlList
+                warranteeYear
+                originPrice
+                salePercent
+                description
+                generateCpu
+                cpu
+                seriesCpu
+                chip
+                ramName
+                ramSize
+                screen
+                storageName
+                storageSize
+                storagePortName
+                storagePortNum
+                storagePortMaximum
+                supportM2slotType
+                screenOutputPortName
+                screenOutputPortNum
+                bluetooth
+                keyboard
+                operationSystem
+                size
+                pin
+                weight
+                seriesLaptop
+                partNumber
+                color
+                accessoriesIncluded
+                led
+                touchScreen
+                soldNum
+                isHidden
+                remain
+                brand {
+                    _id
+                    name
+                    iconUrl
+                    thumbUrl
+                }
               }
               amount
             }
-            purchaseForm
-            user {
+            employee {
               _id
             }
-            status
+            supplier {
+              _id
+            }
             totalPay
-            isPaid
-            fullname
-            phone
-            address
+            benefitPercent
             createdAt
             updatedAt
           }
-      }`,
+        }`,
       variables: {
         createNewOrder: data,
       },
@@ -201,8 +238,8 @@ const importOrderService = {
   async update(data: any) {
     const graphqlQuery = {
       query: `
-        mutation updateOrder($updateOrder: UpdateOrderInput!) {
-          updateOrder(updateOrder: $updateOrder) {
+        mutation updateImportOrder($updateImportOrder: UpdateImportOrderInput!) {
+          updateImportOrder(updateImportOrder: $updateImportOrder) {
             _id
           }
         }`,
@@ -220,8 +257,8 @@ const importOrderService = {
   async remove(id: string) {
     const graphqlQuery = {
       query: `
-        mutation deleteOrder($deleteOrder: DeleteOrderInput!){
-          deleteOrder(deleteOrder: $deleteOrder) {
+        mutation deleteImportOrder($deleteOrder: DeleteImportOrderInput!){
+          deleteImportOrder(deleteImportOrder: $deleteImportOrder) {
             _id
           }
         }`,

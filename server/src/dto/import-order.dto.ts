@@ -10,6 +10,7 @@ export class CreateNewImportOrderDto {
   @IsNotEmpty() supplier: string;
   @IsNotEmpty() employee: string;
   @IsNotEmpty() totalPay: number;
+  @IsNotEmpty() benefitPercent: number;
 }
 
 export class UpdateImportOrderDto {
@@ -17,7 +18,6 @@ export class UpdateImportOrderDto {
   @IsNotEmpty() importProducts?: [string];
   @IsNotEmpty() supplier?: string;
   @IsNotEmpty() employee?: string;
-  @IsNotEmpty() totalPay?: number;
 }
 
 export class DeleteImportOrderDto {

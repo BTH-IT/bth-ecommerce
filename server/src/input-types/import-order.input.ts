@@ -35,6 +35,9 @@ export class CreateNewImportOrderInput {
 
   @Field()
   totalPay: number;
+
+  @Field()
+  benefitPercent: number;
 }
 
 @InputType()

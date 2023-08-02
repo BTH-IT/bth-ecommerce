@@ -26,6 +26,10 @@ export class ImportOrder extends BaseSchema {
   @Prop()
   @Field()
   totalPay: number;
+
+  @Prop()
+  @Field()
+  benefitPercent: number;
 }
 export type ImportOrderDocument = ImportOrder & Document;
 export const ImportOrderSchema = SchemaFactory.createForClass(ImportOrder);

@@ -9,12 +9,14 @@ import {
 import { ObjectId } from '@/utils/contains';
 import { RoleAndFeatureRepository } from '../repositories/role-and-feature.repo';
 import { FeaturesRepository } from '../repositories/features.repo';
+import { RolesService } from '@/roles/services/roles.service';
 
 @Injectable()
 export class FeaturesService {
   constructor(
     private readonly featuresRepository: FeaturesRepository,
     private readonly roleAndFeatureRepository: RoleAndFeatureRepository,
+    private readonly rolesService: RolesService,
   ) {}
 
   async findAll(params: ParamsFeatureDto): Promise<Feature[]> {
@@ -51,10 +53,22 @@ export class FeaturesService {
   }
 
   async createNewFeature(feature: CreateNewFeatureDto): Promise<Feature> {
-    return this.featuresRepository.create({
+    const roles = await this.rolesService.findAll({});
+
+    const newFeature = await this.featuresRepository.create({
       ...feature,
       isActive: true,
     });
+
+    roles.forEach(async (role) => {
+      await this.roleAndFeatureRepository.create({
+        role: role._id,
+        feature: newFeature,
+        isActive: true,
+      });
+    });
+
+    return newFeature;
   }
 
   async deleteFeature(feature: DeleteFeatureDto): Promise<Feature | null> {

@@ -65,6 +65,7 @@ input CreateNewFeatureInput {
 }
 
 input CreateNewImportOrderInput {
+  benefitPercent: Float!
   employee: String!
   importProducts: [ImportOrderDetailInput!]!
   supplier: String!
@@ -219,6 +220,7 @@ input FeatureInput {
 
 type ImportOrder {
   _id: String!
+  benefitPercent: Float!
   createdAt: DateTime!
   employee: User!
   importProducts: [ImportOrderDetail!]!
@@ -352,6 +354,10 @@ input ParamsRoleInput {
   search: String
 }
 
+input ParamsSupplierInput {
+  search: String
+}
+
 type Product {
   _id: String!
   accessoriesIncluded: String!
@@ -411,7 +417,7 @@ type Query {
   getAllOrders(params: ParamsOrderInput!): [Order!]!
   getAllProducts(params: ProductParamsInput!): [Product!]!
   getAllRoles(params: ParamsRoleInput!): [Role!]!
-  getAllSuppliers: [Supplier!]!
+  getAllSuppliers(params: ParamsSupplierInput!): [Supplier!]!
   getAllTypes: [Type!]!
   getAllUsers: [User!]!
   getAllWarranties: [Warranty!]!

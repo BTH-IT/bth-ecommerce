@@ -27,7 +27,6 @@ import { UpdateImportOrderGuard } from '../guards/update-import-order.guard';
 import { DeleteImportOrderGuard } from '../guards/delete-import-order.guard';
 import { ProductDetailsService } from '@/products/services/productDetails.service';
 import { ProductsService } from '@/products/services/products.service';
-import { ObjectId } from '@/utils/contains';
 
 @Resolver(() => ImportOrder)
 export class ImportOrdersResolver {

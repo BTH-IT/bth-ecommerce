@@ -4,6 +4,7 @@ import { Supplier } from '@/schemas/supplier.schema';
 import {
   CreateNewSupplierDto,
   DeleteSupplierDto,
+  ParamsSupplierDto,
   UpdateSupplierDto,
 } from '@/dto/supplier.dto';
 
@@ -11,8 +12,27 @@ import {
 export class SuppliersService {
   constructor(private readonly suppliersRepository: SuppliersRepository) {}
 
-  async findAll(): Promise<Supplier[]> {
-    return this.suppliersRepository.getByCondition({ isActive: true });
+  async findAll(params: ParamsSupplierDto): Promise<Supplier[]> {
+    const parameters: any = {
+      ...params,
+    };
+
+    const filter: any = {
+      isActive: true,
+    };
+
+    for (const key in params) {
+      if (key === 'search' && parameters[key] !== null) {
+        const search = parameters[key];
+        const re = new RegExp(`${search}`, 'i');
+        filter['name'] = re;
+        continue;
+      }
+
+      filter[key] = parameters[key];
+    }
+
+    return this.suppliersRepository.getByCondition(filter);
   }
 
   async findOne(id: string): Promise<Supplier | null> {

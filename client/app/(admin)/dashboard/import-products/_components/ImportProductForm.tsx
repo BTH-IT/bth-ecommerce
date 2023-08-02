@@ -1,11 +1,11 @@
 'use client';
 
 import InputForm from '@/app/(user)/(auth)/_components/InputForm';
-import { useAppDispatch } from '@/redux/hooks';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import { ProductType } from '@/types/product';
 import { handleRefreshToken } from '@/utils/clientActions';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -13,6 +13,11 @@ import * as yup from 'yup';
 import Button from '@/components/Button';
 import Image from 'next/image';
 import AmountImportProductAction from './AmountImportProductAction';
+import importOrderService from '@/services/importOrderService';
+import SelectForm from '@/app/(user)/(auth)/_components/SelectForm';
+import supplierService from '@/services/supplierService';
+import { SupplierType } from '@/types/supplier';
+import { selectAuth } from '@/redux/features/authSlice';
 
 const schema = yup
   .object({
@@ -21,6 +26,7 @@ const schema = yup
       .min(0, 'This field must be greater than or equal to 0')
       .max(100, 'This field must be less than or equal to 100')
       .required('This field is required'),
+    supplier: yup.string().required('This field is required'),
   })
   .required();
 
@@ -38,6 +44,9 @@ const ImportProductForm = ({
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const [supplierList, setSupplierList] = useState<SupplierType[]>([]);
+  const user: any = useAppSelector(selectAuth).user;
+
   const [importProductList, setImportProductList] = useState<
     ImportProductType[]
   >(
@@ -50,14 +59,30 @@ const ImportProductForm = ({
     }),
   );
 
+  useEffect(() => {
+    async function fetchSupplierList() {
+      try {
+        await handleRefreshToken(dispatch);
+
+        const res = await supplierService.getAll();
+
+        setSupplierList(res);
+      } catch (error: any) {
+        console.log(error.message);
+      }
+    }
+
+    fetchSupplierList();
+  }, []);
+
   const {
-    setValue,
     handleSubmit,
     formState: { isValid, isLoading },
     control,
   } = useForm<any>({
     defaultValues: {
       benefitPercent: 0,
+      supplier: '',
     },
     resolver: yupResolver(schema),
     mode: 'onChange',
@@ -77,10 +102,34 @@ const ImportProductForm = ({
       return;
     }
 
+    const importProducts = importProductList.map((importProduct) => {
+      const benefitPrice =
+        (importProduct.price * data.benefitPercent) / 100 + importProduct.price;
+
+      if (benefitPrice >= importProduct.originPrice)
+        return {
+          product: importProduct._id,
+          price: benefitPrice,
+          amount: importProduct.amount,
+        };
+
+      return {
+        product: importProduct._id,
+        price: importProduct.originPrice,
+        amount: importProduct.amount,
+      };
+    });
+
     try {
       const success = await handleRefreshToken(dispatch);
 
       if (success) {
+        await importOrderService.add({
+          employee: user._id,
+          benefitPercent: data.benefitPercent,
+          importProducts,
+          supplier: data.supplier,
+        });
         toast.success('Update feature successfully');
       } else {
         router.replace('/login');
@@ -99,6 +148,17 @@ const ImportProductForm = ({
         placeholder="Nhập percent..."
         type="number"
       ></InputForm>
+      <SelectForm control={control} name="supplier" title="Supplier">
+        <option value="" hidden>
+          Chọn supplier
+        </option>
+        {supplierList.length > 0 &&
+          supplierList.map((supplier) => (
+            <option value={supplier._id} key={supplier._id}>
+              {supplier.name}
+            </option>
+          ))}
+      </SelectForm>
       <ul className="import-products_list">
         <h1>Import Product List</h1>
         {importProductList.length > 0 &&

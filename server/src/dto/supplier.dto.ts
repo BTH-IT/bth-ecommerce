@@ -1,5 +1,9 @@
 import { IsNotEmpty } from 'class-validator';
 
+export class ParamsSupplierDto {
+  @IsNotEmpty() search?: string;
+}
+
 export class CreateNewSupplierDto {
   @IsNotEmpty() name: string;
   @IsNotEmpty() phoneNum: string;
