@@ -1,10 +1,5 @@
 import { IsNotEmpty, IsPositive } from 'class-validator';
 
-export class SearchDto {
-  @IsNotEmpty()
-  key?: string;
-}
-
 export class ProductParamsDto {
   @IsNotEmpty()
   sort?: string;
@@ -13,7 +8,31 @@ export class ProductParamsDto {
   sale?: boolean;
 
   @IsNotEmpty()
-  search?: SearchDto;
+  search?: string;
+
+  @IsNotEmpty()
+  page?: string;
+
+  @IsNotEmpty()
+  brand?: string;
+
+  @IsNotEmpty()
+  seriesLaptop?: string;
+
+  @IsNotEmpty()
+  color?: string;
+
+  @IsNotEmpty()
+  seriesCpu?: string;
+
+  @IsNotEmpty()
+  chip?: string;
+
+  @IsNotEmpty()
+  ramSize?: string;
+
+  @IsNotEmpty()
+  size?: string;
 }
 
 export class CreateNewProductDto {

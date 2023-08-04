@@ -83,9 +83,7 @@ const ProductContainer = () => {
 
         if (success) {
           const res = await productService.getAll({
-            search: {
-              key: search,
-            },
+            search,
           });
 
           setProductList(res);

@@ -6,12 +6,8 @@ import FilterContent from './FilterContent';
 const FiterDropdown = ({ filterProduct }: any) => {
   const [show, setShow] = useState(false);
   return (
-    <div
-      className="search-dropdown"
-      key={filterProduct.key}
-      onClick={() => setShow(!show)}
-    >
-      <div className="search-dropdown_header">
+    <div className="search-dropdown" key={filterProduct.key}>
+      <div className="search-dropdown_header" onClick={() => setShow(!show)}>
         <h5>
           {filterProduct.name.charAt(0).toUpperCase() +
             filterProduct.name.slice(1)}

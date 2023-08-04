@@ -12,7 +12,7 @@ const FilterContent = ({
 }) => {
   return filterContent.map((filter, idx) => (
     <FilterCheckbox
-      filter={filter}
+      filterName={filter.toString().replaceAll(' ', '-')}
       key={filter + idx}
       filterKey={filterKey}
     ></FilterCheckbox>

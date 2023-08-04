@@ -4,15 +4,13 @@ import React, { useEffect, useState } from 'react';
 import FilterSlider from './FilterSlider';
 import { ProductType } from '@/types/product';
 import toast from 'react-hot-toast';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useAppDispatch } from '@/redux/hooks';
 import productService from '@/services/productService';
-import { handleRefreshToken } from '@/utils/clientActions';
+import { handleRefreshToken, handleUpdateRouter } from '@/utils/clientActions';
 import FilterList from './FilterList';
-import ProductGrid from '@/components/ProductGrid';
-import { Pagination } from 'rsuite';
-import NavLinkPagination from './NavLinkPagination';
 import SortLabel from './SortLabel';
+import ProductGridSearch from '@/components/ProductGridSearch';
 
 const sortList = [
   {
@@ -41,6 +39,7 @@ const SearchContainer = () => {
   const [productList, setProductList] = useState<ProductType[]>([]);
   const [sort, setSort] = useState<string>('');
   const router = useRouter();
+  const searchParams = useSearchParams();
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -62,6 +61,16 @@ const SearchContainer = () => {
 
     fetchProductList();
   }, []);
+
+  useEffect(() => {
+    if (
+      !searchParams.has('page') ||
+      (searchParams.has('page') && !searchParams.get('page')) ||
+      (searchParams.has('page') && isNaN(Number(searchParams.get('page'))))
+    ) {
+      handleUpdateRouter('page', '1', searchParams, router);
+    }
+  }, [searchParams]);
 
   return (
     <div className="search">
@@ -164,26 +173,7 @@ const SearchContainer = () => {
                 </div>
               </div>
             </div>
-            <div className="search-product_container">
-              <div className="search-product">
-                <ProductGrid
-                  productList={productList}
-                  className="grid-cols-3 gap-3"
-                ></ProductGrid>
-              </div>
-              <Pagination
-                prev
-                last
-                next
-                first
-                size="lg"
-                linkAs={NavLinkPagination}
-                total={100}
-                limit={10}
-                activePage={1}
-                className="flex justify-center pb-5 mt-5"
-              />
-            </div>
+            <ProductGridSearch total={productList.length}></ProductGridSearch>
           </div>
         </div>
       </div>

@@ -2,7 +2,6 @@ import { UseGuards } from '@nestjs/common';
 import { ProductsService } from '../services/products.service';
 import { Args, Parent, ResolveField } from '@nestjs/graphql';
 import { Resolver, Mutation, Query } from '@nestjs/graphql';
-import { ReadProductGuard } from '../guards/read-product.guard';
 import { UpdateProductGuard } from '../guards/update-product.guard';
 import { CreateProductGuard } from '../guards/create-product.guard';
 import { Product } from '@/schemas/product.schema';

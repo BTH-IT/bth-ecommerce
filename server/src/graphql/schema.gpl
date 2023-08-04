@@ -415,9 +415,17 @@ type Product {
 }
 
 input ProductParamsInput {
+  brand: String
+  chip: String
+  color: String
+  page: String! = "1"
+  ramSize: String
   sale: Boolean! = false
-  search: SearchInput! = {}
-  sort: String! = "none"
+  search: String
+  seriesCpu: String
+  seriesLaptop: String
+  size: String
+  sort: String
 }
 
 type Query {
@@ -468,10 +476,6 @@ input RoleAndFeatureInput {
   actions: [String!]!
   feature: FeatureInput!
   isActive: Boolean!
-}
-
-input SearchInput {
-  key: String! = ""
 }
 
 type Supplier {

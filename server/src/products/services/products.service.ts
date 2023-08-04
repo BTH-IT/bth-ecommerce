@@ -18,7 +18,8 @@ export class ProductsService {
   ) {}
 
   async findAll(params: ProductParamsDto): Promise<Product[]> {
-    const aggregateList: any = [
+    // eslint-disable-next-line prefer-const
+    let aggregateList: any[] = [
       {
         $lookup: {
           from: 'productdetails',
@@ -71,11 +72,29 @@ export class ProductsService {
       },
     ];
 
-    if (params.sort === 'hot') {
-      return await this.productsRepository.aggregate([
-        ...aggregateList,
-        { $sort: { remain: -1 } },
-      ]);
+    const match: any = {};
+
+    if (params.sort) {
+      switch (params.sort) {
+        case 'hot':
+          aggregateList = [...aggregateList, { $sort: { remain: -1 } }];
+          break;
+        case 'bestseller':
+          aggregateList = [...aggregateList, { $sort: { soldNum: -1 } }];
+          break;
+        case 'sale':
+          aggregateList = [...aggregateList, { $sort: { salePercent: -1 } }];
+          break;
+        case 'newal':
+          aggregateList = [...aggregateList, { $sort: { createdAt: -1 } }];
+          break;
+        case 'desc-price':
+          aggregateList = [...aggregateList, { $sort: { originPrice: -1 } }];
+          break;
+        case 'asc-price':
+          aggregateList = [...aggregateList, { $sort: { originPrice: 1 } }];
+          break;
+      }
     } else if (params.sale) {
       return await this.productsRepository.aggregate([
         ...aggregateList,
@@ -92,21 +111,59 @@ export class ProductsService {
           },
         },
       ]);
-    } else if (params.search && params.search.key) {
-      const re = new RegExp(params.search.key, 'g');
-      return await this.productsRepository.aggregate([
-        ...aggregateList,
-        {
-          $match: {
-            productName: {
-              $regex: re,
-            },
-          },
-        },
-      ]);
     }
 
-    return await this.productsRepository.aggregate(aggregateList);
+    if (params.search) {
+      const re = new RegExp(params.search, 'g');
+      match['productName'] = {
+        $regex: re,
+      };
+    }
+
+    if (params.chip) {
+      const re = new RegExp(params.chip, 'g');
+      match['chip'] = {
+        $regex: re,
+      };
+    }
+
+    if (params.color) {
+      const re = new RegExp(params.color, 'g');
+      match['color'] = {
+        $regex: re,
+      };
+    }
+
+    if (params.ramSize) {
+      match['ramSize'] = {
+        $eq: Number(params.ramSize),
+      };
+    }
+
+    if (params.seriesCpu) {
+      const re = new RegExp(params.seriesCpu, 'g');
+      match['seriesCpu'] = {
+        $regex: re,
+      };
+    }
+
+    if (params.size) {
+      const re = new RegExp(params.size, 'g');
+      match['size'] = {
+        $regex: re,
+      };
+    }
+
+    aggregateList = [
+      ...aggregateList,
+      {
+        $match: match,
+      },
+    ];
+
+    const list = await this.productsRepository.aggregate(aggregateList);
+
+    return list.slice((Number(params.page) - 1) * 10, Number(params.page) * 10);
   }
 
   async findOne(id: string): Promise<Product> {
