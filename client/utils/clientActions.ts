@@ -5,6 +5,82 @@ import toast from 'react-hot-toast';
 import * as jwt from 'jsonwebtoken';
 import { authActions } from '@/redux/features/authSlice';
 import authService from '@/services/authService';
+import {
+  ReadonlyURLSearchParams,
+  useRouter,
+  useSearchParams,
+} from 'next/navigation';
+import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
+
+export type SearchParamsType = { [key: string]: string };
+
+export function handleSearchParamsToObject(params: ReadonlyURLSearchParams) {
+  const searchParams: SearchParamsType = {};
+
+  params.forEach((value, key) => {
+    searchParams[key] = value;
+  });
+
+  return searchParams;
+}
+
+export function handleSearchParamsToStringUrl(searchParams: SearchParamsType) {
+  let searchParamsUrlString = '';
+
+  for (const key in searchParams) {
+    if (!searchParamsUrlString) {
+      searchParamsUrlString += `${key}=${searchParams[key]}`;
+      continue;
+    }
+    searchParamsUrlString += `&${key}=${searchParams[key]}`;
+  }
+
+  return searchParamsUrlString;
+}
+
+export function handleRemoveSearchParamsToStringUrl(
+  searchParams: SearchParamsType,
+  removeKey: string,
+) {
+  let searchParamsUrlString = '';
+
+  for (const key in searchParams) {
+    if (key === removeKey) continue;
+    if (!searchParamsUrlString) {
+      searchParamsUrlString += `${key}=${searchParams[key]}`;
+      continue;
+    }
+    searchParamsUrlString += `&${key}=${searchParams[key]}`;
+  }
+
+  return searchParamsUrlString;
+}
+
+export function handleUpdateRouter(
+  key: string,
+  value: string,
+  searchParams: ReadonlyURLSearchParams,
+  router: AppRouterInstance,
+) {
+  const searchParamsObject: SearchParamsType =
+    handleSearchParamsToObject(searchParams);
+
+  searchParamsObject[key] = value;
+  router.push('/search?' + handleSearchParamsToStringUrl(searchParamsObject));
+}
+
+export function handleRemoveRouter(
+  key: string,
+  searchParams: ReadonlyURLSearchParams,
+  router: AppRouterInstance,
+) {
+  const searchParamsObject: SearchParamsType =
+    handleSearchParamsToObject(searchParams);
+
+  router.replace(
+    '/search?' + handleRemoveSearchParamsToStringUrl(searchParamsObject, key),
+  );
+}
 
 export function handleCart(product: ProductType) {
   const cart = {

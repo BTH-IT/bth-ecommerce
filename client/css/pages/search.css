@@ -222,14 +222,17 @@ input[type="range"]::-moz-range-thumb {
 
 .search-filter_item > span {
   position: absolute;
-  top: 1px;
-  right: 1px;
+  top: -6px;
+  right: -2px;
   color: white;
   z-index: 1;
-  font-size: 0.6rem;
   transition: all 0.2s ease;
   visibility: hidden;
   opacity: 0;
+}
+
+.search-filter_item > span i {
+  font-size: 1rem;
 }
 
 /* PRODUCT */

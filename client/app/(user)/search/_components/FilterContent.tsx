@@ -1,25 +1,21 @@
-import React from 'react';
+'use client';
 
-const FilterContent = ({ filterContent }: { filterContent: [any] }) => {
-  return filterContent.map((filter) => (
-    <label
-      htmlFor={filter}
-      className="search-dropdown_checkbox-item"
-      key={filter}
-    >
-      <div className="checkbox-container">
-        <input
-          type="checkbox"
-          className="checkbox-input"
-          id={filter}
-          value={filter}
-        />
-        <div className="checkbox-inner">
-          <i className="bi bi-check-lg"></i>
-        </div>
-      </div>
-      <span>{filter}</span>
-    </label>
+import React from 'react';
+import FilterCheckbox from './FilterCheckbox';
+
+const FilterContent = ({
+  filterContent,
+  filterKey,
+}: {
+  filterContent: [any];
+  filterKey: string;
+}) => {
+  return filterContent.map((filter, idx) => (
+    <FilterCheckbox
+      filter={filter}
+      key={filter + idx}
+      filterKey={filterKey}
+    ></FilterCheckbox>
   ));
 };
 

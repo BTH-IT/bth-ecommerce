@@ -1,7 +1,7 @@
 import { ProductType } from '@/types/product';
 import { filterList } from '@/utils/contains';
 import React from 'react';
-import FilterContent from './FilterContent';
+import FiterDropdown from './FiterDropdown';
 
 const FilterList = ({ productList }: { productList: ProductType[] }) => {
   const filterProductList = filterList.map((filter) => {
@@ -24,20 +24,10 @@ const FilterList = ({ productList }: { productList: ProductType[] }) => {
   });
 
   return filterProductList.map((filterProduct) => (
-    <div className="search-dropdown" key={filterProduct.key}>
-      <div className="search-dropdown_header">
-        <h5>
-          {filterProduct.name.charAt(0).toUpperCase() +
-            filterProduct.name.slice(1)}
-        </h5>
-        <span>
-          <i className="bi bi-chevron-compact-down"></i>
-        </span>
-      </div>
-      <div className="search-dropdown_checkbox">
-        <FilterContent filterContent={filterProduct.filterContent} />
-      </div>
-    </div>
+    <FiterDropdown
+      filterProduct={filterProduct}
+      key={filterProduct.key}
+    ></FiterDropdown>
   ));
 };
 
