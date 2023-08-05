@@ -33,6 +33,12 @@ export class ProductParamsDto {
 
   @IsNotEmpty()
   size?: string;
+
+  @IsNotEmpty()
+  minPrice?: string;
+
+  @IsNotEmpty()
+  maxPrice?: string;
 }
 
 export class CreateNewProductDto {

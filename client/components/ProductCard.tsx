@@ -52,7 +52,7 @@ const ProductCard = (props: ProductType) => {
         <p className="product-card_sale-price">
           {convertCurrency(props.originPrice)}
         </p>
-        <s className="product-card_price">&nbsp;</s>
+        <p className="product-card_save-price">&nbsp;</p>
         <p className="product-card_save-price">&nbsp;</p>
       </div>
     </Link>

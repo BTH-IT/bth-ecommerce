@@ -34,6 +34,12 @@ export class ProductParamsInput {
 
   @Field({ nullable: true })
   size?: string;
+
+  @Field({ nullable: true })
+  minPrice?: string;
+
+  @Field({ nullable: true })
+  maxPrice?: string;
 }
 
 @InputType()

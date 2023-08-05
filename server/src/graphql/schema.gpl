@@ -418,6 +418,8 @@ input ProductParamsInput {
   brand: String
   chip: String
   color: String
+  maxPrice: String
+  minPrice: String
   page: String! = "1"
   ramSize: String
   sale: Boolean! = false

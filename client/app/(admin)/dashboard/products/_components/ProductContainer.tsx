@@ -79,17 +79,11 @@ const ProductContainer = () => {
   useEffect(() => {
     async function fetchProductList() {
       try {
-        const success = await handleRefreshToken(dispatch);
+        const res = await productService.getAll({
+          search,
+        });
 
-        if (success) {
-          const res = await productService.getAll({
-            search,
-          });
-
-          setProductList(res);
-        } else {
-          router.replace('/login');
-        }
+        setProductList(res);
       } catch (error: any) {
         toast.error(error.message);
       }

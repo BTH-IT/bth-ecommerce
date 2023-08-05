@@ -13,17 +13,19 @@ import React, { useEffect, useState } from 'react';
 import { RangeSlider, InputGroup, InputNumber } from 'rsuite';
 
 const FilterSlider = ({ productList }: { productList: ProductType[] }) => {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const [value, setValue] = useState([
-    0,
-    productList.reduce((p, c) => p + c.originPrice, 0),
+    Number(searchParams.get('minPrice')) || 0,
+    Number(searchParams.get('maxPrice')) ||
+      productList.reduce((p, c) => p + c.originPrice, 0),
   ]);
 
   const [maxValue, setMaxValue] = useState(
-    productList.reduce((p, c) => p + c.originPrice, 0),
+    Number(searchParams.get('maxPrice')) ||
+      productList.reduce((p, c) => p + c.originPrice, 0),
   );
-
-  const searchParams = useSearchParams();
-  const router = useRouter();
 
   useEffect(() => {
     if (productList.length > 0) {
@@ -46,7 +48,7 @@ const FilterSlider = ({ productList }: { productList: ProductType[] }) => {
             }
             setValue([Number(nextValue), end]);
             handleUpdateRouter(
-              'min-price',
+              'minPrice',
               nextValue + '',
               searchParams,
               router,
@@ -65,7 +67,7 @@ const FilterSlider = ({ productList }: { productList: ProductType[] }) => {
             }
             setValue([start, Number(nextValue)]);
             handleUpdateRouter(
-              'max-price',
+              'maxPrice',
               nextValue + '',
               searchParams,
               router,
@@ -82,8 +84,8 @@ const FilterSlider = ({ productList }: { productList: ProductType[] }) => {
           const searchParamsObject: SearchParamsType =
             handleSearchParamsToObject(searchParams);
 
-          searchParamsObject['min-price'] = value[0] + '';
-          searchParamsObject['max-price'] = value[1] + '';
+          searchParamsObject['minPrice'] = value[0] + '';
+          searchParamsObject['maxPrice'] = value[1] + '';
 
           router.replace(
             '/search?' + handleSearchParamsToStringUrl(searchParamsObject),

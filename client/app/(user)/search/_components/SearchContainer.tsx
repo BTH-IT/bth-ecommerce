@@ -5,9 +5,8 @@ import FilterSlider from './FilterSlider';
 import { ProductType } from '@/types/product';
 import toast from 'react-hot-toast';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAppDispatch } from '@/redux/hooks';
 import productService from '@/services/productService';
-import { handleRefreshToken, handleUpdateRouter } from '@/utils/clientActions';
+import { handleUpdateRouter } from '@/utils/clientActions';
 import FilterList from './FilterList';
 import SortLabel from './SortLabel';
 import ProductGridSearch from '@/components/ProductGridSearch';
@@ -37,23 +36,16 @@ const sortList = [
 
 const SearchContainer = () => {
   const [productList, setProductList] = useState<ProductType[]>([]);
-  const [sort, setSort] = useState<string>('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const dispatch = useAppDispatch();
+  const [sort, setSort] = useState<string>(searchParams.get('sort') || '');
 
   useEffect(() => {
     async function fetchProductList() {
       try {
-        const success = await handleRefreshToken(dispatch);
+        const res = await productService.getAll();
 
-        if (success) {
-          const res = await productService.getAll();
-
-          setProductList(res);
-        } else {
-          router.replace('/login');
-        }
+        setProductList(res);
       } catch (error: any) {
         toast.error(error.message);
       }

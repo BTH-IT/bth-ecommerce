@@ -183,6 +183,20 @@ export class ProductsService {
       });
     }
 
+    if (
+      params.maxPrice &&
+      params.minPrice &&
+      !isNaN(Number(params.minPrice)) &&
+      !isNaN(Number(params.maxPrice))
+    ) {
+      const min = Number(params.minPrice);
+      const max = Number(params.maxPrice);
+
+      list = list.filter(
+        (product) => product.originPrice >= min && product.originPrice <= max,
+      );
+    }
+
     return list.slice((Number(params.page) - 1) * 10, Number(params.page) * 10);
   }
 

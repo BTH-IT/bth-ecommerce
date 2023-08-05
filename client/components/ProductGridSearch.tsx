@@ -9,7 +9,6 @@ import {
   handleUpdateRouter,
 } from '@/utils/clientActions';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useAppDispatch } from '@/redux/hooks';
 import productService from '@/services/productService';
 import toast from 'react-hot-toast';
 import { Pagination } from 'rsuite';
@@ -22,22 +21,15 @@ const ProductGridSearch = ({ total }: { total: number }) => {
   const [page, setPage] = useState<number>(
     Number(searchParams.get('page') || 1),
   );
-  const dispatch = useAppDispatch();
 
   useEffect(() => {
     async function fetchProductList() {
       try {
-        const success = await handleRefreshToken(dispatch);
+        const res = await productService.getAll(
+          handleSearchParamsToObject(searchParams),
+        );
 
-        if (success) {
-          const res = await productService.getAll({
-            ...handleSearchParamsToObject(searchParams),
-          });
-
-          setProductList(res);
-        } else {
-          router.replace('/login');
-        }
+        setProductList(res);
       } catch (error: any) {
         toast.error(error.message);
       }
@@ -59,7 +51,7 @@ const ProductGridSearch = ({ total }: { total: number }) => {
   return productList && productList.length > 0 ? (
     <div className="search-product_container">
       <div className="search-product">
-        <div className={`grid grid-cols-3 gap-3`}>
+        <div className={`grid grid-cols-4 gap-4`}>
           {productList.map((product) => (
             <ProductCard {...product} key={product._id}></ProductCard>
           ))}
