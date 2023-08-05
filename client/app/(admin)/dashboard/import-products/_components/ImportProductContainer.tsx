@@ -13,6 +13,7 @@ import { ProductType } from '@/types/product';
 import productService from '@/services/productService';
 import { useCheckBoxTable } from '@/hooks/useCheckBoxTable';
 import ImportProductForm from './ImportProductForm';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const { Search } = Input;
 
@@ -59,145 +60,143 @@ const CheckCell = ({
 );
 
 const ImportProductContainer = () => {
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const [open, setOpen] = useState(false);
+    const [productList, setProductList] = useState<ProductType[]>([]);
+    const [search, setSearch] = useState<string>('');
+    const { handleCheckAll, handleCheck, checkedKeys, checked, indeterminate } =
+      useCheckBoxTable(productList);
 
-  const [open, setOpen] = useState(false);
-  const [productList, setProductList] = useState<ProductType[]>([]);
-  const [search, setSearch] = useState<string>('');
-  const { handleCheckAll, handleCheck, checkedKeys, checked, indeterminate } =
-    useCheckBoxTable(productList);
+    const handleClose = () => {
+      setOpen(false);
+    };
 
-  const dispatch = useAppDispatch();
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(productList);
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+    useEffect(() => {
+      async function fetchProductList() {
+        try {
+          const res = await productService.getAll({
+            search,
+          });
 
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(productList);
-
-  useEffect(() => {
-    async function fetchProductList() {
-      try {
-        const res = await productService.getAll({
-          search,
-        });
-
-        setProductList(res);
-      } catch (error: any) {
-        toast.error(error.message);
+          setProductList(res);
+        } catch (error: any) {
+          toast.error(error.message);
+        }
       }
-    }
 
-    fetchProductList();
-  }, [search]);
+      fetchProductList();
+    }, [search]);
 
-  const handleSearching = async (value: string) => {
-    setSearch(value);
-  };
+    const handleSearching = async (value: string) => {
+      setSearch(value);
+    };
 
-  const handleImportProduct = () => {
-    setOpen(true);
-  };
+    const handleImportProduct = () => {
+      setOpen(true);
+    };
 
-  return (
-    <div className="import-products-table">
-      <div className="import-products-table_header">
-        <div className="import-products-table_filter">
-          <Space direction="vertical" size={12}>
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
-          <div
-            className="import-products-table_add-btn"
-            onClick={handleImportProduct}
-          >
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Import Products</span>
+    return (
+      <div className="import-products-table">
+        <div className="import-products-table_header">
+          <div className="import-products-table_filter">
+            <Space direction="vertical" size={12}>
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+            <div
+              className="import-products-table_add-btn"
+              onClick={handleImportProduct}
+            >
+              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+              <span className="font-semibold">Import Products</span>
+            </div>
+          </div>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+              bordered
+            >
+              <Column width={300} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
+
+              <Column sortable width={400} align="center">
+                <HeaderCell>Product Name</HeaderCell>
+                <Cell dataKey="productName"></Cell>
+              </Column>
+
+              <Column width={300} align="center">
+                <HeaderCell>Thumbnail Primary</HeaderCell>
+                <ImageCell dataKey="imageUrlList"></ImageCell>
+              </Column>
+
+              <Column sortable width={300} align="center">
+                <HeaderCell>Remain</HeaderCell>
+                <Cell dataKey="remain"></Cell>
+              </Column>
+
+              <Column width={250} align="center" flexGrow={1} fixed="right">
+                <HeaderCell style={{ padding: 0 }}>
+                  <div style={{ lineHeight: '40px' }}>
+                    <Checkbox
+                      inline
+                      checked={checked}
+                      indeterminate={indeterminate}
+                      onChange={handleCheckAll}
+                    />
+                  </div>
+                </HeaderCell>
+                <CheckCell checkedKeys={checkedKeys} onChange={handleCheck} />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={productList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
+              />
+            </div>
           </div>
         </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-            bordered
-          >
-            <Column width={300} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
-
-            <Column sortable width={400} align="center">
-              <HeaderCell>Product Name</HeaderCell>
-              <Cell dataKey="productName"></Cell>
-            </Column>
-
-            <Column width={300} align="center">
-              <HeaderCell>Thumbnail Primary</HeaderCell>
-              <ImageCell dataKey="imageUrlList"></ImageCell>
-            </Column>
-
-            <Column sortable width={300} align="center">
-              <HeaderCell>Remain</HeaderCell>
-              <Cell dataKey="remain"></Cell>
-            </Column>
-
-            <Column width={250} align="center" flexGrow={1} fixed="right">
-              <HeaderCell style={{ padding: 0 }}>
-                <div style={{ lineHeight: '40px' }}>
-                  <Checkbox
-                    inline
-                    checked={checked}
-                    indeterminate={indeterminate}
-                    onChange={handleCheckAll}
-                  />
-                </div>
-              </HeaderCell>
-              <CheckCell checkedKeys={checkedKeys} onChange={handleCheck} />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={productList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
-          </div>
-        </div>
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>Nhập sản phẩm</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <ImportProductForm
+              checkedKeys={checkedKeys}
+              handleClose={handleClose}
+            ></ImportProductForm>
+          </Modal.Body>
+        </Modal>
       </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>Nhập sản phẩm</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <ImportProductForm
-            checkedKeys={checkedKeys}
-            handleClose={handleClose}
-          ></ImportProductForm>
-        </Modal.Body>
-      </Modal>
-    </div>
-  );
+    );
+  });
 };
 
 export default ImportProductContainer;

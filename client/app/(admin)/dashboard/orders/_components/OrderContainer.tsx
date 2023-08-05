@@ -17,6 +17,7 @@ import { DatePicker, Input, Space } from 'antd';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
 import OrderActionCell from './OrderActionCell';
 import UpdateOrderStatusForm from './UpdateOrderStatusForm';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const orderItemLinkList = [
   {
@@ -60,244 +61,246 @@ export type RangeValue = Parameters<
 >[0];
 
 const OrderContainer = () => {
-  const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const loginSuccess = Boolean(useAppSelector(selectAuth).accessToken);
+    const router = useRouter();
 
-  const params = useSearchParams();
-  const type = params.get('type') || '';
-  const [search, setSearch] = useState<string>('');
+    const params = useSearchParams();
+    const type = params.get('type') || '';
+    const [search, setSearch] = useState<string>('');
 
-  const [dateRange, setDateRange] = useState<RangeValue | null>(null);
-  const [open, setOpen] = useState(false);
-  const [order, setOrder] = useState<OrderType | null>(null);
-  const [orderList, setOrderList] = useState<OrderType[]>([]);
+    const [dateRange, setDateRange] = useState<RangeValue | null>(null);
+    const [open, setOpen] = useState(false);
+    const [order, setOrder] = useState<OrderType | null>(null);
+    const [orderList, setOrderList] = useState<OrderType[]>([]);
 
-  const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Xem chi tiết',
-    key: 'see-more',
-  });
+    const dispatch = useAppDispatch();
+    const [modalData, setModalData] = useState({
+      title: 'Xem chi tiết',
+      key: 'see-more',
+    });
 
-  useEffect(() => {
-    if (!loginSuccess) {
-      router.replace('/login');
-    }
-  }, [loginSuccess]);
-
-  const handleOpen = async (order: OrderType) => {
-    setOrder(order);
-    setOpen(true);
-  };
-
-  const handleClose = () => setOpen(false);
-
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(orderList);
-
-  useEffect(() => {
-    let orderType: any = null;
-    let dateRangeFilter: any = null;
-
-    if (dateRange !== null) {
-      dateRangeFilter = {
-        from: dateRange[0],
-        to: dateRange[1],
-      };
-    }
-
-    if (type) {
-      switch (type) {
-        case 'waiting':
-          orderType = 'waiting';
-          break;
-        case 'shipping':
-          orderType = 'shipping';
-          break;
-        case 'wait-for-pay':
-          orderType = 'wait-for-pay';
-          break;
-        case 'done':
-          orderType = 'done';
-          break;
-        case 'canceled':
-          orderType = 'canceled';
-          break;
+    useEffect(() => {
+      if (!loginSuccess) {
+        router.replace('/login');
       }
-    }
+    }, [loginSuccess]);
 
-    async function fetchOrderList() {
-      try {
-        const success = await handleRefreshToken(dispatch);
+    const handleOpen = async (order: OrderType) => {
+      setOrder(order);
+      setOpen(true);
+    };
 
-        if (success) {
-          const res = await orderService.getAll({
-            type: orderType,
-            dateRange: dateRangeFilter,
-            search: search.trim().toLowerCase(),
-          });
+    const handleClose = () => setOpen(false);
 
-          setOrderList(res);
-        } else {
-          router.replace('/login');
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(orderList);
+
+    useEffect(() => {
+      let orderType: any = null;
+      let dateRangeFilter: any = null;
+
+      if (dateRange !== null) {
+        dateRangeFilter = {
+          from: dateRange[0],
+          to: dateRange[1],
+        };
+      }
+
+      if (type) {
+        switch (type) {
+          case 'waiting':
+            orderType = 'waiting';
+            break;
+          case 'shipping':
+            orderType = 'shipping';
+            break;
+          case 'wait-for-pay':
+            orderType = 'wait-for-pay';
+            break;
+          case 'done':
+            orderType = 'done';
+            break;
+          case 'canceled':
+            orderType = 'canceled';
+            break;
         }
-      } catch (error: any) {
-        toast.error(error.message);
       }
-    }
 
-    fetchOrderList();
-  }, [type, dateRange, search]);
+      async function fetchOrderList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
 
-  const handleSearching = async (value: string) => {
-    if (!value) return;
+          if (success) {
+            const res = await orderService.getAll({
+              type: orderType,
+              dateRange: dateRangeFilter,
+              search: search.trim().toLowerCase(),
+            });
 
-    setSearch(value);
-  };
+            setOrderList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      }
 
-  return (
-    <div className="orders">
-      <ul className="orders-header">
-        {orderItemLinkList.map((link) => (
-          <li
-            key={link.href}
-            className={`orders-header_item ${
-              link.param === type ? 'active' : ''
-            }`}
-          >
-            <Link
-              href={link.href}
-              className={`orders-header_title ${link.className}`}
+      fetchOrderList();
+    }, [type, dateRange, search]);
+
+    const handleSearching = async (value: string) => {
+      if (!value) return;
+
+      setSearch(value);
+    };
+
+    return (
+      <div className="orders">
+        <ul className="orders-header">
+          {orderItemLinkList.map((link) => (
+            <li
+              key={link.href}
+              className={`orders-header_item ${
+                link.param === type ? 'active' : ''
+              }`}
             >
-              <span>{link.title}</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
-      <div className="orders-table">
-        <div className="orders-table_filter">
-          <Space direction="vertical" size={12}>
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
-          <Space direction="vertical" size={12}>
-            <RangePicker onChange={(value) => setDateRange(value)} />
-          </Space>
-        </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-          >
-            <Column fixed width={250} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
+              <Link
+                href={link.href}
+                className={`orders-header_title ${link.className}`}
+              >
+                <span>{link.title}</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
+        <div className="orders-table">
+          <div className="orders-table_filter">
+            <Space direction="vertical" size={12}>
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+            <Space direction="vertical" size={12}>
+              <RangePicker onChange={(value) => setDateRange(value)} />
+            </Space>
+          </div>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+            >
+              <Column fixed width={250} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Hình thức thanh toán</HeaderCell>
-              <Cell dataKey="purchaseForm">
-                {(rowData) => (
-                  <span className="paid-item">{rowData.purchaseForm}</span>
-                )}
-              </Cell>
-            </Column>
+              <Column sortable width={200} align="center">
+                <HeaderCell>Hình thức thanh toán</HeaderCell>
+                <Cell dataKey="purchaseForm">
+                  {(rowData) => (
+                    <span className="paid-item">{rowData.purchaseForm}</span>
+                  )}
+                </Cell>
+              </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Thời gian</HeaderCell>
-              <Cell dataKey="createdAt">
-                {(rowData) => `${moment(rowData.createdAt).format('L')}`}
-              </Cell>
-            </Column>
+              <Column sortable width={200} align="center">
+                <HeaderCell>Thời gian</HeaderCell>
+                <Cell dataKey="createdAt">
+                  {(rowData) => `${moment(rowData.createdAt).format('L')}`}
+                </Cell>
+              </Column>
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Trạng thái</HeaderCell>
-              <Cell dataKey="status">
-                {(rowData) => (
-                  <span className={`status-item ${rowData.status}`}>
-                    {rowData.status}
-                  </span>
-                )}
-              </Cell>
-            </Column>
-            <Column sortable width={400} align="center">
-              <HeaderCell>Tổng tiền</HeaderCell>
-              <Cell dataKey="totalPay">
-                {(rowData) => (
-                  <span className="price-item">
-                    {convertCurrency(rowData.totalPay)}
-                  </span>
-                )}
-              </Cell>
-            </Column>
-            <Column fixed="right" width={250} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <OrderActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
+              <Column sortable width={200} align="center">
+                <HeaderCell>Trạng thái</HeaderCell>
+                <Cell dataKey="status">
+                  {(rowData) => (
+                    <span className={`status-item ${rowData.status}`}>
+                      {rowData.status}
+                    </span>
+                  )}
+                </Cell>
+              </Column>
+              <Column sortable width={400} align="center">
+                <HeaderCell>Tổng tiền</HeaderCell>
+                <Cell dataKey="totalPay">
+                  {(rowData) => (
+                    <span className="price-item">
+                      {convertCurrency(rowData.totalPay)}
+                    </span>
+                  )}
+                </Cell>
+              </Column>
+              <Column fixed="right" width={250} align="center">
+                <HeaderCell>Hành động</HeaderCell>
+                <OrderActionCell
+                  dataKey="_id"
+                  handleOpen={handleOpen}
+                  handleModal={setModalData}
+                />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={orderList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
               />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={orderList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
+            </div>
           </div>
         </div>
-      </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {modalData.key === 'see-more' && order && (
-            <SeeMoreOrder order={order}></SeeMoreOrder>
-          )}
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>{modalData.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalData.key === 'see-more' && order && (
+              <SeeMoreOrder order={order}></SeeMoreOrder>
+            )}
+            {modalData.key === 'delete-order' && order && (
+              <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            )}
+            {modalData.key === 'update-order' && order && (
+              <UpdateOrderStatusForm
+                order={order}
+                handleClose={handleClose}
+              ></UpdateOrderStatusForm>
+            )}
+          </Modal.Body>
           {modalData.key === 'delete-order' && order && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
           )}
-          {modalData.key === 'update-order' && order && (
-            <UpdateOrderStatusForm
-              order={order}
-              handleClose={handleClose}
-            ></UpdateOrderStatusForm>
-          )}
-        </Modal.Body>
-        {modalData.key === 'delete-order' && order && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
-    </div>
-  );
+        </Modal>
+      </div>
+    );
+  });
 };
 
 export default OrderContainer;

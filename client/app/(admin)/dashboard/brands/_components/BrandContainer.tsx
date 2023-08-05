@@ -14,6 +14,7 @@ import Image from 'next/image';
 import brandService from '@/services/brandService';
 import { BrandType } from '@/types/brand';
 import BrandForm from './BrandForm';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const { Search } = Input;
 
@@ -55,178 +56,180 @@ const ImageIconCell = ({ rowData, dataKey, ...props }: any) => (
 );
 
 const BrandContainer = () => {
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const router = useRouter();
 
-  const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
-  const [brand, setBrand] = useState<BrandType | null>(null);
-  const [brandList, setBrandList] = useState<BrandType[]>([]);
-  const [search, setSearch] = useState<string>('');
+    const [open, setOpen] = useState(false);
+    const [add, setAdd] = useState(false);
+    const [brand, setBrand] = useState<BrandType | null>(null);
+    const [brandList, setBrandList] = useState<BrandType[]>([]);
+    const [search, setSearch] = useState<string>('');
 
-  const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Sửa thương hiệu',
-    key: 'update-brand',
-  });
-
-  const handleOpen = async (brand: BrandType) => {
-    setBrand(brand);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setAdd(false);
-    setOpen(false);
-  };
-
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(brandList);
-
-  useEffect(() => {
-    async function fetchBrandList() {
-      try {
-        const success = await handleRefreshToken(dispatch);
-
-        if (success) {
-          const res = await brandService.getAll({
-            search,
-          });
-
-          setBrandList(res);
-        } else {
-          router.replace('/login');
-        }
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    }
-
-    if (!add) {
-      fetchBrandList();
-    }
-  }, [search, add]);
-
-  const handleSearching = async (value: string) => {
-    setSearch(value);
-  };
-
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm thương hiệu',
-      key: 'add-brand',
+    const dispatch = useAppDispatch();
+    const [modalData, setModalData] = useState({
+      title: 'Sửa thương hiệu',
+      key: 'update-brand',
     });
-    setBrand(null);
-    setAdd(true);
-    setOpen(true);
-  };
 
-  return (
-    <div className="brands-table">
-      <div className="brands-table_header">
-        <div className="brands-table_filter">
-          <Space direction="vertical" size={12}>
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
-          <div className="brands-table_add-btn" onClick={handleAdding}>
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Brand</span>
+    const handleOpen = async (brand: BrandType) => {
+      setBrand(brand);
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setAdd(false);
+      setOpen(false);
+    };
+
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(brandList);
+
+    useEffect(() => {
+      async function fetchBrandList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
+
+          if (success) {
+            const res = await brandService.getAll({
+              search,
+            });
+
+            setBrandList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      }
+
+      if (!add) {
+        fetchBrandList();
+      }
+    }, [search, add]);
+
+    const handleSearching = async (value: string) => {
+      setSearch(value);
+    };
+
+    const handleAdding = () => {
+      setModalData({
+        title: 'Thêm thương hiệu',
+        key: 'add-brand',
+      });
+      setBrand(null);
+      setAdd(true);
+      setOpen(true);
+    };
+
+    return (
+      <div className="brands-table">
+        <div className="brands-table_header">
+          <div className="brands-table_filter">
+            <Space direction="vertical" size={12}>
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+            <div className="brands-table_add-btn" onClick={handleAdding}>
+              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+              <span className="font-semibold">Add New Brand</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-            bordered
-          >
-            <Column fixed width={300} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+              bordered
+            >
+              <Column fixed width={300} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
 
-            <Column sortable width={300} align="center">
-              <HeaderCell>Name</HeaderCell>
-              <Cell dataKey="name"></Cell>
-            </Column>
+              <Column sortable width={300} align="center">
+                <HeaderCell>Name</HeaderCell>
+                <Cell dataKey="name"></Cell>
+              </Column>
 
-            <Column sortable width={300} align="center">
-              <HeaderCell>Thumbnail</HeaderCell>
-              <ImageThumbCell dataKey="thumbUrl"></ImageThumbCell>
-            </Column>
+              <Column sortable width={300} align="center">
+                <HeaderCell>Thumbnail</HeaderCell>
+                <ImageThumbCell dataKey="thumbUrl"></ImageThumbCell>
+              </Column>
 
-            <Column sortable width={300} align="center">
-              <HeaderCell>Icon</HeaderCell>
-              <ImageIconCell dataKey="iconUrl"></ImageIconCell>
-            </Column>
+              <Column sortable width={300} align="center">
+                <HeaderCell>Icon</HeaderCell>
+                <ImageIconCell dataKey="iconUrl"></ImageIconCell>
+              </Column>
 
-            <Column fixed="right" width={300} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <BrandActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
+              <Column fixed="right" width={300} align="center">
+                <HeaderCell>Hành động</HeaderCell>
+                <BrandActionCell
+                  dataKey="_id"
+                  handleOpen={handleOpen}
+                  handleModal={setModalData}
+                />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={brandList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
               />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={brandList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
+            </div>
           </div>
         </div>
-      </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>{modalData.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalData.key === 'delete-brand' && brand && (
+              <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            )}
+            {(modalData.key === 'add-brand' ||
+              modalData.key === 'update-brand') && (
+              <BrandForm
+                add={add}
+                handleClose={handleClose}
+                brand={brand}
+              ></BrandForm>
+            )}
+          </Modal.Body>
           {modalData.key === 'delete-brand' && brand && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
           )}
-          {(modalData.key === 'add-brand' ||
-            modalData.key === 'update-brand') && (
-            <BrandForm
-              add={add}
-              handleClose={handleClose}
-              brand={brand}
-            ></BrandForm>
-          )}
-        </Modal.Body>
-        {modalData.key === 'delete-brand' && brand && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
-    </div>
-  );
+        </Modal>
+      </div>
+    );
+  });
 };
 
 export default BrandContainer;

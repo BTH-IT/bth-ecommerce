@@ -16,6 +16,7 @@ import { AccountType } from '@/types/account';
 import CreateAccountForm from './CreateAccountForm';
 import UpdateAccountForm from './UpdateAccountForm';
 import CreateAccountWithAvailableUserForm from './CreateAccountWithAvailableUserForm';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const { Search } = Input;
 
@@ -41,202 +42,204 @@ const ImageCell = ({ rowData, dataKey, ...props }: any) => (
 );
 
 const AccountContainer = () => {
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const router = useRouter();
 
-  const [open, setOpen] = useState(false);
-  const [account, setAccount] = useState<AccountType | null>(null);
-  const [accountList, setAccountList] = useState<AccountType[]>([]);
-  const [search, setSearch] = useState<string>('');
+    const [open, setOpen] = useState(false);
+    const [account, setAccount] = useState<AccountType | null>(null);
+    const [accountList, setAccountList] = useState<AccountType[]>([]);
+    const [search, setSearch] = useState<string>('');
 
-  const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Sửa tài khoản',
-    key: 'update-account',
-  });
+    const dispatch = useAppDispatch();
+    const [modalData, setModalData] = useState({
+      title: 'Sửa tài khoản',
+      key: 'update-account',
+    });
 
-  const handleOpen = async (account: AccountType) => {
-    setAccount(account);
-    setOpen(true);
-  };
+    const handleOpen = async (account: AccountType) => {
+      setAccount(account);
+      setOpen(true);
+    };
 
-  const handleClose = () => {
-    setOpen(false);
-  };
+    const handleClose = () => {
+      setOpen(false);
+    };
 
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(accountList);
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(accountList);
 
-  useEffect(() => {
-    async function fetchAccountList() {
-      try {
-        const success = await handleRefreshToken(dispatch);
+    useEffect(() => {
+      async function fetchAccountList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
 
-        if (success) {
-          const res = await accountService.getAll({
-            search,
-          });
+          if (success) {
+            const res = await accountService.getAll({
+              search,
+            });
 
-          setAccountList(res);
-        } else {
-          router.replace('/login');
+            setAccountList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
         }
-      } catch (error: any) {
-        toast.error(error.message);
       }
-    }
 
-    fetchAccountList();
-  }, [search]);
+      fetchAccountList();
+    }, [search]);
 
-  const handleSearching = async (value: string) => {
-    setSearch(value);
-  };
+    const handleSearching = async (value: string) => {
+      setSearch(value);
+    };
 
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm tài khoản',
-      key: 'add-account',
-    });
-    setAccount(null);
-    setOpen(true);
-  };
-  const handleAddingWithAvailableUser = () => {
-    setModalData({
-      title: 'Thêm tài khoản với người dùng có sẳn',
-      key: 'add-account-with-available-user',
-    });
-    setAccount(null);
-    setOpen(true);
-  };
+    const handleAdding = () => {
+      setModalData({
+        title: 'Thêm tài khoản',
+        key: 'add-account',
+      });
+      setAccount(null);
+      setOpen(true);
+    };
+    const handleAddingWithAvailableUser = () => {
+      setModalData({
+        title: 'Thêm tài khoản với người dùng có sẳn',
+        key: 'add-account-with-available-user',
+      });
+      setAccount(null);
+      setOpen(true);
+    };
 
-  return (
-    <div className="accounts-table">
-      <div className="accounts-table_header">
-        <div className="p-4">
-          <div className="flex justify-between gap-5">
-            <div className="accounts-table_add-btn" onClick={handleAdding}>
-              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-              <span className="font-semibold">
-                Add New Account With New User
-              </span>
+    return (
+      <div className="accounts-table">
+        <div className="accounts-table_header">
+          <div className="p-4">
+            <div className="flex justify-between gap-5">
+              <div className="accounts-table_add-btn" onClick={handleAdding}>
+                <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+                <span className="font-semibold">
+                  Add New Account With New User
+                </span>
+              </div>
+              <div
+                className="accounts-table_add-btn"
+                onClick={handleAddingWithAvailableUser}
+              >
+                <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+                <span className="font-semibold">
+                  Add New Account With Available User
+                </span>
+              </div>
             </div>
-            <div
-              className="accounts-table_add-btn"
-              onClick={handleAddingWithAvailableUser}
+            <Space direction="vertical" size={12} className="w-full my-5">
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+          </div>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+              bordered
             >
-              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-              <span className="font-semibold">
-                Add New Account With Available User
-              </span>
+              <Column width={400} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
+
+              <Column sortable width={400} align="center">
+                <HeaderCell>Email</HeaderCell>
+                <Cell dataKey="email"></Cell>
+              </Column>
+
+              <Column width={150} align="center">
+                <HeaderCell>Picture</HeaderCell>
+                <ImageCell dataKey="picture"></ImageCell>
+              </Column>
+
+              <Column sortable width={300} align="center">
+                <HeaderCell>Role</HeaderCell>
+                <Cell dataKey="role">
+                  {(rowData) => <span>{rowData.role.name}</span>}
+                </Cell>
+              </Column>
+
+              <Column width={300} align="center">
+                <HeaderCell>Hành động</HeaderCell>
+                <AccountActionCell
+                  dataKey="_id"
+                  handleOpen={handleOpen}
+                  handleModal={setModalData}
+                />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={accountList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
+              />
             </div>
           </div>
-          <Space direction="vertical" size={12} className="w-full my-5">
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
         </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-            bordered
-          >
-            <Column width={400} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
-
-            <Column sortable width={400} align="center">
-              <HeaderCell>Email</HeaderCell>
-              <Cell dataKey="email"></Cell>
-            </Column>
-
-            <Column width={150} align="center">
-              <HeaderCell>Picture</HeaderCell>
-              <ImageCell dataKey="picture"></ImageCell>
-            </Column>
-
-            <Column sortable width={300} align="center">
-              <HeaderCell>Role</HeaderCell>
-              <Cell dataKey="role">
-                {(rowData) => <span>{rowData.role.name}</span>}
-              </Cell>
-            </Column>
-
-            <Column width={300} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <AccountActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
-              />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={accountList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
-          </div>
-        </div>
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>{modalData.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalData.key === 'delete-account' && account && (
+              <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            )}
+            {modalData.key === 'add-account' && (
+              <CreateAccountForm handleClose={handleClose}></CreateAccountForm>
+            )}
+            {modalData.key === 'add-account-with-available-user' && (
+              <CreateAccountWithAvailableUserForm
+                handleClose={handleClose}
+              ></CreateAccountWithAvailableUserForm>
+            )}
+            {modalData.key === 'update-account' && account && (
+              <UpdateAccountForm
+                handleClose={handleClose}
+                account={account}
+              ></UpdateAccountForm>
+            )}
+          </Modal.Body>
+          {modalData.key === 'delete-product' && account && (
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
+          )}
+        </Modal>
       </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {modalData.key === 'delete-account' && account && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
-          )}
-          {modalData.key === 'add-account' && (
-            <CreateAccountForm handleClose={handleClose}></CreateAccountForm>
-          )}
-          {modalData.key === 'add-account-with-available-user' && (
-            <CreateAccountWithAvailableUserForm
-              handleClose={handleClose}
-            ></CreateAccountWithAvailableUserForm>
-          )}
-          {modalData.key === 'update-account' && account && (
-            <UpdateAccountForm
-              handleClose={handleClose}
-              account={account}
-            ></UpdateAccountForm>
-          )}
-        </Modal.Body>
-        {modalData.key === 'delete-product' && account && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
-    </div>
-  );
+    );
+  });
 };
 
 export default AccountContainer;

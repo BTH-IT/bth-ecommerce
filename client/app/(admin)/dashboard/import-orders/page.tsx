@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const ImportOrderPage = PermissionHOC(() => {
+const ImportOrderPage = () => {
   return <ImportOrderContainer></ImportOrderContainer>;
-});
+};
 
 export default ImportOrderPage;

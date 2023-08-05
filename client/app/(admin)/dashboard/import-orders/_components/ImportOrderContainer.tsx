@@ -15,6 +15,7 @@ import { DatePicker, Input, Space } from 'antd';
 import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
 import importOrderService from '@/services/importOrderService';
 import ImportActionCell from './ImportOrderActionCell';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -25,180 +26,182 @@ export type RangeValue = Parameters<
 >[0];
 
 const ImportOrderContainer = () => {
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const router = useRouter();
 
-  const [dateRange, setDateRange] = useState<RangeValue | null>(null);
-  const [open, setOpen] = useState(false);
-  const [order, setOrder] = useState<OrderType | null>(null);
-  const [orderList, setOrderList] = useState<OrderType[]>([]);
-  const [search, setSearch] = useState<string>('');
-  const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Xem chi tiết',
-    key: 'see-more',
-  });
+    const [dateRange, setDateRange] = useState<RangeValue | null>(null);
+    const [open, setOpen] = useState(false);
+    const [order, setOrder] = useState<OrderType | null>(null);
+    const [orderList, setOrderList] = useState<OrderType[]>([]);
+    const [search, setSearch] = useState<string>('');
+    const dispatch = useAppDispatch();
+    const [modalData, setModalData] = useState({
+      title: 'Xem chi tiết',
+      key: 'see-more',
+    });
 
-  const handleOpen = async (order: OrderType) => {
-    setOrder(order);
-    setOpen(true);
-  };
+    const handleOpen = async (order: OrderType) => {
+      setOrder(order);
+      setOpen(true);
+    };
 
-  const handleClose = () => setOpen(false);
+    const handleClose = () => setOpen(false);
 
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(orderList);
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(orderList);
 
-  useEffect(() => {
-    let dateRangeFilter: any = null;
+    useEffect(() => {
+      let dateRangeFilter: any = null;
 
-    if (dateRange !== null) {
-      dateRangeFilter = {
-        from: dateRange[0],
-        to: dateRange[1],
-      };
-    }
-
-    async function fetchOrderList() {
-      try {
-        const success = await handleRefreshToken(dispatch);
-
-        if (success) {
-          const res = await importOrderService.getAll({
-            dateRange: dateRangeFilter,
-          });
-
-          setOrderList(res);
-        } else {
-          router.replace('/login');
-        }
-      } catch (error: any) {
-        toast.error(error.message);
+      if (dateRange !== null) {
+        dateRangeFilter = {
+          from: dateRange[0],
+          to: dateRange[1],
+        };
       }
-    }
 
-    fetchOrderList();
-  }, [dateRange, search]);
+      async function fetchOrderList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
 
-  const handleSearching = async (value: string) => {
-    if (!value) return;
+          if (success) {
+            const res = await importOrderService.getAll({
+              dateRange: dateRangeFilter,
+            });
 
-    setSearch(value);
-  };
+            setOrderList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      }
 
-  return (
-    <div className="import-orders">
-      <div className="import-orders-table">
-        <div className="import-orders-table_filter">
-          <Space direction="vertical" size={12}>
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
-          <Space direction="vertical" size={12}>
-            <RangePicker onChange={(value) => setDateRange(value)} />
-          </Space>
-        </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-          >
-            <Column fixed width={250} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
+      fetchOrderList();
+    }, [dateRange, search]);
 
-            <Column sortable width={250} align="center">
-              <HeaderCell>Employee Id</HeaderCell>
-              <Cell dataKey="employee"></Cell>
-            </Column>
+    const handleSearching = async (value: string) => {
+      if (!value) return;
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Supplier Id</HeaderCell>
-              <Cell dataKey="supplier"></Cell>
-            </Column>
+      setSearch(value);
+    };
 
-            <Column sortable width={200} align="center">
-              <HeaderCell>Thời gian</HeaderCell>
-              <Cell dataKey="createdAt">
-                {(rowData) => `${moment(rowData.createdAt).format('L')}`}
-              </Cell>
-            </Column>
+    return (
+      <div className="import-orders">
+        <div className="import-orders-table">
+          <div className="import-orders-table_filter">
+            <Space direction="vertical" size={12}>
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+            <Space direction="vertical" size={12}>
+              <RangePicker onChange={(value) => setDateRange(value)} />
+            </Space>
+          </div>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+            >
+              <Column fixed width={250} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
 
-            <Column sortable width={400} align="center">
-              <HeaderCell>Tổng tiền</HeaderCell>
-              <Cell dataKey="totalPay">
-                {(rowData) => (
-                  <span className="price-item">
-                    {convertCurrency(rowData.totalPay)}
-                  </span>
-                )}
-              </Cell>
-            </Column>
+              <Column sortable width={250} align="center">
+                <HeaderCell>Employee Id</HeaderCell>
+                <Cell dataKey="employee"></Cell>
+              </Column>
 
-            <Column fixed="right" width={250} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <ImportActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
+              <Column sortable width={200} align="center">
+                <HeaderCell>Supplier Id</HeaderCell>
+                <Cell dataKey="supplier"></Cell>
+              </Column>
+
+              <Column sortable width={200} align="center">
+                <HeaderCell>Thời gian</HeaderCell>
+                <Cell dataKey="createdAt">
+                  {(rowData) => `${moment(rowData.createdAt).format('L')}`}
+                </Cell>
+              </Column>
+
+              <Column sortable width={400} align="center">
+                <HeaderCell>Tổng tiền</HeaderCell>
+                <Cell dataKey="totalPay">
+                  {(rowData) => (
+                    <span className="price-item">
+                      {convertCurrency(rowData.totalPay)}
+                    </span>
+                  )}
+                </Cell>
+              </Column>
+
+              <Column fixed="right" width={250} align="center">
+                <HeaderCell>Hành động</HeaderCell>
+                <ImportActionCell
+                  dataKey="_id"
+                  handleOpen={handleOpen}
+                  handleModal={setModalData}
+                />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={orderList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
               />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={orderList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
+            </div>
           </div>
         </div>
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>{modalData.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalData.key === 'see-more' && order && (
+              <SeeMoreOrder order={order}></SeeMoreOrder>
+            )}
+            {modalData.key === 'delete-order' && order && (
+              <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            )}
+          </Modal.Body>
+          {modalData.key === 'see-more' ||
+            (modalData.key === 'delete-order' && order && (
+              <Modal.Footer>
+                <Button onClick={handleClose} appearance="subtle">
+                  Cancel
+                </Button>
+                <Button onClick={handleClose} appearance="primary">
+                  Ok
+                </Button>
+              </Modal.Footer>
+            ))}
+        </Modal>
       </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          {modalData.key === 'see-more' && order && (
-            <SeeMoreOrder order={order}></SeeMoreOrder>
-          )}
-          {modalData.key === 'delete-order' && order && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
-          )}
-        </Modal.Body>
-        {modalData.key === 'see-more' ||
-          (modalData.key === 'delete-order' && order && (
-            <Modal.Footer>
-              <Button onClick={handleClose} appearance="subtle">
-                Cancel
-              </Button>
-              <Button onClick={handleClose} appearance="primary">
-                Ok
-              </Button>
-            </Modal.Footer>
-          ))}
-      </Modal>
-    </div>
-  );
+    );
+  });
 };
 
 export default ImportOrderContainer;

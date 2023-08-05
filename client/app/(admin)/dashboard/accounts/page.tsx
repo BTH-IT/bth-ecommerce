@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const AccountPage = PermissionHOC(() => {
+const AccountPage = () => {
   return <AccountContainer></AccountContainer>;
-});
+};
 
 export default AccountPage;

@@ -5,16 +5,19 @@ import DashboardResume from './DashboardResume';
 import DashboardChart from './DashboardChart';
 import DashboardBestsellerProduct from './DashboardBestsellerProduct';
 import DashboardBestsellerBrand from './DashboardBestsellerBrand';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const DashboardContainer = () => {
-  return (
-    <div className="dashboard-page">
-      <DashboardResume></DashboardResume>
-      <DashboardChart></DashboardChart>
-      <DashboardBestsellerProduct></DashboardBestsellerProduct>
-      <DashboardBestsellerBrand></DashboardBestsellerBrand>
-    </div>
-  );
+  return PermissionHOC(() => {
+    return (
+      <div className="dashboard-page">
+        <DashboardResume></DashboardResume>
+        <DashboardChart></DashboardChart>
+        <DashboardBestsellerProduct></DashboardBestsellerProduct>
+        <DashboardBestsellerBrand></DashboardBestsellerBrand>
+      </div>
+    );
+  });
 };
 
 export default DashboardContainer;

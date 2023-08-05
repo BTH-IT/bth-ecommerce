@@ -13,179 +13,182 @@ import ProductActionCell from './RoleActionCell';
 import { RoleType } from '@/types/role';
 import roleService from '@/services/roleService';
 import RoleForm from './RoleForm';
+import PermissionHOC from '@/components/PermissionHOC';
 
 const { Search } = Input;
 
 const { Column, HeaderCell, Cell } = Table;
 
 const RoleContainer = () => {
-  const router = useRouter();
+  return PermissionHOC(() => {
+    const router = useRouter();
 
-  const [open, setOpen] = useState(false);
-  const [add, setAdd] = useState(false);
-  const [role, setRole] = useState<RoleType | null>(null);
-  const [roleList, setRoleList] = useState<RoleType[]>([]);
-  const [search, setSearch] = useState<string>('');
+    const [open, setOpen] = useState(false);
+    const [add, setAdd] = useState(false);
+    const [role, setRole] = useState<RoleType | null>(null);
+    const [roleList, setRoleList] = useState<RoleType[]>([]);
+    const [search, setSearch] = useState<string>('');
 
-  const dispatch = useAppDispatch();
-  const [modalData, setModalData] = useState({
-    title: 'Sửa vai trò',
-    key: 'update-role',
-  });
-
-  const handleOpen = async (role: RoleType) => {
-    setRole(role);
-    setOpen(true);
-  };
-
-  const handleClose = () => {
-    setAdd(false);
-    setOpen(false);
-  };
-
-  const {
-    page,
-    setPage,
-    getDataSorted,
-    loading,
-    handleSortColumn,
-    sortColumn,
-    sortType,
-  } = usePagination(roleList);
-
-  useEffect(() => {
-    async function fetchRoleList() {
-      try {
-        const success = await handleRefreshToken(dispatch);
-
-        if (success) {
-          const res = await roleService.getAll({
-            search,
-          });
-
-          setRoleList(res);
-        } else {
-          router.replace('/login');
-        }
-      } catch (error: any) {
-        toast.error(error.message);
-      }
-    }
-
-    if (!add) {
-      fetchRoleList();
-    }
-  }, [search, add]);
-
-  const handleSearching = async (value: string) => {
-    setSearch(value);
-  };
-
-  const handleAdding = () => {
-    setModalData({
-      title: 'Thêm vai trò',
-      key: 'add-role',
+    const dispatch = useAppDispatch();
+    const [modalData, setModalData] = useState({
+      title: 'Sửa vai trò',
+      key: 'update-role',
     });
-    setRole(null);
-    setAdd(true);
-    setOpen(true);
-  };
 
-  return (
-    <div className="roles-table">
-      <div className="roles-table_header">
-        <div className="roles-table_filter">
-          <Space direction="vertical" size={12}>
-            <Search placeholder="search" onSearch={handleSearching} />
-          </Space>
-          <div className="roles-table_add-btn" onClick={handleAdding}>
-            <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
-            <span className="font-semibold">Add New Role</span>
+    const handleOpen = async (role: RoleType) => {
+      setRole(role);
+      setOpen(true);
+    };
+
+    const handleClose = () => {
+      setAdd(false);
+      setOpen(false);
+    };
+
+    const {
+      page,
+      setPage,
+      getDataSorted,
+      loading,
+      handleSortColumn,
+      sortColumn,
+      sortType,
+    } = usePagination(roleList);
+
+    useEffect(() => {
+      async function fetchRoleList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
+
+          if (success) {
+            const res = await roleService.getAll({
+              search,
+            });
+
+            setRoleList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      }
+
+      if (!add) {
+        fetchRoleList();
+      }
+    }, [search, add]);
+
+    const handleSearching = async (value: string) => {
+      setSearch(value);
+    };
+
+    const handleAdding = () => {
+      setModalData({
+        title: 'Thêm vai trò',
+        key: 'add-role',
+      });
+      setRole(null);
+      setAdd(true);
+      setOpen(true);
+    };
+
+    return (
+      <div className="roles-table">
+        <div className="roles-table_header">
+          <div className="roles-table_filter">
+            <Space direction="vertical" size={12}>
+              <Search placeholder="search" onSearch={handleSearching} />
+            </Space>
+            <div className="roles-table_add-btn" onClick={handleAdding}>
+              <PlusCircleIcon className="w-6 h-6"></PlusCircleIcon>
+              <span className="font-semibold">Add New Role</span>
+            </div>
           </div>
-        </div>
-        <div>
-          <Table
-            data={getDataSorted()}
-            sortColumn={sortColumn}
-            sortType={sortType}
-            onSortColumn={handleSortColumn}
-            loading={loading}
-            autoHeight={true}
-            bordered
-          >
-            <Column width={400} align="center">
-              <HeaderCell>Id</HeaderCell>
-              <Cell dataKey="_id" />
-            </Column>
+          <div>
+            <Table
+              data={getDataSorted()}
+              sortColumn={sortColumn}
+              sortType={sortType}
+              onSortColumn={handleSortColumn}
+              loading={loading}
+              autoHeight={true}
+              bordered
+            >
+              <Column width={400} align="center">
+                <HeaderCell>Id</HeaderCell>
+                <Cell dataKey="_id" />
+              </Column>
 
-            <Column sortable width={400} align="center">
-              <HeaderCell>Name</HeaderCell>
-              <Cell dataKey="name"></Cell>
-            </Column>
+              <Column sortable width={400} align="center">
+                <HeaderCell>Name</HeaderCell>
+                <Cell dataKey="name"></Cell>
+              </Column>
 
-            <Column width={425} align="center">
-              <HeaderCell>Description</HeaderCell>
-              <Cell dataKey="description"></Cell>
-            </Column>
+              <Column width={425} align="center">
+                <HeaderCell>Description</HeaderCell>
+                <Cell dataKey="description"></Cell>
+              </Column>
 
-            <Column fixed="right" width={350} align="center">
-              <HeaderCell>Hành động</HeaderCell>
-              <ProductActionCell
-                dataKey="_id"
-                handleOpen={handleOpen}
-                handleModal={setModalData}
+              <Column fixed="right" width={350} align="center">
+                <HeaderCell>Hành động</HeaderCell>
+                <ProductActionCell
+                  dataKey="_id"
+                  handleOpen={handleOpen}
+                  handleModal={setModalData}
+                />
+              </Column>
+            </Table>
+            <div style={{ padding: 20 }}>
+              <Pagination
+                prev
+                next
+                first
+                last
+                ellipsis
+                boundaryLinks
+                maxButtons={5}
+                size="xs"
+                layout={['total', '-', 'pager', 'skip']}
+                total={roleList.length}
+                limit={50}
+                activePage={page}
+                onChangePage={setPage}
               />
-            </Column>
-          </Table>
-          <div style={{ padding: 20 }}>
-            <Pagination
-              prev
-              next
-              first
-              last
-              ellipsis
-              boundaryLinks
-              maxButtons={5}
-              size="xs"
-              layout={['total', '-', 'pager', 'skip']}
-              total={roleList.length}
-              limit={50}
-              activePage={page}
-              onChangePage={setPage}
-            />
+            </div>
           </div>
         </div>
-      </div>
-      <Modal overflow={true} open={open} onClose={handleClose}>
-        <Modal.Header>
-          <Modal.Title>{modalData.title}</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
+        <Modal overflow={true} open={open} onClose={handleClose}>
+          <Modal.Header>
+            <Modal.Title>{modalData.title}</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            {modalData.key === 'delete-role' && role && (
+              <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            )}
+            {(modalData.key === 'add-role' ||
+              modalData.key === 'update-role') && (
+              <RoleForm
+                add={add}
+                handleClose={handleClose}
+                role={role}
+              ></RoleForm>
+            )}
+          </Modal.Body>
           {modalData.key === 'delete-role' && role && (
-            <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleClose} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
           )}
-          {(modalData.key === 'add-role' ||
-            modalData.key === 'update-role') && (
-            <RoleForm
-              add={add}
-              handleClose={handleClose}
-              role={role}
-            ></RoleForm>
-          )}
-        </Modal.Body>
-        {modalData.key === 'delete-role' && role && (
-          <Modal.Footer>
-            <Button onClick={handleClose} appearance="subtle">
-              Cancel
-            </Button>
-            <Button onClick={handleClose} appearance="primary">
-              Ok
-            </Button>
-          </Modal.Footer>
-        )}
-      </Modal>
-    </div>
-  );
+        </Modal>
+      </div>
+    );
+  });
 };
 
 export default RoleContainer;

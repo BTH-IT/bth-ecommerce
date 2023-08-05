@@ -2,7 +2,6 @@ import { Metadata } from 'next';
 import React from 'react';
 import UserContainer from './_components/UserContainer';
 import '@/css/pages/user.css';
-import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Users',
@@ -13,8 +12,8 @@ export const metadata: Metadata = {
   },
 };
 
-const UserPage = PermissionHOC(() => {
+const UserPage = () => {
   return <UserContainer></UserContainer>;
-});
+};
 
 export default UserPage;

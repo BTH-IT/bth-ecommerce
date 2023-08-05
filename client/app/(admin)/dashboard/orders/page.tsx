@@ -12,8 +12,8 @@ export const metadata: Metadata = {
   },
 };
 
-const OrderPage = PermissionHOC(() => {
+const OrderPage = () => {
   return <OrderContainer></OrderContainer>;
-});
+};
 
 export default OrderPage;

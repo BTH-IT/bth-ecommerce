@@ -13,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const BannerPage = PermissionHOC(() => {
+const BannerPage = () => {
   return <BannerContainer></BannerContainer>;
-});
+};
 
 export default BannerPage;
