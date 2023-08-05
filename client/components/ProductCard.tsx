@@ -5,13 +5,16 @@ import React from 'react';
 import '../css/components/product-card.css';
 import { convertCurrency } from '@/utils/contains';
 
-const ProductCard = (props: ProductType) => {
+const ProductCard = (props: ProductType & { className?: string }) => {
   if (props.salePercent && props.salePercent > 0) {
     const newPrice =
       props.originPrice - (props.salePercent * props.originPrice) / 100;
 
     return (
-      <Link className="product-card" href={`/product-detail/${props._id}`}>
+      <Link
+        className={`product-card ${props.className}`}
+        href={`/product-detail/${props._id}`}
+      >
         <span className="product-card_sale">
           {props.salePercent}%<br></br>OFF
         </span>

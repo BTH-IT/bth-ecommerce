@@ -8,6 +8,7 @@ import { SwiperSlide } from 'swiper/react';
 const ProductSlider = ({ productList }: { productList: ProductType[] }) => {
   return (
     <Slider
+      spaceBetween={10}
       isNavigation={true}
       isPagination={false}
       isLoop={true}

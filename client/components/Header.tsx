@@ -52,9 +52,7 @@ const Header = () => {
         return;
       }
       const params = {
-        search: {
-          key: value,
-        },
+        search: value,
       };
 
       const productList: ProductType[] = await searchingSuggest(params);
@@ -77,10 +75,10 @@ const Header = () => {
   const handleSubmit = async (e: React.SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
-      search: { value: string };
+      search: string;
     };
 
-    if (target.search.value) router.push(`/search?key=${target.search.value}`);
+    if (target.search) router.push(`/search?search=${target.search}`);
   };
 
   return (

@@ -19,6 +19,7 @@ type SliderType = {
   };
   slidesPerView: number;
   children: React.ReactNode;
+  spaceBetween?: number;
 };
 
 const Slider = ({
@@ -32,9 +33,11 @@ const Slider = ({
   },
   slidesPerView = 1,
   children,
+  spaceBetween = 50,
 }: SliderType) => {
   return (
     <Swiper
+      spaceBetween={spaceBetween}
       modules={[Navigation, Pagination, Autoplay]}
       slidesPerView={slidesPerView}
       navigation={isNavigation}

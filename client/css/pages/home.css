@@ -20,7 +20,6 @@
   overflow: auto;
   display: flex;
   flex-direction: column;
-  justify-content: space-between;
 }
 
 .brand::-webkit-scrollbar {
@@ -77,6 +76,7 @@
 
 .deal-color {
   color: var(--primary);
+  font-size: 2rem;
 }
 
 .deal h1 {
@@ -129,6 +129,7 @@
 
 .bestseller_color {
   color: var(--primary);
+  font-size: 2rem;
 }
 
 .bestseller h1 {
@@ -216,6 +217,7 @@
 
 .top-brands_color {
   color: var(--primary);
+  font-size: 2rem;
 }
 
 .top-brands h1 {
@@ -298,6 +300,7 @@
 
 .for-user_color {
   color: var(--primary);
+  font-size: 2rem;
 }
 
 .for-user h1 {
