@@ -153,6 +153,7 @@ export class AuthService {
     const account = await this.accountsService.createNewAccount({
       email,
       password: passwordHash,
+      picture: 'https://server.bthung313.site/images/avatar.jpg',
     });
 
     const { ...acc }: any = account;
@@ -160,7 +161,6 @@ export class AuthService {
 
     await this.usersService.createNewUser({
       fullname,
-      picture: 'https://server.bthung313.site/images/avatar.jpg',
       gender,
       birthYear,
       phone,

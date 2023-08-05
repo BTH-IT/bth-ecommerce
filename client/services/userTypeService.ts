@@ -44,7 +44,7 @@ const userTypeService = {
 
     const response = await createAxiosGraphql(graphqlQuery);
 
-    return response;
+    return response.getType;
   },
   async add(data: any) {
     const graphqlQuery = {

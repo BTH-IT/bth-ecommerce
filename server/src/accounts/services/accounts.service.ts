@@ -83,6 +83,7 @@ export class AccountsService {
     const account = await this.createNewAccount({
       email: data.email,
       password: passwordHash,
+      picture: 'https://server.bthung313.site/images/avatar.jpg',
     });
 
     await this.usersService.updateUser({

@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React from 'react';
 import BrandContainer from './_components/BrandContainer';
 import '../../../../css/pages/brand.css';
+import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Orders',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const BrandPage = () => {
+const BrandPage = PermissionHOC(() => {
   return <BrandContainer></BrandContainer>;
-};
+});
 
 export default BrandPage;

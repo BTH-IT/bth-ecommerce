@@ -25,9 +25,9 @@ export class Account extends BaseSchema {
   @Prop({
     type: MongooseSchema.Types.ObjectId,
     ref: 'Role',
-    default: new ObjectId('64b8117e3b5dd17f872bb02b'),
+    default: new ObjectId('64bbfd211989c03e3976fdd3'),
   })
-  @Field({ defaultValue: new ObjectId('64b8117e3b5dd17f872bb02b') })
+  @Field({ defaultValue: new ObjectId('64bbfd211989c03e3976fdd3') })
   role: Role;
 
   @Prop({ default: 'default' })

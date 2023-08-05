@@ -5,12 +5,11 @@ import toast from 'react-hot-toast';
 import * as jwt from 'jsonwebtoken';
 import { authActions } from '@/redux/features/authSlice';
 import authService from '@/services/authService';
-import {
-  ReadonlyURLSearchParams,
-  useRouter,
-  useSearchParams,
-} from 'next/navigation';
+import { ReadonlyURLSearchParams } from 'next/navigation';
 import { AppRouterInstance } from 'next/dist/shared/lib/app-router-context';
+import { AccountType } from '@/types/account';
+import { UserType } from '@/types/auth';
+import userTypeService from '@/services/userTypeService';
 
 export type SearchParamsType = { [key: string]: string };
 
@@ -67,6 +66,29 @@ export function handleUpdateRouter(
 
   searchParamsObject[key] = value;
   router.push('/search?' + handleSearchParamsToStringUrl(searchParamsObject));
+}
+
+export async function handleCheckPermissionRouter(
+  router: AppRouterInstance,
+  userTypeId: string,
+  dispatch: any,
+) {
+  try {
+    let isSuccess = await handleRefreshToken(dispatch);
+
+    const type = await userTypeService.getById(userTypeId);
+
+    console.log('first');
+    if (type.name === 'User') {
+      router.push('/');
+      return false;
+    }
+
+    return isSuccess;
+  } catch (error: any) {
+    console.log(error.message);
+    return false;
+  }
 }
 
 export function handleRemoveRouter(

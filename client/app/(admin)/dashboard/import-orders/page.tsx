@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React from 'react';
 import '../../../../css/pages/import-order.css';
 import ImportOrderContainer from './_components/ImportOrderContainer';
+import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Import Orders',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const ImportOrderPage = () => {
+const ImportOrderPage = PermissionHOC(() => {
   return <ImportOrderContainer></ImportOrderContainer>;
-};
+});
 
 export default ImportOrderPage;

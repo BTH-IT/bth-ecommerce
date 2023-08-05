@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React from 'react';
 import '@/css/pages/product.css';
 import ProductContainer from './_components/ProductContainer';
+import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Orders',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const ProductPage = () => {
+const ProductPage = PermissionHOC(() => {
   return <ProductContainer></ProductContainer>;
-};
+});
 
 export default ProductPage;

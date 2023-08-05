@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React from 'react';
 import AccountContainer from './_components/AccountContainer';
 import '../../../../css/pages/account.css';
+import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Accounts',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const AccountPage = () => {
+const AccountPage = PermissionHOC(() => {
   return <AccountContainer></AccountContainer>;
-};
+});
 
 export default AccountPage;

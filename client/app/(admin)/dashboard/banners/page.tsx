@@ -2,6 +2,7 @@ import { Metadata } from 'next';
 import React from 'react';
 import '../../../../css/pages/banner.css';
 import BannerContainer from './_components/BannerContainer';
+import PermissionHOC from '@/components/PermissionHOC';
 
 export const metadata: Metadata = {
   title: 'BTH Ecommerce | Dashboard - Banners',
@@ -12,8 +13,8 @@ export const metadata: Metadata = {
   },
 };
 
-const BannerPage = () => {
+const BannerPage = PermissionHOC(() => {
   return <BannerContainer></BannerContainer>;
-};
+});
 
 export default BannerPage;

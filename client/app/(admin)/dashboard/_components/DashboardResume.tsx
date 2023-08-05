@@ -1,10 +1,13 @@
 'use client';
 
-import { authActions } from '@/redux/features/authSlice';
-import { useAppDispatch } from '@/redux/hooks';
+import { authActions, selectAuth } from '@/redux/features/authSlice';
+import { useAppDispatch, useAppSelector } from '@/redux/hooks';
 import orderService from '@/services/orderService';
 import { OrderType } from '@/types/order';
-import { handleRefreshToken } from '@/utils/clientActions';
+import {
+  handleCheckPermissionRouter,
+  handleRefreshToken,
+} from '@/utils/clientActions';
 import { convertCurrency } from '@/utils/contains';
 import {
   BanknotesIcon,
@@ -20,6 +23,8 @@ import { DateRange } from 'rsuite/esm/DateRangePicker';
 const DashboardResume = () => {
   const router = useRouter();
   const dispatch = useAppDispatch();
+  const account: any = useAppSelector(selectAuth).newAccount;
+  const user: any = useAppSelector(selectAuth).user;
   const [dateRange, setDateRange] = useState<DateRange | null>(null);
   const [resume, setResume] = useState<{
     orderList: OrderType[];

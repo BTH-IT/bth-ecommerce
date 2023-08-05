@@ -5,6 +5,8 @@ import { RoleType } from '@/types/role';
 import React, { FormEvent } from 'react';
 import ToggleRoles from './ToggleRoles';
 import roleService from '@/services/roleService';
+import { handleRefreshToken } from '@/utils/clientActions';
+import { useAppDispatch } from '@/redux/hooks';
 
 const AuthorizationForm = ({
   handleClose,
@@ -15,34 +17,44 @@ const AuthorizationForm = ({
   role: RoleType | null;
   handleUpdate: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const dispatch = useAppDispatch();
+
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    const nodeList = [...(e.target as any)];
+    try {
+      await handleRefreshToken(dispatch);
 
-    const features = role?.features.map((f) => {
-      const actionNodeList = nodeList.filter(
-        (node) =>
-          node.name === f.feature.name &&
-          node.checked &&
-          node.dataset.action !== 'ALL',
-      );
+      const nodeList = [...(e.target as any)];
 
-      const actionTextList = actionNodeList.map((node) => node.dataset.action);
+      const features = role?.features.map((f) => {
+        const actionNodeList = nodeList.filter(
+          (node) =>
+            node.name === f.feature.name &&
+            node.checked &&
+            node.dataset.action !== 'ALL',
+        );
 
-      return {
-        ...f,
-        actions: actionTextList,
-      };
-    });
+        const actionTextList = actionNodeList.map(
+          (node) => node.dataset.action,
+        );
 
-    await roleService.update({
-      _id: role?._id,
-      features,
-    });
+        return {
+          ...f,
+          actions: actionTextList,
+        };
+      });
 
-    handleClose();
-    handleUpdate((prev) => !prev);
+      await roleService.update({
+        _id: role?._id,
+        features,
+      });
+
+      handleClose();
+      handleUpdate((prev) => !prev);
+    } catch (error: any) {
+      console.log(error.message);
+    }
   };
 
   return (

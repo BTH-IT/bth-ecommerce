@@ -8,6 +8,7 @@ export class CreateNewAccountWithAvailableUserDto {
   @IsNotEmpty() password: string;
   @IsNotEmpty() role: string;
   @IsNotEmpty() user: string;
+  @IsNotEmpty() picture?: string;
 }
 
 export class CreateNewAccountDto {
@@ -15,6 +16,7 @@ export class CreateNewAccountDto {
   @IsNotEmpty() password: string;
   @IsNotEmpty() role?: string;
   @IsNotEmpty() type?: string;
+  @IsNotEmpty() picture?: string;
 }
 
 export class UpdateAccountDto {

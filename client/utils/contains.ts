@@ -94,8 +94,6 @@ export function numberWithCommas(value: number) {
   return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
-export function handleCheckAuthorization() {}
-
 export async function createAxiosGraphql(graphqlQuery: any) {
   const res: any = await axiosClient.post(
     process.env.NEST_SERVER_URL || 'http://localhost:5000/graphql',

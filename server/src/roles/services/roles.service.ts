@@ -9,6 +9,7 @@ import { Role } from '@/schemas/role.schema';
 import { FeaturesRepository } from '@/features/repositories/features.repo';
 import { RoleAndFeatureRepository } from '@/features/repositories/role-and-feature.repo';
 import { RolesRepository } from '../repositories/roles.repo';
+import { ObjectId } from '@/utils/contains';
 
 @Injectable()
 export class RolesService {
@@ -43,7 +44,7 @@ export class RolesService {
 
   async findOne(id: string): Promise<Role | null> {
     return this.rolesRepository.findByCondition({
-      _id: id,
+      _id: new ObjectId(id),
       isActive: true,
     });
   }
