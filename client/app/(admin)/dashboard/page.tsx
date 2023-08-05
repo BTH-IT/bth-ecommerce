@@ -1,5 +1,6 @@
 import { Metadata } from 'next';
 import React from 'react';
+import PermissionHOC from '@/components/PermissionHOC';
 import DashboardContainer from './_components/DashboardContainer';
 
 export const metadata: Metadata = {
@@ -11,8 +12,8 @@ export const metadata: Metadata = {
   },
 };
 
-const DashboardPage = async () => {
+const DashboardPage = PermissionHOC(() => {
   return <DashboardContainer></DashboardContainer>;
-};
+});
 
 export default DashboardPage;

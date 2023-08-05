@@ -78,9 +78,8 @@ export async function handleCheckPermissionRouter(
 
     const type = await userTypeService.getById(userTypeId);
 
-    console.log('first');
     if (type.name === 'User') {
-      router.push('/');
+      window.location.href = '/';
       return false;
     }
 

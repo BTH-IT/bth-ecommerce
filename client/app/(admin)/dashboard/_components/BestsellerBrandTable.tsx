@@ -1,8 +1,6 @@
 'use client';
 
 import { usePagination } from '@/hooks/usePagination';
-import { BrandType } from '@/types/brand';
-import { ProductType } from '@/types/product';
 import Image from 'next/image';
 import React from 'react';
 import { IconButton, Pagination, Table } from 'rsuite';

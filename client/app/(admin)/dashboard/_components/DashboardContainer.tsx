@@ -5,9 +5,8 @@ import DashboardResume from './DashboardResume';
 import DashboardChart from './DashboardChart';
 import DashboardBestsellerProduct from './DashboardBestsellerProduct';
 import DashboardBestsellerBrand from './DashboardBestsellerBrand';
-import PermissionHOC from '@/components/PermissionHOC';
 
-const DashboardContainer = PermissionHOC(() => {
+const DashboardContainer = () => {
   return (
     <div className="dashboard-page">
       <DashboardResume></DashboardResume>
@@ -16,6 +15,6 @@ const DashboardContainer = PermissionHOC(() => {
       <DashboardBestsellerBrand></DashboardBestsellerBrand>
     </div>
   );
-});
+};
 
 export default DashboardContainer;
