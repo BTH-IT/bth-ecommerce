@@ -26,6 +26,8 @@ import { RoleAndFeatureRepository } from '@/features/repositories/role-and-featu
 import { User, UserSchema } from '@/schemas/user.schema';
 import { UsersService } from '@/users/users.service';
 import { UsersRepository } from '@/users/users.repo';
+import { Brand, BrandSchema } from '@/schemas/brand.schema';
+import { BrandsRepository } from '@/brands/repositories/brands.repo';
 
 @Module({
   imports: [
@@ -37,6 +39,7 @@ import { UsersRepository } from '@/users/users.repo';
       { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
       { name: Role.name, schema: RoleSchema },
       { name: User.name, schema: UserSchema },
+      { name: Brand.name, schema: BrandSchema },
     ]),
   ],
   providers: [
@@ -53,6 +56,7 @@ import { UsersRepository } from '@/users/users.repo';
     RolesRepository,
     UsersService,
     UsersRepository,
+    BrandsRepository,
   ],
 })
 export class WarrantiesModule {}

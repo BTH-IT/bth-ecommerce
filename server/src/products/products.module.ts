@@ -19,7 +19,8 @@ import {
   RoleAndFeatureSchema,
 } from '@/schemas/role-and-feature.schema';
 import { Feature, FeatureSchema } from '@/schemas/feature.schema';
-import { ProductDetailsService } from './services/productDetails.service';
+import { Brand, BrandSchema } from '@/schemas/brand.schema';
+import { BrandsRepository } from '@/brands/repositories/brands.repo';
 
 @Module({
   imports: [
@@ -30,6 +31,7 @@ import { ProductDetailsService } from './services/productDetails.service';
       { name: ProductDetail.name, schema: ProductDetailSchema },
       { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
       { name: Feature.name, schema: FeatureSchema },
+      { name: Brand.name, schema: BrandSchema },
     ]),
   ],
   providers: [
@@ -40,6 +42,7 @@ import { ProductDetailsService } from './services/productDetails.service';
     RoleAndFeatureService,
     RoleAndFeatureRepository,
     FeaturesRepository,
+    BrandsRepository,
   ],
   exports: [ProductsService],
 })

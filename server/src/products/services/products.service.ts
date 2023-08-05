@@ -9,12 +9,14 @@ import { ProductsRepository } from '../repositories/products.repo';
 import { Product } from '@/schemas/product.schema';
 import { ProductDetailsRepository } from '../repositories/product-details.repo';
 import { ObjectId } from '@/utils/contains';
+import { BrandsRepository } from '@/brands/repositories/brands.repo';
 
 @Injectable()
 export class ProductsService {
   constructor(
     private readonly productsRepository: ProductsRepository,
     private readonly productDetailsRepository: ProductDetailsRepository,
+    private readonly brandsRepository: BrandsRepository,
   ) {}
 
   async findAll(params: ProductParamsDto): Promise<Product[]> {
@@ -121,36 +123,33 @@ export class ProductsService {
     }
 
     if (params.chip) {
-      const re = new RegExp(params.chip, 'g');
       match['chip'] = {
-        $regex: re,
+        $in: params.chip.split('%'),
       };
     }
 
     if (params.color) {
-      const re = new RegExp(params.color, 'g');
       match['color'] = {
-        $regex: re,
+        $in: params.color.split('%'),
       };
     }
 
     if (params.ramSize) {
+      const ramSizeList = params.ramSize.split('%').map((ram) => Number(ram));
       match['ramSize'] = {
-        $eq: Number(params.ramSize),
+        $in: ramSizeList,
       };
     }
 
     if (params.seriesCpu) {
-      const re = new RegExp(params.seriesCpu, 'g');
       match['seriesCpu'] = {
-        $regex: re,
+        $in: params.seriesCpu.split('%'),
       };
     }
 
     if (params.size) {
-      const re = new RegExp(params.size, 'g');
       match['size'] = {
-        $regex: re,
+        $in: params.size.split('%'),
       };
     }
 
@@ -161,7 +160,28 @@ export class ProductsService {
       },
     ];
 
-    const list = await this.productsRepository.aggregate(aggregateList);
+    // eslint-disable-next-line prefer-const
+    let list = await this.productsRepository.aggregate(aggregateList);
+    const brandList = await this.brandsRepository.findAll();
+
+    if (params.brand) {
+      const brandParamsList = params.brand.split('%');
+
+      list = list.filter((product) => {
+        const brand = brandList.find(
+          (brand) => brand._id.toString() === product.brand.toString(),
+        );
+
+        if (!brand) return false;
+
+        return Boolean(
+          brandParamsList.find(
+            (brandParams) =>
+              brandParams.toLowerCase() === brand?.name.toLowerCase(),
+          ),
+        );
+      });
+    }
 
     return list.slice((Number(params.page) - 1) * 10, Number(params.page) * 10);
   }

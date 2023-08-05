@@ -31,6 +31,8 @@ import { FeaturesRepository } from '@/features/repositories/features.repo';
 import { RolesService } from '@/roles/services/roles.service';
 import { RolesRepository } from '@/roles/repositories/roles.repo';
 import { ProductDetailsService } from '@/products/services/productDetails.service';
+import { Brand, BrandSchema } from '@/schemas/brand.schema';
+import { BrandsRepository } from '@/brands/repositories/brands.repo';
 
 @Module({
   imports: [
@@ -43,6 +45,7 @@ import { ProductDetailsService } from '@/products/services/productDetails.servic
       { name: Feature.name, schema: FeatureSchema },
       { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
       { name: Role.name, schema: RoleSchema },
+      { name: Brand.name, schema: BrandSchema },
     ]),
   ],
   providers: [
@@ -63,6 +66,7 @@ import { ProductDetailsService } from '@/products/services/productDetails.servic
     RolesRepository,
     ProductDetailsService,
     ProductDetailsRepository,
+    BrandsRepository,
   ],
 })
 export class OrdersModule {}
