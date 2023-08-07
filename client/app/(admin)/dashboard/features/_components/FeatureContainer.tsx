@@ -92,6 +92,27 @@ const FeatureContainer = () => {
       setOpen(true);
     };
 
+    const handleRemoveFeature = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (feature) {
+            await featureService.remove(feature._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
+    };
+
     return (
       <div className="features-table">
         <div className="features-table_header">
@@ -183,7 +204,7 @@ const FeatureContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveFeature} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

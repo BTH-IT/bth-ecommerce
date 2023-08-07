@@ -16,6 +16,8 @@ import { ProductType } from '@/types/product';
 import productService from '@/services/productService';
 import { convertCurrency, numberWithCommas } from '@/utils/contains';
 import PermissionHOC from '@/components/PermissionHOC';
+import brandService from '@/services/brandService';
+import { BrandType } from '@/types/brand';
 
 const { Search } = Input;
 
@@ -48,7 +50,10 @@ const ProductContainer = () => {
     const [add, setAdd] = useState(false);
     const [product, setProduct] = useState<ProductType | null>(null);
     const [productList, setProductList] = useState<ProductType[]>([]);
+    const [brandList, setBrandList] = useState<BrandType[]>([]);
     const [search, setSearch] = useState<string>('');
+    const dispatch = useAppDispatch();
+    const router = useRouter();
 
     const [modalData, setModalData] = useState({
       title: 'Sửa sản phẩm',
@@ -91,9 +96,27 @@ const ProductContainer = () => {
       fetchProductList();
     }, [search]);
 
-    const handleSearching = async (value: string) => {
-      if (!value) return;
+    useEffect(() => {
+      async function fetchBrandList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
 
+          if (success) {
+            const res = await brandService.getAll();
+
+            setBrandList(res);
+          } else {
+            router.replace('/login');
+          }
+        } catch (error: any) {
+          toast.error(error.message);
+        }
+      }
+
+      fetchBrandList();
+    }, []);
+
+    const handleSearching = async (value: string) => {
       setSearch(value);
     };
 
@@ -105,6 +128,27 @@ const ProductContainer = () => {
       setProduct(null);
       setAdd(true);
       setOpen(true);
+    };
+
+    const handleRemoveProduct = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (product) {
+            await productService.remove(product._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -209,6 +253,7 @@ const ProductContainer = () => {
                 add={add}
                 handleClose={handleClose}
                 product={product}
+                brandList={brandList}
               ></ProductForm>
             )}
           </Modal.Body>
@@ -217,7 +262,7 @@ const ProductContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveProduct} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

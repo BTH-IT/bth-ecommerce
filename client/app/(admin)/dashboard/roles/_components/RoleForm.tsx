@@ -77,6 +77,8 @@ const RoleForm = ({
 
           toast.success('Update role successfully');
         }
+
+        router.refresh();
       } else {
         router.replace('/login');
       }

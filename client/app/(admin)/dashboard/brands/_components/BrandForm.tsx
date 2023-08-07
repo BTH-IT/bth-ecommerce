@@ -72,6 +72,10 @@ const BrandForm = ({
   const onSubmit = async (data: BrandFormType) => {
     if (!isValid) return;
 
+    if (!data.iconUrl || !data.thumbUrl) {
+      toast('thumbnail or icon must be required');
+      return;
+    }
     try {
       const success = await handleRefreshToken(dispatch);
 
@@ -114,6 +118,7 @@ const BrandForm = ({
 
           toast.success('Update brand successfully');
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

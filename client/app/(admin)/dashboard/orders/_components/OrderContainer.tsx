@@ -158,9 +158,28 @@ const OrderContainer = () => {
     }, [type, dateRange, search]);
 
     const handleSearching = async (value: string) => {
-      if (!value) return;
-
       setSearch(value);
+    };
+
+    const handleRemoveOrder = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (order) {
+            await orderService.remove(order._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -292,7 +311,7 @@ const OrderContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveOrder} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

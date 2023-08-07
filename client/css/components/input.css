@@ -10,7 +10,7 @@
   font-size: 1.3rem;
 }
 
-.input,
+.input_container .input,
 .image-input,
 .textarea {
   width: 100%;
@@ -23,6 +23,18 @@
   border: 1px solid var(--gray-300);
   padding: 6px;
   transition: all 0.2s ease;
+}
+
+.input_container.checkbox .input{
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: var(--dark);
+  transition: all 0.2s ease;
+  background-color: transparent;
+  border-radius: 0;
+  border-color: transparent;
 }
 
 .image-input {

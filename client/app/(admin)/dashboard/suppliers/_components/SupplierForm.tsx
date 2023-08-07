@@ -85,6 +85,7 @@ const SupplierForm = ({
 
           toast.success('Update supplier successfully');
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

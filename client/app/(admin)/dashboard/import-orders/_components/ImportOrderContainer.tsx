@@ -2,8 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useAppDispatch, useAppSelector } from '@/redux/hooks';
-import { selectAuth } from '@/redux/features/authSlice';
+import { useAppDispatch } from '@/redux/hooks';
 import { Modal, Button, Table, Pagination } from 'rsuite';
 import { OrderType } from '@/types/order';
 import { handleRefreshToken } from '@/utils/clientActions';
@@ -12,10 +11,11 @@ import { usePagination } from '@/hooks/usePagination';
 import moment from 'moment';
 import { convertCurrency } from '@/utils/contains';
 import { DatePicker, Input, Space } from 'antd';
-import SeeMoreOrder from '@/app/(user)/history/_components/SeeMoreOrder';
 import importOrderService from '@/services/importOrderService';
 import ImportActionCell from './ImportOrderActionCell';
 import PermissionHOC from '@/components/PermissionHOC';
+import { ImportOrderType } from '@/types/import-order';
+import SeeMoreImportOrder from './SeeMoreImportOrder';
 
 const { RangePicker } = DatePicker;
 const { Search } = Input;
@@ -31,8 +31,10 @@ const ImportOrderContainer = () => {
 
     const [dateRange, setDateRange] = useState<RangeValue | null>(null);
     const [open, setOpen] = useState(false);
-    const [order, setOrder] = useState<OrderType | null>(null);
-    const [orderList, setOrderList] = useState<OrderType[]>([]);
+    const [importOrder, setImportOrder] = useState<ImportOrderType | null>(
+      null,
+    );
+    const [importOrderList, setImportOrderList] = useState<OrderType[]>([]);
     const [search, setSearch] = useState<string>('');
     const dispatch = useAppDispatch();
     const [modalData, setModalData] = useState({
@@ -40,8 +42,8 @@ const ImportOrderContainer = () => {
       key: 'see-more',
     });
 
-    const handleOpen = async (order: OrderType) => {
-      setOrder(order);
+    const handleOpen = async (importOrder: ImportOrderType) => {
+      setImportOrder(importOrder);
       setOpen(true);
     };
 
@@ -55,7 +57,7 @@ const ImportOrderContainer = () => {
       handleSortColumn,
       sortColumn,
       sortType,
-    } = usePagination(orderList);
+    } = usePagination(importOrderList);
 
     useEffect(() => {
       let dateRangeFilter: any = null;
@@ -76,7 +78,7 @@ const ImportOrderContainer = () => {
               dateRange: dateRangeFilter,
             });
 
-            setOrderList(res);
+            setImportOrderList(res);
           } else {
             router.replace('/login');
           }
@@ -89,9 +91,28 @@ const ImportOrderContainer = () => {
     }, [dateRange, search]);
 
     const handleSearching = async (value: string) => {
-      if (!value) return;
-
       setSearch(value);
+    };
+
+    const handleRemoveImportOrder = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (importOrder) {
+            await importOrderService.remove(importOrder._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -167,7 +188,7 @@ const ImportOrderContainer = () => {
                 maxButtons={5}
                 size="xs"
                 layout={['total', '-', 'pager', 'skip']}
-                total={orderList.length}
+                total={importOrderList.length}
                 limit={50}
                 activePage={page}
                 onChangePage={setPage}
@@ -180,24 +201,25 @@ const ImportOrderContainer = () => {
             <Modal.Title>{modalData.title}</Modal.Title>
           </Modal.Header>
           <Modal.Body>
-            {modalData.key === 'see-more' && order && (
-              <SeeMoreOrder order={order}></SeeMoreOrder>
+            {modalData.key === 'see-more' && importOrder && (
+              <SeeMoreImportOrder
+                importOrder={importOrder}
+              ></SeeMoreImportOrder>
             )}
-            {modalData.key === 'delete-order' && order && (
+            {modalData.key === 'delete-import-order' && importOrder && (
               <p className="text-center">Bạn thật sự muốn xóa đơn hàng chứ?</p>
             )}
           </Modal.Body>
-          {modalData.key === 'see-more' ||
-            (modalData.key === 'delete-order' && order && (
-              <Modal.Footer>
-                <Button onClick={handleClose} appearance="subtle">
-                  Cancel
-                </Button>
-                <Button onClick={handleClose} appearance="primary">
-                  Ok
-                </Button>
-              </Modal.Footer>
-            ))}
+          {modalData.key === 'delete-import-order' && importOrder && (
+            <Modal.Footer>
+              <Button onClick={handleClose} appearance="subtle">
+                Cancel
+              </Button>
+              <Button onClick={handleRemoveImportOrder} appearance="primary">
+                Ok
+              </Button>
+            </Modal.Footer>
+          )}
         </Modal>
       </div>
     );

@@ -110,10 +110,8 @@ const BrandContainer = () => {
         }
       }
 
-      if (!add) {
-        fetchBrandList();
-      }
-    }, [search, add]);
+      fetchBrandList();
+    }, [search]);
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -127,6 +125,27 @@ const BrandContainer = () => {
       setBrand(null);
       setAdd(true);
       setOpen(true);
+    };
+
+    const handleRemoveBrand = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (brand) {
+            await brandService.remove(brand._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -151,7 +170,7 @@ const BrandContainer = () => {
               autoHeight={true}
               bordered
             >
-              <Column fixed width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Id</HeaderCell>
                 <Cell dataKey="_id" />
               </Column>
@@ -161,17 +180,17 @@ const BrandContainer = () => {
                 <Cell dataKey="name"></Cell>
               </Column>
 
-              <Column sortable width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Thumbnail</HeaderCell>
                 <ImageThumbCell dataKey="thumbUrl"></ImageThumbCell>
               </Column>
 
-              <Column sortable width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Icon</HeaderCell>
                 <ImageIconCell dataKey="iconUrl"></ImageIconCell>
               </Column>
 
-              <Column fixed="right" width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Hành động</HeaderCell>
                 <BrandActionCell
                   dataKey="_id"
@@ -221,7 +240,7 @@ const BrandContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveBrand} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

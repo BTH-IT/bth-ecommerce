@@ -24,7 +24,7 @@ const ProductActionCell = ({
           <Dropdown.Item
             eventKey={{
               title: 'Sửa sản phẩm',
-              key: 'update-brand',
+              key: 'update-product',
             }}
           >
             Sửa sản phẩm
@@ -32,7 +32,7 @@ const ProductActionCell = ({
           <Dropdown.Item
             eventKey={{
               title: 'Xóa sản phẩm',
-              key: 'delete-brand',
+              key: 'delete-product',
             }}
           >
             Xóa sản phẩm

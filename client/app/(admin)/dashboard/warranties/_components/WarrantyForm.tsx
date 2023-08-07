@@ -39,7 +39,7 @@ const WarrantyForm = ({
     if (warranty) {
       setValue('warrantyYear', warranty.warrantyYear);
     }
-  }, []);
+  }, [warranty]);
 
   const {
     setValue,
@@ -68,6 +68,7 @@ const WarrantyForm = ({
           });
 
           toast.success('Update warranty successfully');
+          router.refresh();
         }
       } else {
         router.replace('/login');

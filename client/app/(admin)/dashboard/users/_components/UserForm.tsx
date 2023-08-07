@@ -132,6 +132,7 @@ const UserForm = ({
 
           toast.success('Update user successfully');
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

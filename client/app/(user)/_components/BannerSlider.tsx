@@ -21,12 +21,12 @@ const BannerSlider = ({ bannerList }: { bannerList: BannerType[] }) => {
     >
       <>
         {bannerList && bannerList.length > 0 ? (
-          bannerList.map((item: any) => (
+          bannerList.map((item: BannerType) => (
             <SwiperSlide key={item._id}>
               <div className="slider-background">
                 <Image
-                  src="https://images.unsplash.com/photo-1682687982468-4584ff11f88a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDF8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80"
-                  alt="anh dep"
+                  src={item.thumbUrl}
+                  alt={item.name}
                   width={10000}
                   height={10000}
                 />

@@ -5,9 +5,10 @@ import {
   Post,
   Response,
   UploadedFile,
+  UploadedFiles,
   UseInterceptors,
 } from '@nestjs/common';
-import { FileInterceptor } from '@nestjs/platform-express';
+import { FileInterceptor, FilesInterceptor } from '@nestjs/platform-express';
 import { UploadsService } from './uploads.service';
 import { CloudinaryService } from './cloudinary/cloudinary.service';
 import { DeleteUploadDto } from '@/dto/upload.dto';
@@ -83,8 +84,8 @@ export class UploadsController {
   }
 
   @Post('multiple')
-  @UseInterceptors(FileInterceptor('file'))
-  async uploadFiles(@UploadedFile() files: Express.Multer.File[]) {
+  @UseInterceptors(FilesInterceptor('file'))
+  async uploadFiles(@UploadedFiles() files: Express.Multer.File[]) {
     const uploadMultiple = await Promise.all(
       files.map(async (file): Promise<any> => {
         const upload = await this.uploadFile(file);

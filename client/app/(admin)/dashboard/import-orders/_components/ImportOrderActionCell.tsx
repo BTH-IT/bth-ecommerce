@@ -32,7 +32,7 @@ const ImportActionCell = ({
           <Dropdown.Item
             eventKey={{
               title: 'Xóa đơn hàng',
-              key: 'delete-order',
+              key: 'delete-import-order',
             }}
           >
             Xóa đơn hàng

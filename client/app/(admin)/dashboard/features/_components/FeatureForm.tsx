@@ -77,6 +77,7 @@ const FeatureForm = ({
 
           toast.success('Update feature successfully');
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

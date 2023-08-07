@@ -105,6 +105,26 @@ const WarrantyContainer = () => {
       setSearch(value);
     };
 
+    const handleRemoveWarranty = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (warranty) {
+            await warrantyService.remove(warranty._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
+    };
     return (
       <div className="warranties-table">
         <div className="warranties-table_header">
@@ -198,7 +218,7 @@ const WarrantyContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveWarranty} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

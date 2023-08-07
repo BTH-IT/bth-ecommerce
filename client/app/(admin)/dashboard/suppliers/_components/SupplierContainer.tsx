@@ -93,6 +93,27 @@ const SupplierContainer = () => {
       setOpen(true);
     };
 
+    const handleRemoveSupplier = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (supplier) {
+            await supplierService.remove(supplier._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
+    };
+
     return (
       <div className="suppliers-table">
         <div className="suppliers-table_header">
@@ -185,7 +206,7 @@ const SupplierContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveSupplier} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

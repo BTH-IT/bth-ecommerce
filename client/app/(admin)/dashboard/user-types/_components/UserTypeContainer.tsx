@@ -96,6 +96,27 @@ const UserTypeContainer = () => {
       setOpen(true);
     };
 
+    const handleRemoveUserType = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (userType) {
+            await userTypeService.remove(userType._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
+    };
+
     return (
       <div className="user-types-table">
         <div className="user-types-table_header">
@@ -185,7 +206,7 @@ const UserTypeContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveUserType} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

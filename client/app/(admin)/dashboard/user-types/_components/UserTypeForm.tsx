@@ -73,6 +73,7 @@ const UserTypeForm = ({
 
           toast.success('Update user type successfully');
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

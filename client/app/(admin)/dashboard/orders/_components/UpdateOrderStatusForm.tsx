@@ -64,6 +64,7 @@ const UpdateOrderStatusForm = ({
         });
 
         toast.success('Update order successfully');
+        router.refresh();
       } else {
         router.replace('/login');
       }

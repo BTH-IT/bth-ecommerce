@@ -91,6 +91,27 @@ const UserContainer = () => {
       setOpen(true);
     };
 
+    const handleRemoveUser = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (user) {
+            await userService.remove(user._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
+    };
+
     return (
       <div className="users-table">
         <div className="users-table_header">
@@ -207,7 +228,7 @@ const UserContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveUser} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

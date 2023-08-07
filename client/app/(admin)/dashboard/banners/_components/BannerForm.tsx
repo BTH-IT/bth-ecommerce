@@ -85,7 +85,6 @@ const BannerForm = ({
           });
 
           toast.success('Add brand successfully');
-          router.refresh();
         } else {
           let thumbUrlData: any = null;
 
@@ -101,8 +100,8 @@ const BannerForm = ({
           });
 
           toast.success('Update banner successfully');
-          router.refresh();
         }
+        router.refresh();
       } else {
         router.replace('/login');
       }

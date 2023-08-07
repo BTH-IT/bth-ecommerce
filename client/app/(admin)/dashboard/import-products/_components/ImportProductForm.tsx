@@ -131,6 +131,7 @@ const ImportProductForm = ({
           supplier: data.supplier,
         });
         toast.success('Update feature successfully');
+        router.refresh();
       } else {
         router.replace('/login');
       }

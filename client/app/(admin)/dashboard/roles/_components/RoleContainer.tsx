@@ -74,10 +74,8 @@ const RoleContainer = () => {
         }
       }
 
-      if (!add) {
-        fetchRoleList();
-      }
-    }, [search, add]);
+      fetchRoleList();
+    }, [search]);
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -91,6 +89,27 @@ const RoleContainer = () => {
       setRole(null);
       setAdd(true);
       setOpen(true);
+    };
+
+    const handleRemoveRole = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (role) {
+            await roleService.remove(role._id);
+            toast.success('Delete successfully');
+            router.refresh();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -180,7 +199,7 @@ const RoleContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveRole} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>
