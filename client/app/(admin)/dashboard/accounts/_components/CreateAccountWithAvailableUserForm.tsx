@@ -12,10 +12,8 @@ import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import SelectForm from '@/app/(user)/(auth)/_components/SelectForm';
 import accountService from '@/services/accountService';
-import roleService from '@/services/roleService';
 import { RoleType } from '@/types/role';
 import { UserType } from '@/types/auth';
-import userService from '@/services/userService';
 
 export type AccountWithAvailableUserFormType = {
   email: string;
@@ -38,14 +36,16 @@ const schema = yup
 
 const CreateAccountWithAvailableUserForm = ({
   handleClose,
+  roleList,
+  userList,
 }: {
   handleClose: () => void;
+  roleList: RoleType[];
+  userList: UserType[];
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [showPass, setShowPass] = useState(false);
-  const [roleList, setRoleList] = useState<RoleType[]>([]);
-  const [userList, setUserList] = useState<UserType[]>([]);
 
   const {
     reset,
@@ -81,24 +81,6 @@ const CreateAccountWithAvailableUserForm = ({
       toast.error(error.message);
     }
   };
-
-  useEffect(() => {
-    async function fetchRoleAndUserList() {
-      try {
-        await handleRefreshToken(dispatch);
-
-        const resRole = await roleService.getAll();
-        const resUser = await userService.getAll();
-
-        setRoleList(resRole);
-        setUserList(resUser);
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    }
-
-    fetchRoleAndUserList();
-  }, []);
 
   return (
     <form className="form" onSubmit={handleSubmit(onSubmit)}>

@@ -17,6 +17,10 @@ import CreateAccountForm from './CreateAccountForm';
 import UpdateAccountForm from './UpdateAccountForm';
 import CreateAccountWithAvailableUserForm from './CreateAccountWithAvailableUserForm';
 import PermissionHOC from '@/components/PermissionHOC';
+import roleService from '@/services/roleService';
+import { RoleType } from '@/types/role';
+import userService from '@/services/userService';
+import { UserType } from '@/types/auth';
 
 const { Search } = Input;
 
@@ -48,7 +52,12 @@ const AccountContainer = () => {
     const [open, setOpen] = useState(false);
     const [account, setAccount] = useState<AccountType | null>(null);
     const [accountList, setAccountList] = useState<AccountType[]>([]);
+    const [roleList, setRoleList] = useState<RoleType[]>([]);
+    const [userWithoutAccountList, setUserWithoutAccountList] = useState<
+      UserType[]
+    >([]);
     const [search, setSearch] = useState<string>('');
+    const [refreshPage, setRefreshPage] = useState(false);
 
     const dispatch = useAppDispatch();
     const [modalData, setModalData] = useState({
@@ -76,6 +85,29 @@ const AccountContainer = () => {
     } = usePagination(accountList);
 
     useEffect(() => {
+      async function fetchDataList() {
+        try {
+          const success = await handleRefreshToken(dispatch);
+
+          if (success) {
+            const res = await roleService.getAll();
+            const resUserWithoutAccount =
+              await userService.getAllWithoutAccount({ notAccount: true });
+
+            setRoleList(res);
+            setUserWithoutAccountList(resUserWithoutAccount);
+          } else {
+            router.replace('/');
+          }
+        } catch (error: any) {
+          console.log(error.message);
+        }
+      }
+
+      fetchDataList();
+    }, [refreshPage]);
+
+    useEffect(() => {
       async function fetchAccountList() {
         try {
           const success = await handleRefreshToken(dispatch);
@@ -95,7 +127,11 @@ const AccountContainer = () => {
       }
 
       fetchAccountList();
-    }, [search]);
+    }, [search, refreshPage]);
+
+    const handleRefreshPage = () => {
+      setRefreshPage(!refreshPage);
+    };
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -109,6 +145,7 @@ const AccountContainer = () => {
       setAccount(null);
       setOpen(true);
     };
+
     const handleAddingWithAvailableUser = () => {
       setModalData({
         title: 'Thêm tài khoản với người dùng có sẳn',
@@ -116,6 +153,27 @@ const AccountContainer = () => {
       });
       setAccount(null);
       setOpen(true);
+    };
+
+    const handleRemoveAccount = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (account) {
+            await accountService.remove(account._id);
+            toast.success('Delete successfully');
+            handleRefreshPage();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -216,22 +274,26 @@ const AccountContainer = () => {
             )}
             {modalData.key === 'add-account-with-available-user' && (
               <CreateAccountWithAvailableUserForm
+                roleList={roleList}
+                userList={userWithoutAccountList}
                 handleClose={handleClose}
               ></CreateAccountWithAvailableUserForm>
             )}
             {modalData.key === 'update-account' && account && (
               <UpdateAccountForm
+                handleRefreshPage={handleRefreshPage}
+                roleList={roleList}
                 handleClose={handleClose}
                 account={account}
               ></UpdateAccountForm>
             )}
           </Modal.Body>
-          {modalData.key === 'delete-product' && account && (
+          {modalData.key === 'delete-account' && account && (
             <Modal.Footer>
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveAccount} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

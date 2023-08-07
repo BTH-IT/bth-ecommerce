@@ -11,10 +11,8 @@ import { handleRefreshToken } from '@/utils/clientActions';
 import toast from 'react-hot-toast';
 import Button from '@/components/Button';
 import uploadService from '@/services/uploadService';
-import ImageForm from '../../brands/_components/ImageForm';
 import SelectForm from '@/app/(user)/(auth)/_components/SelectForm';
 import { RoleType } from '@/types/role';
-import roleService from '@/services/roleService';
 import { AccountType } from '@/types/account';
 import AvatarInput from '@/app/(user)/profile/_components/AvatarInput';
 import accountService from '@/services/accountService';
@@ -36,39 +34,29 @@ const schema = yup
 const UpdateAccountForm = ({
   account,
   handleClose,
+  roleList,
+  handleRefreshPage,
 }: {
   account: AccountType;
   handleClose: () => void;
+  roleList: RoleType[];
+  handleRefreshPage: () => void;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
-  const [picture, setPicture] = useState<any>(null);
-  const [roleList, setRoleList] = useState<RoleType[]>([]);
+  const [picture, setPicture] = useState<any>('');
 
   useEffect(() => {
     setValue('email', account.email);
     setValue('role', account.role._id);
-    setPicture(account.picture);
-  }, []);
-
-  useEffect(() => {
-    async function fetchRoleList() {
-      try {
-        await handleRefreshToken(dispatch);
-
-        const res = await roleService.getAll();
-
-        setRoleList(res);
-      } catch (error: any) {
-        console.log(error.message);
-      }
-    }
-
-    fetchRoleList();
+    setPicture(
+      account.picture === 'https://server.bthung313.site/images/avatar.jpg'
+        ? ''
+        : account.picture,
+    );
   }, []);
 
   const {
-    reset,
     setValue,
     handleSubmit,
     formState: { isValid, isLoading },
@@ -93,15 +81,22 @@ const UpdateAccountForm = ({
         let thumbUrlData: any = null;
 
         if (typeof data.picture === 'object') {
-          thumbUrlData = await uploadService.uploadSingle(data.picture);
+          const res = await uploadService.uploadSingle(data.picture);
+          thumbUrlData = res.data;
         }
 
         await accountService.update({
           _id: account._id,
           ...data,
-          picture: thumbUrlData ? thumbUrlData.secureUrl : data.picture,
+          picture:
+            thumbUrlData !== null
+              ? thumbUrlData.secureUrl
+              : data.picture !== ''
+              ? data.picture
+              : account.picture,
         });
         toast.success('Update account successfully');
+        handleRefreshPage();
       } else {
         router.replace('/login');
       }

@@ -96,11 +96,13 @@ const BrandForm = ({
           let iconUrlData: any = null;
 
           if (typeof data.thumbUrl === 'object') {
-            thumbUrlData = await uploadService.uploadSingle(data.thumbUrl);
+            const res = await uploadService.uploadSingle(data.thumbUrl);
+            thumbUrlData = res.data;
           }
 
           if (typeof data.iconUrl === 'object') {
-            iconUrlData = await uploadService.uploadSingle(data.iconUrl);
+            const res = await uploadService.uploadSingle(data.iconUrl);
+            iconUrlData = res.data;
           }
 
           await brandService.update({

@@ -35,7 +35,7 @@ const AvatarInput = ({
       inputRef.current.value = '';
     }
 
-    setValue(name, '');
+    setValue(name, 'https://server.bthung313.site/images/avatar.jpg');
     setImage('');
   };
 
@@ -52,7 +52,7 @@ const AvatarInput = ({
             ref={inputRef}
             type="file"
           />
-          <label htmlFor="avatar">
+          <label htmlFor={id}>
             {image ? (
               <Image src={image} alt="avatar" width={10000} height={10000} />
             ) : (

@@ -41,7 +41,7 @@ export interface UserType {
   gender: string;
   phone: string;
   address: string;
-  account: AccountType;
+  account: AccountType | null;
   type: UserGenreType;
   createdAt: Date;
   updatedAt: Date;

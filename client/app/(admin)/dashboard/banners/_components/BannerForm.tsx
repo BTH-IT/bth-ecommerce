@@ -32,10 +32,12 @@ const BannerForm = ({
   add,
   banner = null,
   handleClose,
+  handleRefreshPage,
 }: {
   add: boolean;
   banner?: BannerType | null;
   handleClose: () => void;
+  handleRefreshPage: () => void;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -85,11 +87,13 @@ const BannerForm = ({
           });
 
           toast.success('Add brand successfully');
+          handleRefreshPage();
         } else {
           let thumbUrlData: any = null;
 
           if (typeof data.thumbUrl === 'object') {
-            thumbUrlData = await uploadService.uploadSingle(data.thumbUrl);
+            const res = await uploadService.uploadSingle(data.thumbUrl);
+            thumbUrlData = res.data;
           }
 
           await bannerService.update({
@@ -99,6 +103,7 @@ const BannerForm = ({
           });
 
           toast.success('Update banner successfully');
+          handleRefreshPage();
         }
       } else {
         router.replace('/login');

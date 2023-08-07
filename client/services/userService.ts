@@ -49,6 +49,36 @@ const userService = {
 
     return response.getAllUsers;
   },
+  async getAllWithoutAccount(params?: any): Promise<UserType[]> {
+    const graphqlQuery = {
+      query: `
+        query getAllUsers($params: ParamsUserInput!) {
+          getAllUsers(params: $params) {
+            _id
+            fullname
+            birthYear
+            gender
+            address
+            phone
+            type {
+              _id
+              name
+            }
+            createdAt
+            updatedAt
+          }
+        }`,
+      variables: {
+        params: {
+          ...params,
+        },
+      },
+    };
+
+    const response: any = await createAxiosGraphql(graphqlQuery);
+
+    return response.getAllUsers;
+  },
   async getById(id: string) {
     const graphqlQuery = {
       query: `

@@ -2,6 +2,7 @@ import { IsNotEmpty, IsPositive } from 'class-validator';
 
 export class ParamsUserDto {
   @IsNotEmpty() search?: string;
+  @IsNotEmpty() notAccount?: boolean;
 }
 
 export class CreateNewUserDto {

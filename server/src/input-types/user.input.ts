@@ -4,6 +4,9 @@ import { Field, ID, InputType } from '@nestjs/graphql';
 export class ParamsUserInput {
   @Field({ nullable: true })
   search?: string;
+
+  @Field({ nullable: true })
+  notAccount?: boolean;
 }
 
 @InputType()

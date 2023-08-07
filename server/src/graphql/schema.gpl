@@ -364,6 +364,7 @@ input ParamsTypeInput {
 }
 
 input ParamsUserInput {
+  notAccount: Boolean
   search: String
 }
 

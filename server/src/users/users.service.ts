@@ -42,9 +42,20 @@ export class UsersService {
         continue;
       }
 
+      if (key === 'notAccount') continue;
+
       filter[key] = parameters[key];
     }
-    return this.usersRepository.getByCondition(filter);
+
+    const list = await this.usersRepository.getByCondition(filter);
+
+    if (parameters['notAccount']) {
+      return list.filter((user) => {
+        return user.account === undefined;
+      });
+    } else {
+      return list;
+    }
   }
 
   async createNewUser(user: CreateNewUserDto): Promise<User> {

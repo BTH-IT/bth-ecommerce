@@ -34,23 +34,7 @@ const ImageThumbCell = ({ rowData, dataKey, ...props }: any) => (
         display: 'inline-block',
       }}
     >
-      <Image src={rowData.thumbUrl} width={44} height={44} alt={rowData.name} />
-    </div>
-  </Cell>
-);
-
-const ImageIconCell = ({ rowData, dataKey, ...props }: any) => (
-  <Cell {...props} style={{ padding: 0 }}>
-    <div
-      style={{
-        background: '#f5f5f5',
-        borderRadius: 6,
-        marginTop: 2,
-        overflow: 'hidden',
-        display: 'inline-block',
-      }}
-    >
-      <Image src={rowData.iconUrl} width={44} height={44} alt={rowData.name} />
+      <Image src={rowData.thumbUrl} width={60} height={44} alt={rowData.name} />
     </div>
   </Cell>
 );
@@ -64,6 +48,7 @@ const BannerContainer = () => {
     const [banner, setBanner] = useState<BannerType | null>(null);
     const [bannerList, setBannerList] = useState<BannerType[]>([]);
     const [search, setSearch] = useState<string>('');
+    const [refreshPage, setRefreshPage] = useState(false);
 
     const dispatch = useAppDispatch();
     const [modalData, setModalData] = useState({
@@ -111,7 +96,7 @@ const BannerContainer = () => {
       }
 
       fetchbannerList();
-    }, [search]);
+    }, [search, refreshPage]);
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -125,6 +110,31 @@ const BannerContainer = () => {
       setBanner(null);
       setAdd(true);
       setOpen(true);
+    };
+
+    const handleRefreshPage = () => {
+      setRefreshPage(!refreshPage);
+    };
+
+    const handleRemoveBanner = async () => {
+      try {
+        const success = await handleRefreshToken(dispatch);
+
+        if (success) {
+          if (banner) {
+            await bannerService.remove(banner._id);
+            toast.success('Delete successfully');
+            handleRefreshPage();
+          }
+        } else {
+          router.replace('/');
+        }
+      } catch (error: any) {
+        console.log(error.message);
+      } finally {
+        handleClose();
+        toast.success('Delete failure');
+      }
     };
 
     return (
@@ -149,7 +159,7 @@ const BannerContainer = () => {
               autoHeight={true}
               bordered
             >
-              <Column fixed width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Id</HeaderCell>
                 <Cell dataKey="_id" />
               </Column>
@@ -159,19 +169,19 @@ const BannerContainer = () => {
                 <Cell dataKey="name"></Cell>
               </Column>
 
-              <Column sortable width={200} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Thumbnail</HeaderCell>
                 <ImageThumbCell dataKey="thumbUrl"></ImageThumbCell>
               </Column>
 
-              <Column width={200} align="center">
+              <Column sortable width={200} align="center">
                 <HeaderCell>Active</HeaderCell>
                 <Cell dataKey="isShow">
                   {(rowData) => <span>{rowData.isShow ? 'Yes' : 'No'}</span>}
                 </Cell>
               </Column>
 
-              <Column fixed="right" width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Hành động</HeaderCell>
                 <BannerActionCell
                   dataKey="_id"
@@ -210,6 +220,7 @@ const BannerContainer = () => {
             {(modalData.key === 'add-banner' ||
               modalData.key === 'update-banner') && (
               <BannerForm
+                handleRefreshPage={handleRefreshPage}
                 add={add}
                 handleClose={handleClose}
                 banner={banner}
@@ -221,7 +232,7 @@ const BannerContainer = () => {
               <Button onClick={handleClose} appearance="subtle">
                 Cancel
               </Button>
-              <Button onClick={handleClose} appearance="primary">
+              <Button onClick={handleRemoveBanner} appearance="primary">
                 Ok
               </Button>
             </Modal.Footer>

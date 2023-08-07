@@ -64,7 +64,11 @@ export class UsersResolver {
 
   @ResolveField('account', () => Account)
   async getAccount(@Parent() user: User) {
-    return this.accountsService.findOneById(user.account.toString());
+    if (user.account) {
+      return this.accountsService.findOneById(user.account.toString());
+    }
+
+    return {};
   }
   @ResolveField('type', () => Type)
   async getType(@Parent() user: User) {
