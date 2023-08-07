@@ -93,7 +93,7 @@ const AuthorizationContainer = () => {
               autoHeight={true}
               bordered
             >
-              <Column fixed width={400} align="center">
+              <Column width={400} align="center">
                 <HeaderCell>Id</HeaderCell>
                 <Cell dataKey="_id" />
               </Column>
@@ -108,7 +108,7 @@ const AuthorizationContainer = () => {
                 <Cell dataKey="description"></Cell>
               </Column>
 
-              <Column fixed="right" width={300} align="center">
+              <Column width={300} align="center">
                 <HeaderCell>Thay đổi quyền hạng</HeaderCell>
                 <Cell dataKey="">
                   {(rowData) => (

@@ -57,7 +57,6 @@ const AccountContainer = () => {
       UserType[]
     >([]);
     const [search, setSearch] = useState<string>('');
-    const [refreshPage, setRefreshPage] = useState(false);
 
     const dispatch = useAppDispatch();
     const [modalData, setModalData] = useState({
@@ -105,7 +104,7 @@ const AccountContainer = () => {
       }
 
       fetchDataList();
-    }, [refreshPage]);
+    }, []);
 
     useEffect(() => {
       async function fetchAccountList() {
@@ -127,11 +126,7 @@ const AccountContainer = () => {
       }
 
       fetchAccountList();
-    }, [search, refreshPage]);
-
-    const handleRefreshPage = () => {
-      setRefreshPage(!refreshPage);
-    };
+    }, [search]);
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -163,7 +158,7 @@ const AccountContainer = () => {
           if (account) {
             await accountService.remove(account._id);
             toast.success('Delete successfully');
-            handleRefreshPage();
+            router.refresh();
           }
         } else {
           router.replace('/');
@@ -281,7 +276,6 @@ const AccountContainer = () => {
             )}
             {modalData.key === 'update-account' && account && (
               <UpdateAccountForm
-                handleRefreshPage={handleRefreshPage}
                 roleList={roleList}
                 handleClose={handleClose}
                 account={account}

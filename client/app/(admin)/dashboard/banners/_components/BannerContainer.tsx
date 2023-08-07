@@ -48,7 +48,6 @@ const BannerContainer = () => {
     const [banner, setBanner] = useState<BannerType | null>(null);
     const [bannerList, setBannerList] = useState<BannerType[]>([]);
     const [search, setSearch] = useState<string>('');
-    const [refreshPage, setRefreshPage] = useState(false);
 
     const dispatch = useAppDispatch();
     const [modalData, setModalData] = useState({
@@ -96,7 +95,7 @@ const BannerContainer = () => {
       }
 
       fetchbannerList();
-    }, [search, refreshPage]);
+    }, [search]);
 
     const handleSearching = async (value: string) => {
       setSearch(value);
@@ -112,10 +111,6 @@ const BannerContainer = () => {
       setOpen(true);
     };
 
-    const handleRefreshPage = () => {
-      setRefreshPage(!refreshPage);
-    };
-
     const handleRemoveBanner = async () => {
       try {
         const success = await handleRefreshToken(dispatch);
@@ -124,7 +119,7 @@ const BannerContainer = () => {
           if (banner) {
             await bannerService.remove(banner._id);
             toast.success('Delete successfully');
-            handleRefreshPage();
+            router.refresh();
           }
         } else {
           router.replace('/');
@@ -220,7 +215,6 @@ const BannerContainer = () => {
             {(modalData.key === 'add-banner' ||
               modalData.key === 'update-banner') && (
               <BannerForm
-                handleRefreshPage={handleRefreshPage}
                 add={add}
                 handleClose={handleClose}
                 banner={banner}

@@ -35,12 +35,10 @@ const UpdateAccountForm = ({
   account,
   handleClose,
   roleList,
-  handleRefreshPage,
 }: {
   account: AccountType;
   handleClose: () => void;
   roleList: RoleType[];
-  handleRefreshPage: () => void;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -96,7 +94,7 @@ const UpdateAccountForm = ({
               : account.picture,
         });
         toast.success('Update account successfully');
-        handleRefreshPage();
+        router.refresh();
       } else {
         router.replace('/login');
       }

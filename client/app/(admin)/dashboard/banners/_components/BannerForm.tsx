@@ -32,12 +32,10 @@ const BannerForm = ({
   add,
   banner = null,
   handleClose,
-  handleRefreshPage,
 }: {
   add: boolean;
   banner?: BannerType | null;
   handleClose: () => void;
-  handleRefreshPage: () => void;
 }) => {
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -87,7 +85,7 @@ const BannerForm = ({
           });
 
           toast.success('Add brand successfully');
-          handleRefreshPage();
+          router.refresh();
         } else {
           let thumbUrlData: any = null;
 
@@ -103,7 +101,7 @@ const BannerForm = ({
           });
 
           toast.success('Update banner successfully');
-          handleRefreshPage();
+          router.refresh();
         }
       } else {
         router.replace('/login');
