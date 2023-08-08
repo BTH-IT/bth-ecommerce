@@ -1,8 +1,7 @@
-FROM node:18-alpine3.16 as build
-
-WORKDIR /usr/src/build/app
-
+FROM node:18-alpine3.16 as builder
+WORKDIR /app
 COPY . /app
-RUN npm install
-RUN npm run build
-CMD ["npm", "run dev"]
+RUN npm install && npm run build
+
+EXPOSE 3000
+CMD ["npm", "run start"]
