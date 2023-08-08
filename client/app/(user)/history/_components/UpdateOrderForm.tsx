@@ -10,7 +10,6 @@ import { OrderFormType } from '@/types/form';
 import Button from '@/components/Button';
 import { handleRefreshToken } from '@/utils/clientActions';
 import { useAppDispatch } from '@/redux/hooks';
-import { authActions } from '@/redux/features/authSlice';
 import toast from 'react-hot-toast';
 import orderService from '@/services/orderService';
 import { useRouter } from 'next/navigation';
@@ -63,12 +62,18 @@ const UpdateOrderForm = ({
       const success = await handleRefreshToken(dispatch);
 
       if (success) {
+        if (order.status === 'canceled' || order.status === 'done') {
+          return;
+        }
+
         await orderService.update({
           _id: order._id,
+          user: order.user,
           ...data,
         });
 
         toast.success('Update order successfully');
+        router.refresh();
       } else {
         router.replace('/login');
       }

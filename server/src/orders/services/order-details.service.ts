@@ -24,7 +24,10 @@ export class OrderDetailsService {
     return this.orderDetailsRepository.findById(id);
   }
 
-  async findManyByCondition(orderId: string): Promise<OrderDetail[]> {
+  async findManyByCondition(
+    orderId: string,
+    hasAmount = true,
+  ): Promise<OrderDetail[]> {
     const list = await this.orderDetailsRepository.aggregate([
       {
         $match: {
@@ -57,33 +60,50 @@ export class OrderDetailsService {
 
     const productList = await this.productsRepository.findAll();
 
-    const newList: any[] = [];
+    if (hasAmount) {
+      const newList: any[] = [];
 
-    list.forEach(async (order) => {
+      list.forEach(async (order) => {
+        const product = productList.find(
+          (p) => p._id.toString() === order.product.toString(),
+        );
+
+        const newOrder = {
+          ...order,
+          product,
+        };
+
+        if (newOrder.amount === 1 || newList.length <= 0) {
+          newList.push(newOrder);
+          return;
+        }
+
+        const isHad = Boolean(
+          newList.find((ord) => {
+            return (
+              ord.product._id.toString() === newOrder.product._id.toString()
+            );
+          }),
+        );
+
+        if (!isHad) {
+          newList.push(newOrder);
+          return;
+        }
+      });
+
+      return newList;
+    }
+
+    const newList: any[] = list.map((order) => {
       const product = productList.find(
         (p) => p._id.toString() === order.product.toString(),
       );
 
-      const newOrder = {
+      return {
         ...order,
         product,
       };
-
-      if (newOrder.amount === 1 || newList.length <= 0) {
-        newList.push(newOrder);
-        return;
-      }
-
-      const isHad = Boolean(
-        newList.find((ord) => {
-          return ord.product._id.toString() === newOrder.product._id.toString();
-        }),
-      );
-
-      if (!isHad) {
-        newList.push(newOrder);
-        return;
-      }
     });
 
     return newList;

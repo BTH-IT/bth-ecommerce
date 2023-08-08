@@ -60,6 +60,7 @@ const UpdateOrderStatusForm = ({
       if (success) {
         await orderService.update({
           _id: order._id,
+          user: order.user._id,
           ...data,
         });
 

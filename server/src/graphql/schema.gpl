@@ -543,7 +543,7 @@ input UpdateOrderInput {
   isPaid: Boolean
   phone: String
   status: String
-  user: String
+  user: String!
 }
 
 input UpdateProductInput {

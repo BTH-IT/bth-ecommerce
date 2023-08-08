@@ -2,6 +2,7 @@
 
 import { Table, Popover, Whisper, Dropdown, IconButton } from 'rsuite';
 import MoreIcon from '@rsuite/icons/legacy/More';
+import toast from 'react-hot-toast';
 
 const { Cell } = Table;
 
@@ -9,6 +10,12 @@ const ActionCell = ({ rowData, handleOpen, handleModal, ...props }: any) => {
   const renderMenu = ({ onClose, left, top, className }: any, ref: any) => {
     const handleSelect = async (eventKey: any) => {
       onClose();
+      if (rowData.status !== 'waiting' && eventKey.key !== 'see-more') {
+        toast(
+          'Orders that have been processed and are in progress cannot be edited',
+        );
+        return;
+      }
       handleOpen(rowData);
       handleModal(eventKey);
     };

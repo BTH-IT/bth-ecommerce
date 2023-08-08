@@ -73,29 +73,33 @@ export class ImportOrdersResolver {
       newOrder,
     );
 
-    importProducts.forEach(async (p) => {
-      for (let i = 1; i <= p.amount; i++) {
-        await this.productDetailsService.createNewProductDetail({
+    await Promise.all(
+      importProducts.map(async (p) => {
+        for (let i = 1; i <= p.amount; i++) {
+          await this.productDetailsService.createNewProductDetail({
+            product: p.product,
+          });
+        }
+
+        const data = {
+          price: p.price,
           product: p.product,
+          amount: p.amount,
+        };
+
+        await this.importOrderDetailsService.createNewImportOrderDetail({
+          ...data,
+          importOrder: orderDoc._id.toString(),
         });
-      }
 
-      const data = {
-        price: p.price,
-        product: p.product,
-        amount: p.amount,
-      };
+        await this.productsService.updateProduct({
+          _id: p.product,
+          originPrice: p.price,
+        });
 
-      await this.importOrderDetailsService.createNewImportOrderDetail({
-        ...data,
-        importOrder: orderDoc._id.toString(),
-      });
-
-      await this.productsService.updateProduct({
-        _id: p.product,
-        originPrice: p.price,
-      });
-    });
+        return p;
+      }),
+    );
 
     return orderDoc;
   }

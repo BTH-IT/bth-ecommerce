@@ -33,6 +33,9 @@ import { RolesRepository } from '@/roles/repositories/roles.repo';
 import { ProductDetailsService } from '@/products/services/productDetails.service';
 import { Brand, BrandSchema } from '@/schemas/brand.schema';
 import { BrandsRepository } from '@/brands/repositories/brands.repo';
+import { Warranty, WarrantySchema } from '@/schemas/warranty.schema';
+import { WarrantiesRepository } from '@/warranties/warranties.repo';
+import { WarrantiesService } from '@/warranties/warranties.service';
 
 @Module({
   imports: [
@@ -46,6 +49,7 @@ import { BrandsRepository } from '@/brands/repositories/brands.repo';
       { name: RoleAndFeature.name, schema: RoleAndFeatureSchema },
       { name: Role.name, schema: RoleSchema },
       { name: Brand.name, schema: BrandSchema },
+      { name: Warranty.name, schema: WarrantySchema },
     ]),
   ],
   providers: [
@@ -67,6 +71,8 @@ import { BrandsRepository } from '@/brands/repositories/brands.repo';
     ProductDetailsService,
     ProductDetailsRepository,
     BrandsRepository,
+    WarrantiesRepository,
+    WarrantiesService,
   ],
 })
 export class OrdersModule {}

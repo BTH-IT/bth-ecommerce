@@ -24,6 +24,8 @@ import { CreateOrderGuard } from '../guards/create-order.guard';
 import { UpdateOrderGuard } from '../guards/update-order.guard';
 import { DeleteOrderGuard } from '../guards/delete-order.guard';
 import { ProductDetailsService } from '@/products/services/productDetails.service';
+import { WarrantiesService } from '@/warranties/warranties.service';
+import { ProductsService } from '@/products/services/products.service';
 
 @Resolver(() => Order)
 export class OrdersResolver {
@@ -32,6 +34,8 @@ export class OrdersResolver {
     private readonly orderDetailsService: OrderDetailsService,
     private readonly productDetailsService: ProductDetailsService,
     private readonly usersService: UsersService,
+    private readonly warrantiesService: WarrantiesService,
+    private readonly productsService: ProductsService,
   ) {}
 
   @Query(() => [Order])
@@ -69,27 +73,31 @@ export class OrdersResolver {
 
     const orderDoc = await this.ordersService.createNewOrder(newOrder);
 
-    boughtProducts.forEach(async (p) => {
-      for (let i = 1; i <= p.amount; i++) {
-        const productDetail =
-          await this.productDetailsService.deleteProductDetail({
-            _id: p.product,
+    await Promise.all(
+      boughtProducts.map(async (p) => {
+        for (let i = 1; i <= p.amount; i++) {
+          const productDetail =
+            await this.productDetailsService.deleteProductDetail({
+              _id: p.product,
+            });
+
+          if (!productDetail) return p;
+
+          const data = {
+            price: p.price,
+            productDetail: productDetail._id.toString(),
+            product: p.product,
+          };
+
+          await this.orderDetailsService.createNewOrderDetail({
+            ...data,
+            order: orderDoc._id.toString(),
           });
 
-        if (!productDetail) return;
-
-        const data = {
-          price: p.price,
-          productDetail: productDetail._id.toString(),
-          product: p.product,
-        };
-
-        await this.orderDetailsService.createNewOrderDetail({
-          ...data,
-          order: orderDoc._id.toString(),
-        });
-      }
-    });
+          return p;
+        }
+      }),
+    );
 
     return orderDoc;
   }
@@ -97,6 +105,46 @@ export class OrdersResolver {
   @Mutation(() => Order)
   @UseGuards(UpdateOrderGuard)
   async updateOrder(@Args('updateOrder') data: UpdateOrderInput) {
+    const order = await this.getOrder(data._id);
+    if (data.status?.toLowerCase() === 'done' && order?.status !== 'done') {
+      const boughtProducts = await this.orderDetailsService.findManyByCondition(
+        data._id,
+        false,
+      );
+
+      await Promise.all(
+        boughtProducts.map(async (orderDetail) => {
+          await this.warrantiesService.createNewWarranty({
+            warrantyYear: orderDetail.product.warranteeYear,
+            productDetail: orderDetail.productDetail,
+            user: data.user,
+            product: orderDetail.product._id.toString(),
+          });
+
+          await this.productsService.updateProduct({
+            _id: orderDetail.product._id.toString(),
+            soldNum: orderDetail.product.soldNum + orderDetail.amount,
+          });
+        }),
+      );
+    } else if (
+      data.status?.toLowerCase() === 'canceled' &&
+      order?.status !== 'canceled'
+    ) {
+      const boughtProducts = await this.orderDetailsService.findManyByCondition(
+        data._id,
+        false,
+      );
+
+      await Promise.all(
+        boughtProducts.map(async (orderDetail) => {
+          await this.productDetailsService.createNewProductDetail({
+            product: orderDetail.product._id.toString(),
+          });
+        }),
+      );
+    }
+
     return this.ordersService.updateOrder(data);
   }
 

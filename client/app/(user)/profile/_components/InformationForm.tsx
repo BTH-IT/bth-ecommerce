@@ -116,78 +116,42 @@ const InformationForm = () => {
     if (!isValid || !data) return;
 
     try {
-      const { avatar, email, ...restValues }: InformationFormType = values;
+      const success = await handleRefreshToken(dispatch);
+      if (success) {
+        const { avatar, email, ...restValues }: InformationFormType = values;
 
-      const { data: avatarData } = await uploadService.uploadSingle(avatar);
+        const { data: avatarData } = await uploadService.uploadSingle(avatar);
 
-      const account = {
-        picture: avatarData.imageUrl || data.account.picture,
-        email,
-        _id: data.account._id,
-      };
+        const account = {
+          picture: avatarData.secureUrl || data.account.picture,
+          email,
+          _id: data.account._id,
+        };
 
-      const user = {
-        ...restValues,
-        _id: data.user._id,
-      };
+        const user = {
+          ...restValues,
+          _id: data.user._id,
+        };
 
-      await userService.update(user);
-      await accountService.update(account);
+        await userService.update(user);
+        await accountService.update(account);
 
-      const res = await authService.getProfile(accessToken);
+        const res = await authService.getProfile(accessToken);
 
-      dispatch(authActions.updateAccount({ account: res.data.account }));
-      dispatch(authActions.updateUser({ user: res.data.user }));
+        dispatch(authActions.updateAccount({ account: res.data.account }));
+        dispatch(authActions.updateUser({ user: res.data.user }));
 
-      localStorage.setItem('current_account', JSON.stringify(account));
-      localStorage.setItem('current_account', JSON.stringify(user));
+        localStorage.setItem('current_account', JSON.stringify(account));
+        localStorage.setItem('current_account', JSON.stringify(user));
 
-      toast.success("Change user's information successfully!!");
-    } catch (error: any) {
-      if (error.statusCode === 403) {
-        try {
-          const success = await handleRefreshToken(dispatch);
+        toast.success("Change user's information successfully!!");
 
-          if (success) {
-            const { avatar, email, ...restValues }: InformationFormType =
-              values;
-
-            const { data: avatarData } = await uploadService.uploadSingle(
-              avatar,
-            );
-
-            const account = {
-              picture: avatarData.imageUrl || data.account.picture,
-              email,
-              _id: data.account._id,
-            };
-
-            const user = {
-              ...restValues,
-              _id: data.user._id,
-            };
-
-            await userService.update(user);
-            await accountService.update(account);
-
-            const res = await authService.getProfile(accessToken);
-
-            dispatch(authActions.updateAccount({ account: res.data.account }));
-            dispatch(authActions.updateUser({ user: res.data.user }));
-
-            localStorage.setItem('current_account', JSON.stringify(account));
-            localStorage.setItem('current_account', JSON.stringify(user));
-
-            toast.success("Change user's information successfully!!");
-          } else {
-            router.replace('/login');
-          }
-        } catch (error: any) {
-          toast.error("Change user's information failure!!");
-        }
+        router.refresh();
       } else {
-        toast.error("Change user's information failure!!");
+        router.replace('/');
       }
+    } catch (error: any) {
+      toast.error("Change user's information failure!!");
     }
   };
 

@@ -29,7 +29,7 @@ export class UpdateOrderDto {
   @IsNotEmpty() _id: string;
   @IsNotEmpty() boughtProducts?: [string];
   @IsNotEmpty() employee?: string;
-  @IsNotEmpty() user?: string;
+  @IsNotEmpty() user: string;
   @IsNotEmpty() purchaseForm?: string;
   @IsNotEmpty() status?: string;
   @IsNotEmpty() fullname?: string;

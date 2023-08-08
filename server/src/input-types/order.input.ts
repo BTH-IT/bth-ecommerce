@@ -65,8 +65,8 @@ export class UpdateOrderInput {
   @Field(() => [String], { nullable: true })
   boughtProducts?: [string];
 
-  @Field({ nullable: true })
-  user?: string;
+  @Field()
+  user: string;
 
   @Field({ nullable: true })
   employee?: string;
