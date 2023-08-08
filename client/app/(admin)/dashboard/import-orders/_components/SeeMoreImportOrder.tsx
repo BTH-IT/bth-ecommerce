@@ -1,6 +1,5 @@
 import moment from 'moment';
 import React from 'react';
-import '../../../../css/components/see-more.css';
 import Image from 'next/image';
 import { convertCurrency } from '@/utils/contains';
 import { ImportOrderType } from '@/types/import-order';

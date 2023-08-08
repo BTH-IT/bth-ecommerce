@@ -2,56 +2,84 @@
 import React, { useEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
-import Chart from 'react-apexcharts';
-import '../../../../css/vendors/apexcharts.min.css';
-import { authActions } from '@/redux/features/authSlice';
 import toast from 'react-hot-toast';
 import orderService from '@/services/orderService';
 import { handleRefreshToken } from '@/utils/clientActions';
 import { useAppDispatch } from '@/redux/hooks';
 import { OrderType } from '@/types/order';
 import { useRouter } from 'next/navigation';
+import { Line } from 'react-chartjs-2';
+
+import {
+  Chart as ChartJS,
+  LineElement,
+  CategoryScale, // x axis
+  LinearScale, // y axis
+  PointElement,
+  Legend,
+  Tooltip,
+  Filler,
+  ChartConfiguration,
+} from 'chart.js';
+
+ChartJS.register(
+  LineElement,
+  CategoryScale,
+  LinearScale,
+  PointElement,
+  Legend,
+  Tooltip,
+  Filler,
+);
 
 const monthList = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
 const options: any = {
-  chart: {
-    height: 350,
-    type: 'area',
-    toolbar: {
-      show: true,
-      tools: {
-        selection: false,
-        zoom: false,
-        zoomin: false,
-        zoomout: false,
-        pan: false,
-        reset: false,
+  plugins: {
+    legend: true,
+  },
+  responsive: true,
+  scales: {
+    y: {
+      ticks: {
+        font: {
+          size: 17,
+          weight: 'bold',
+        },
+      },
+      title: {
+        display: true,
+        text: 'Sales',
+        padding: {
+          bottom: 10,
+        },
+        font: {
+          size: 30,
+          style: 'italic',
+          family: 'Arial',
+        },
+      },
+      min: 50,
+    },
+    x: {
+      ticks: {
+        font: {
+          size: 17,
+          weight: 'bold',
+        },
+      },
+      title: {
+        display: true,
+        text: 'Month',
+        padding: {
+          top: 10,
+        },
+        font: {
+          size: 30,
+          style: 'italic',
+          family: 'Arial',
+        },
       },
     },
-  },
-  colors: ['#0062f5', '#43aaff'],
-  dataLabels: {
-    enabled: false,
-  },
-  stroke: {
-    curve: 'smooth',
-  },
-  xaxis: {
-    type: 'string',
-    categories: [
-      'Jan',
-      'Feb',
-      'Mar',
-      'Apr',
-      'May',
-      'Jun',
-      'Jul',
-      'Aug',
-      'Sep',
-      'Oct',
-      'Nov',
-      'Dec',
-    ],
   },
 };
 
@@ -127,6 +155,46 @@ const DashboardChart = () => {
     fetchOrderList();
   }, [dateRange]);
 
+  const data = {
+    labels: monthList,
+    datasets: [
+      {
+        label: 'Revenue',
+        data: chartData.totalMoneyList,
+        borderColor: '#0ea5e9',
+        borderWidth: 3,
+        pointBorderColor: '#0ea5e9',
+        pointBorderWidth: 3,
+        tension: 0.5,
+        fill: true,
+        backgroundColor: (context: any) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+          gradient.addColorStop(0, '#7dd3fc');
+          gradient.addColorStop(1, 'white');
+          return gradient;
+        },
+      },
+      {
+        label: 'Sold Product',
+        data: chartData.totalSoldProductsList,
+        borderColor: '#6366f1',
+        borderWidth: 3,
+        pointBorderColor: '#6366f1',
+        pointBorderWidth: 3,
+        tension: 0.5,
+        fill: true,
+        backgroundColor: (context: any) => {
+          const ctx = context.chart.ctx;
+          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+          gradient.addColorStop(0, '#a5b4fc');
+          gradient.addColorStop(1, 'white');
+          return gradient;
+        },
+      },
+    ],
+  };
+
   return (
     <div className="dashboard-chart">
       <div className="dashboard-resume__header">
@@ -139,24 +207,7 @@ const DashboardChart = () => {
         />
       </div>
       <div className="dashboard-resume__chart">
-        {typeof window !== 'undefined' && (
-          <Chart
-            options={options}
-            series={[
-              {
-                name: 'Tổng sản phẩm bán được',
-                data: chartData.totalSoldProductsList,
-              },
-              {
-                name: 'Tổng doanh thu bán được',
-                data: chartData.totalMoneyList,
-              },
-            ]}
-            type="area"
-            height={500}
-            width={'100%'}
-          />
-        )}
+        <Line options={options} data={data} />
       </div>
     </div>
   );
