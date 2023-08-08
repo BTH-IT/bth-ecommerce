@@ -1,5 +1,5 @@
 'use client';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useLayoutEffect, useState } from 'react';
 import { DateRangePicker } from 'rsuite';
 import { DateRange } from 'rsuite/esm/DateRangePicker';
 import toast from 'react-hot-toast';
@@ -91,13 +91,15 @@ const DashboardChart = () => {
     orderList: OrderType[];
     totalMoneyList: number[];
     totalSoldProductsList: number[];
+    data: any;
   }>({
     orderList: [],
     totalMoneyList: [],
     totalSoldProductsList: [],
+    data: {},
   });
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     async function fetchOrderList() {
       try {
         const success = await handleRefreshToken(dispatch);
@@ -143,6 +145,45 @@ const DashboardChart = () => {
             orderList: res,
             totalMoneyList,
             totalSoldProductsList,
+            data: {
+              labels: monthList,
+              datasets: [
+                {
+                  label: 'Revenue',
+                  data: chartData.totalMoneyList,
+                  borderColor: '#0ea5e9',
+                  borderWidth: 3,
+                  pointBorderColor: '#0ea5e9',
+                  pointBorderWidth: 3,
+                  tension: 0.5,
+                  fill: true,
+                  backgroundColor: (context: any) => {
+                    const ctx = context.chart.ctx;
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, '#7dd3fc');
+                    gradient.addColorStop(1, 'white');
+                    return gradient;
+                  },
+                },
+                {
+                  label: 'Sold Product',
+                  data: chartData.totalSoldProductsList,
+                  borderColor: '#6366f1',
+                  borderWidth: 3,
+                  pointBorderColor: '#6366f1',
+                  pointBorderWidth: 3,
+                  tension: 0.5,
+                  fill: true,
+                  backgroundColor: (context: any) => {
+                    const ctx = context.chart.ctx;
+                    const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+                    gradient.addColorStop(0, '#a5b4fc');
+                    gradient.addColorStop(1, 'white');
+                    return gradient;
+                  },
+                },
+              ],
+            },
           });
         } else {
           router.replace('/login');
@@ -154,46 +195,6 @@ const DashboardChart = () => {
 
     fetchOrderList();
   }, [dateRange]);
-
-  const data = {
-    labels: monthList,
-    datasets: [
-      {
-        label: 'Revenue',
-        data: chartData.totalMoneyList,
-        borderColor: '#0ea5e9',
-        borderWidth: 3,
-        pointBorderColor: '#0ea5e9',
-        pointBorderWidth: 3,
-        tension: 0.5,
-        fill: true,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-          gradient.addColorStop(0, '#7dd3fc');
-          gradient.addColorStop(1, 'white');
-          return gradient;
-        },
-      },
-      {
-        label: 'Sold Product',
-        data: chartData.totalSoldProductsList,
-        borderColor: '#6366f1',
-        borderWidth: 3,
-        pointBorderColor: '#6366f1',
-        pointBorderWidth: 3,
-        tension: 0.5,
-        fill: true,
-        backgroundColor: (context: any) => {
-          const ctx = context.chart.ctx;
-          const gradient = ctx.createLinearGradient(0, 0, 0, 300);
-          gradient.addColorStop(0, '#a5b4fc');
-          gradient.addColorStop(1, 'white');
-          return gradient;
-        },
-      },
-    ],
-  };
 
   return (
     <div className="dashboard-chart">
@@ -207,7 +208,7 @@ const DashboardChart = () => {
         />
       </div>
       <div className="dashboard-resume__chart">
-        <Line options={options} data={data} />
+        <Line options={options} data={chartData.data} />
       </div>
     </div>
   );
