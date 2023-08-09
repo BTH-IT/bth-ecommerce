@@ -48,6 +48,7 @@ const LoginForm = () => {
             password:
               data.newAccount.email.split('').reverse().join('') +
               data.user.fullname.split('').reverse().join(''),
+            type: 'google',
           }),
         );
       }
@@ -60,7 +61,10 @@ const LoginForm = () => {
     handleSubmit,
     formState: { isValid },
     control,
-  } = useForm<LoginFormType>({
+  } = useForm<{
+    email: string;
+    password: string;
+  }>({
     defaultValues: {
       email: '',
       password: '',
@@ -68,10 +72,15 @@ const LoginForm = () => {
     resolver: yupResolver(schema),
     mode: 'onChange',
   });
-  const onSubmit = async (data: LoginFormType) => {
+  const onSubmit = async (data: { email: string; password: string }) => {
     if (!isValid) return;
 
-    dispatch(authActions.login(data));
+    dispatch(
+      authActions.login({
+        ...data,
+        type: 'default',
+      }),
+    );
   };
 
   return (

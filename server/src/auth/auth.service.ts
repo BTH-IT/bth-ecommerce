@@ -28,7 +28,10 @@ export class AuthService {
   }
 
   async login(loginInput: LoginDto) {
-    const account = await this.accountsService.findOne(loginInput.email);
+    const account = await this.accountsService.findOneWithCondition(
+      loginInput.email,
+      loginInput.type,
+    );
 
     if (!account) {
       throw new HttpException('Email not found', HttpStatus.UNAUTHORIZED);
