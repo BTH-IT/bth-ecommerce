@@ -14,7 +14,6 @@ const ImagesProduct = ({ imageList }: any) => {
         className="product__info-img_main-img zoom"
         ref={zoomRef}
         onMouseMove={(e: any) => {
-          console.dir(e.target);
           if (imgZoomRef.current && zoomRef.current) {
             imgZoomRef.current.style.opacity = '1';
             let positionPx =
