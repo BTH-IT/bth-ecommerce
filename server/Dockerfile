@@ -2,11 +2,14 @@ FROM node:18-alpine3.16 as builder
 
 WORKDIR /usr/src/app
 
-COPY . .
+COPY package*.json .
 
 RUN npm install
+
+COPY . .
+
 RUN npm run build
 
-EXPOSE 3000
+EXPOSE 5000
 
-CMD ["npm", "start"]
+CMD ["node", "dist/main"]
