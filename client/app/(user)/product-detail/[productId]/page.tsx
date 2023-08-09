@@ -45,7 +45,7 @@ const ProductDetailPage = async ({
       </div>
       <div className="product__info">
         <div className="grid grid-cols-4 gap-6 product__info-row">
-          <ImagesProduct></ImagesProduct>
+          <ImagesProduct imageList={product.imageUrlList}></ImagesProduct>
           <div className="col-span-3 p-2 product__info-container">
             <AmountAndPriceProduct product={product}></AmountAndPriceProduct>
             <div className="p-0">
