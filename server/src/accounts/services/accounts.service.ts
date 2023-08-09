@@ -57,7 +57,11 @@ export class AccountsService {
     email: string,
     type: string,
   ): Promise<Account | null> {
-    return this.accountsRepository.findByCondition({ email, type });
+    return this.accountsRepository.findByCondition({
+      email,
+      type,
+      isActive: true,
+    });
   }
 
   async createNewAccount(data: CreateNewAccountDto): Promise<Account> {

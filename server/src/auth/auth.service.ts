@@ -28,10 +28,7 @@ export class AuthService {
   }
 
   async login(loginInput: LoginDto) {
-    const account = await this.accountsService.findOneWithCondition(
-      loginInput.email,
-      'default',
-    );
+    const account = await this.accountsService.findOne(loginInput.email);
 
     if (!account) {
       throw new HttpException('Email not found', HttpStatus.UNAUTHORIZED);
@@ -81,22 +78,25 @@ export class AuthService {
   }
 
   async loginWithGoogle(req: any) {
-    if (!req.account) {
-      return new HttpException('No Account login', HttpStatus.UNAUTHORIZED);
+    if (!req.user) {
+      throw new HttpException('No Account login', HttpStatus.UNAUTHORIZED);
     }
-    const { email, fullname, picture } = req.account;
+
+    const { email, fullname } = req.user;
+
     let account = await this.accountsService.findOneWithCondition(
       email,
       'google',
     );
 
     if (!account) {
-      req.account.password = bcrypt.hashSync(
-        email.reverse() + fullname.reverse() + picture.reverse(),
+      req.user.password = bcrypt.hashSync(
+        email.split('').reverse().join('') +
+          fullname.split('').reverse().join(''),
         10,
       );
-      req.account.type = 'google';
-      account = await this.accountsService.createNewAccount(req.account);
+      req.user.type = 'google';
+      account = await this.accountsService.createNewAccount(req.user);
     }
 
     const { ...acc }: any = account;
@@ -105,29 +105,17 @@ export class AuthService {
     const user = await this.usersService.createNewUser({
       account: newAccount._id,
       fullname,
-      gender: undefined,
-      birthYear: undefined,
-      phone: undefined,
-      address: undefined,
+      gender: '',
+      birthYear: 0,
+      phone: '',
+      address: '',
     });
 
     user.account = newAccount;
 
-    const refreshToken = this.jwtService.sign(newAccount, {
-      secret: process.env.SECRETKEY,
-      expiresIn: process.env.EXPIRESIN_REFRESHTOKEN,
-    });
-
-    const accessToken = this.jwtService.sign(newAccount, {
-      secret: process.env.SECRETKEY,
-      expiresIn: process.env.EXPIRESIN,
-    });
-
     return {
       newAccount,
       user,
-      accessToken,
-      refreshToken,
     };
   }
 

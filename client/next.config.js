@@ -17,6 +17,13 @@ const nextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'lh3.googleusercontent.com',
+        // You can add these as well
+        // port: '',
+        // pathname: 'arifscloud/image/upload/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'plus.unsplash.com',
         // You can add these as well
         // port: '',

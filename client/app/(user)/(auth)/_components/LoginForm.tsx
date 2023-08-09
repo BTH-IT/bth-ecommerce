@@ -11,7 +11,7 @@ import * as yup from 'yup';
 import { useDispatch } from 'react-redux';
 import { authActions, selectAuth } from '@/redux/features/authSlice';
 import { useAppSelector } from '@/redux/hooks';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 
 const schema = yup
   .object({
@@ -24,6 +24,8 @@ const schema = yup
   .required();
 
 const LoginForm = () => {
+  const searchParams = useSearchParams();
+
   const loginSuccess = Boolean(
     useAppSelector((state) => state.auth.accessToken),
   );
@@ -31,9 +33,26 @@ const LoginForm = () => {
 
   useEffect(() => {
     if (loginSuccess) {
-      router.push('/');
+      router.replace('/');
     }
   }, [loginSuccess]);
+
+  useEffect(() => {
+    if (searchParams.get('data')) {
+      const data = JSON.parse(searchParams.get('data') || '{}');
+
+      if (data.newAccount && data.user) {
+        dispatch(
+          authActions.login({
+            email: data.newAccount.email,
+            password:
+              data.newAccount.email.split('').reverse().join('') +
+              data.user.fullname.split('').reverse().join(''),
+          }),
+        );
+      }
+    }
+  }, [searchParams.get('data')]);
 
   const [showPass, setShowPass] = useState(false);
   const dispatch = useDispatch();

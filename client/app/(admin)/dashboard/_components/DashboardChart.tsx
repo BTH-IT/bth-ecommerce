@@ -19,7 +19,6 @@ import {
   Legend,
   Tooltip,
   Filler,
-  ChartConfiguration,
 } from 'chart.js';
 
 ChartJS.register(
@@ -96,7 +95,7 @@ const DashboardChart = () => {
     orderList: [],
     totalMoneyList: [],
     totalSoldProductsList: [],
-    data: {},
+    data: null,
   });
 
   useLayoutEffect(() => {
@@ -208,7 +207,9 @@ const DashboardChart = () => {
         />
       </div>
       <div className="dashboard-resume__chart">
-        <Line options={options} data={chartData.data} />
+        {chartData.data !== null && (
+          <Line options={options} data={chartData.data} />
+        )}
       </div>
     </div>
   );

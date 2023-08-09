@@ -53,14 +53,17 @@ export class AuthController {
 
   @Get('google')
   @UseGuards(AuthGuard('google'))
-  async googleAuth() {
+  async googleAuth(@Req() req: any) {
     console.log('object');
   }
 
   @Get('google/callback')
   @UseGuards(AuthGuard('google'))
   async googleAuthRedirect(@Req() req: any, @Res() res: any) {
-    const user = await this.authService.loginWithGoogle(req);
-    return res.redirect('https://www.facebook.com/BTH312003');
+    const data = await this.authService.loginWithGoogle(req);
+
+    return res.redirect(
+      'http://localhost:3000/login' + `?data=${JSON.stringify(data)}`,
+    );
   }
 }
