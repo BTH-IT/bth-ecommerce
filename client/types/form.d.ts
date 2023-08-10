@@ -1,7 +1,7 @@
 export interface LoginFormType {
   email: string;
   password: string;
-  type: string;
+  type?: string;
 }
 
 export type RegisterFormType = LoginFormType & {
